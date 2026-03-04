@@ -123,17 +123,27 @@ try {
                     <?php endforeach; ?>
                 </select>
             </div>
-
-            <div class="col-md-3">
+<div class="col-md-3">
                 <label class="text-white-50 small mb-1">Start Date</label>
-                <input type="date" name="start_date" class="form-control glass-input rounded-3 shadow-sm py-2 px-3" value="<?php echo htmlspecialchars($start_date); ?>">
+                <div class="position-relative">
+                    <input type="text" name="start_date" class="form-control glass-input rounded-3 shadow-sm py-2 px-3 rooq-date" 
+                           placeholder="YYYY-MM-DD" 
+                           value="<?php echo htmlspecialchars($start_date); ?>" 
+                           readonly style="cursor: pointer;">
+                    <i class="bi bi-calendar-date position-absolute text-gold" style="right: 15px; top: 10px; pointer-events: none;"></i>
+                </div>
             </div>
 
             <div class="col-md-3">
                 <label class="text-white-50 small mb-1">End Date</label>
-                <input type="date" name="end_date" class="form-control glass-input rounded-3 shadow-sm py-2 px-3" value="<?php echo htmlspecialchars($end_date); ?>">
+                <div class="position-relative">
+                    <input type="text" name="end_date" class="form-control glass-input rounded-3 shadow-sm py-2 px-3 rooq-date" 
+                           placeholder="YYYY-MM-DD" 
+                           value="<?php echo htmlspecialchars($end_date); ?>" 
+                           readonly style="cursor: pointer;">
+                    <i class="bi bi-calendar-date position-absolute text-gold" style="right: 15px; top: 10px; pointer-events: none;"></i>
+                </div>
             </div>
-
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-rooq-primary w-100 rounded-3 shadow-sm py-2">
                     <i class="bi bi-search me-1"></i> Apply Filter

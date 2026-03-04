@@ -23,13 +23,13 @@ if (isset($_GET['delete_id'])) {
         $stmt = $db->prepare("DELETE FROM expenses WHERE id = ?");
         $stmt->execute([$delete_id]);
         
-        // Save message and REDIRECT to clear the URL parameters
+        // Save message and safely redirect using JavaScript
         $_SESSION['success_msg'] = "Expense deleted successfully!";
-        header("Location: expenses.php");
+        echo "<script>window.location.href='expenses.php';</script>";
         exit();
     } catch (PDOException $e) {
         $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
-        header("Location: expenses.php");
+        echo "<script>window.location.href='expenses.php';</script>";
         exit();
     }
 }
@@ -48,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
             $stmt = $db->prepare("INSERT INTO expenses (title, amount, expense_date, category, description, created_by) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $amount, $date, $category, $description, $created_by]);
             
-            // Save message and REDIRECT to clear the POST data
+            // Save message and safely redirect using JavaScript
             $_SESSION['success_msg'] = "Expense added successfully!";
-            header("Location: expenses.php");
+            echo "<script>window.location.href='expenses.php';</script>";
             exit();
             
         } catch (PDOException $e) {
-            $error_msg = "Database Error: " . $e->getMessage(); // Don't redirect on error so they don't lose typed form data
+            $error_msg = "Database Error: " . $e->getMessage(); 
         }
     } else {
         $error_msg = "Please fill in all required fields with valid data.";
@@ -259,20 +259,5 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
     </div>
 </div>
 
-<script>
-function viewExpense(title, amount, date, category, desc, user) {
-    // Fill the modal fields with the exact row data
-    document.getElementById('viewTitle').innerText = title;
-    document.getElementById('viewAmount').innerText = amount;
-    document.getElementById('viewDate').innerText = date;
-    document.getElementById('viewCategory').innerText = category;
-    document.getElementById('viewDesc').innerText = desc;
-    document.getElementById('viewUser').innerText = user;
-
-    // Show the modal using Bootstrap's JS API
-    const expenseModal = new bootstrap.Modal(document.getElementById('viewExpenseModal'));
-    expenseModal.show();
-}
-</script>
 
 <?php require_once 'includes/footer.php'; ?>

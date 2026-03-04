@@ -853,3 +853,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
+
+/* =========================================
+   EXPENSE MANAGEMENT LOGIC
+   ========================================= */
+function viewExpense(title, amount, date, category, desc, user) {
+    const titleEl = document.getElementById('viewTitle');
+    
+    // Safety check: If we are not on the expenses page, do nothing!
+    if (!titleEl) return; 
+
+    // Fill the modal fields with the exact row data
+    titleEl.innerText = title;
+    document.getElementById('viewAmount').innerText = amount;
+    document.getElementById('viewDate').innerText = date;
+    document.getElementById('viewCategory').innerText = category;
+    document.getElementById('viewDesc').innerText = desc;
+    document.getElementById('viewUser').innerText = user;
+
+    // Show the modal using Bootstrap's JS API
+    const expenseModal = new bootstrap.Modal(document.getElementById('viewExpenseModal'));
+    expenseModal.show();
+}

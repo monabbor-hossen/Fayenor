@@ -11,7 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $username  = Security::clean($_POST['username']);
     $password  = $_POST['password']; 
-    
+    // 1. Grab the message from the session
+    $success_msg = $_SESSION['success_msg'] ?? '';
+
+    // 2. Delete it instantly so it only shows once!
+    unset($_SESSION['success_msg']);
     // --- STRICT ROLE SECURITY CHECK ---
     if ($_SESSION['role'] == '2') {
         $role = Security::clean($_POST['role']);
@@ -49,6 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':basic_salary' => $basic_salary,
                 ':joining_date' => $joining_date
             ]);
+             // Save message and safely redirect using JavaScript
+            $_SESSION['success_msg'] = "Expense added successfully!";
+            echo "<script>window.location.href='user-add.php';</script>";
+            exit();
 
             $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'>User account created successfully!</div>";
             Security::logActivity("Created new user account: " . $username);

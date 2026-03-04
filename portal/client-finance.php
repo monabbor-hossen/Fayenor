@@ -233,44 +233,5 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
     </main>
 </div>
 
-<style>
-    .glass-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; }
-    .glass-input:disabled { background: rgba(0,0,0,0.2); opacity: 0.6; cursor: not-allowed; }
-    .glass-input:focus { border-color: #D4AF37; background: rgba(255,255,255,0.1); color: white; }
-    .glass-input option { background: #33000d; }
-    .border-warning { border: 1px solid rgba(255, 193, 7, 0.3) !important; }
-    .border-danger { border: 1px solid rgba(220, 53, 69, 0.3) !important; }
-    
-    /* Toggle Switch Color */
-    .form-check-input:checked {
-        background-color: #D4AF37;
-        border-color: #D4AF37;
-    }
-</style>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const toggleSwitch = document.getElementById('unlockPaymentForm');
-    if(toggleSwitch) {
-        const form = document.getElementById('paymentForm');
-        const inputs = form.querySelectorAll('input, select, textarea, button');
-
-        toggleSwitch.addEventListener('change', function() {
-            const isEnabled = this.checked;
-            inputs.forEach(input => {
-                if (input.type !== 'hidden') {
-                    input.disabled = !isEnabled;
-                }
-            });
-        });
-    }
-
-    // Initialize Tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
-    });
-});
-</script>
 
 <?php require_once 'includes/footer.php'; ?>

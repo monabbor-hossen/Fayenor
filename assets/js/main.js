@@ -876,3 +876,34 @@ function viewExpense(title, amount, date, category, desc, user) {
     const expenseModal = new bootstrap.Modal(document.getElementById('viewExpenseModal'));
     expenseModal.show();
 }
+
+
+/* ==========================================================================
+   FINANCE PAGE: PAYMENT FORM UNLOCK & TOOLTIPS
+   ========================================================================== */
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // 1. Payment Form Unlock Toggle
+    const toggleSwitch = document.getElementById('unlockPaymentForm');
+    if(toggleSwitch) {
+        const form = document.getElementById('paymentForm');
+        const inputs = form.querySelectorAll('input, select, textarea, button');
+
+        toggleSwitch.addEventListener('change', function() {
+            const isEnabled = this.checked;
+            inputs.forEach(input => {
+                // Only toggle inputs that are NOT hidden fields
+                if (input.type !== 'hidden') {
+                    input.disabled = !isEnabled;
+                }
+            });
+        });
+    }
+
+    // 2. Global Bootstrap Tooltip Initialization
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+});

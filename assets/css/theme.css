@@ -29,6 +29,7 @@
     --glass-80: rgba(255, 255, 255, 0.8);
 
     /* --- Glass Blacks (rgba 0, 0, 0) --- */
+    --black-10: rgba(0, 0, 0, 0.1);
     --black-20: rgba(0, 0, 0, 0.2);
     --black-25: rgba(0, 0, 0, 0.25);
     --black-30: rgba(0, 0, 0, 0.3);
@@ -43,6 +44,8 @@
     --gold-30: rgba(212, 175, 55, 0.3);
     --gold-40: rgba(212, 175, 55, 0.4);
     --gold-50: rgba(212, 175, 55, 0.5);
+    --gold-60: rgba(212, 175, 55, 0.6);
+    --gold-90: rgba(212, 175, 55, 0.9);
 
     /* --- Status & Badge Colors --- */
     --wf-line: #444444;
@@ -59,6 +62,9 @@
     --badge-warning-text: #ffc107;
     --badge-warning-bg: rgba(255, 193, 7, 0.2);
     --badge-warning-border: rgba(255, 193, 7, 0.3);
+
+    --status-danger: #dc3545;
+    --badge-danger-border: rgba(220, 53, 69, 0.3);
 
     --status-process: #3498db;
     --status-process-glow: rgba(52, 152, 219, 0.5);
@@ -80,6 +86,59 @@
     --fw-semi: 600;
     --fw-bold: 700;
     --fw-extra: 800;
+}
+
+/* =========================================
+   CORE HTML & TYPOGRAPHY
+   ========================================= */
+body {
+    background: radial-gradient(circle at top right, var(--bg-radial-start), var(--bg-radial-end));
+    color: var(--white);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    scroll-behavior: smooth;
+}
+
+.section-padding {
+    padding: 100px 0;
+}
+
+.text-gold {
+    color: var(--rooq-gold);
+}
+
+.bg-gold {
+    background-color: var(--rooq-gold);
+}
+
+/* ==========================================================================
+   CUSTOM SCROLLBAR (GLASSMORPHISM & GOLD THEME)
+   ========================================================================== */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold-60) var(--transparent);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--black-10);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--glass-15);
+    border-radius: 10px;
+    border: 2px solid var(--transparent);
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gold-90);
+    border: 2px solid var(--transparent);
+    background-clip: padding-box;
 }
 
 /* =========================================
@@ -124,17 +183,6 @@
     }
 }
 
-body {
-    background: radial-gradient(circle at top right, var(--bg-radial-start), var(--bg-radial-end));
-    color: var(--white);
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    scroll-behavior: smooth;
-}
-
-.section-padding {
-    padding: 100px 0;
-}
-
 /* =========================================
    BUTTONS & PANELS
    ========================================= */
@@ -150,14 +198,6 @@ body {
 .glass-panel:hover {
     border-color: var(--rooq-gold);
     transform: translateY(-5px);
-}
-
-.text-gold {
-    color: var(--rooq-gold);
-}
-
-.bg-gold {
-    background-color: var(--rooq-gold);
 }
 
 .btn-rooq-primary {
@@ -176,52 +216,12 @@ body {
     padding: 10px 25px;
     border-radius: 5px;
     text-decoration: none;
+    font-weight: var(--fw-medium);
 }
 
 .btn-rooq-outline:hover {
     background-color: var(--rooq-gold);
     color: var(--white);
-}
-
-/* =========================================
-   LOGIN SCREEN
-   ========================================= */
-.login-wrapper {
-    min-height: 100vh;
-    display: flex;
-}
-
-.login-brand-side {
-    background: linear-gradient(135deg, var(--rooq-burgundy) 0%, var(--bg-login-end) 100%);
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.login-brand-side::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    /* URL encoded gold hex for SVG */
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.4;
-}
-
-.login-form-side {
-    background: var(--white);
-    backdrop-filter: blur(10px);
-    width: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
 }
 
 /* =========================================
@@ -258,7 +258,96 @@ body {
 }
 
 /* =========================================
-   SEARCH INPUTS
+   SIDEBAR
+   ========================================= */
+.portal-sidebar {
+    position: fixed;
+    top: 60px;
+    left: -100%;
+    width: 260px;
+    height: calc(100vh - 60px);
+    background: linear-gradient(180deg, var(--bg-sidebar-start) 0%, var(--bg-sidebar-end) 100%);
+    backdrop-filter: blur(10px);
+    z-index: 1040;
+    transition: left 0.3s ease-in-out;
+    border-right: 1px solid var(--glass-10);
+    overflow-y: auto;
+}
+
+.portal-sidebar.show {
+    left: 0 !important;
+    box-shadow: 10px 0 30px var(--black-50);
+}
+
+.nav-link {
+    color: var(--glass-70);
+    padding: 12px 25px;
+    transition: all 0.2s;
+    border-left: 3px solid var(--transparent);
+}
+
+.nav-link:hover {
+    color: var(--white);
+    background: var(--glass-05);
+}
+
+.active-glass {
+    background: var(--gold-15);
+    color: var(--white) !important;
+    border-left-color: var(--rooq-gold);
+    backdrop-filter: blur(5px);
+}
+
+/* ==========================================================================
+   FORMS, INPUTS & UTILITIES (MERGED & OPTIMIZED)
+   ========================================================================== */
+.glass-input {
+    background: var(--glass-05);
+    border: 1px solid var(--glass-10);
+    color: var(--white);
+    padding: 12px 15px;
+}
+
+.glass-input:focus {
+    background: var(--glass-10);
+    border-color: var(--rooq-gold);
+    color: var(--white);
+    box-shadow: 0 0 10px var(--gold-20);
+}
+
+.glass-input:disabled {
+    background: var(--black-20);
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.glass-input::placeholder {
+    color: var(--glass-30);
+}
+
+select.glass-input option {
+    background-color: var(--bg-radial-start);
+    color: var(--white);
+}
+
+/* Toggle Switch Color */
+.form-check-input:checked,
+.form-check-input-gold:checked {
+    background-color: var(--rooq-gold);
+    border-color: var(--rooq-gold);
+}
+
+/* Custom Colored Borders */
+.border-warning {
+    border: 1px solid var(--badge-warning-border) !important;
+}
+
+.border-danger {
+    border: 1px solid var(--badge-danger-border) !important;
+}
+
+/* =========================================
+   SEARCH
    ========================================= */
 .search-container {
     width: 35%;
@@ -285,29 +374,6 @@ body {
 
 .glass-search input::placeholder {
     color: var(--glass-50);
-}
-
-.glass-input {
-    background: var(--glass-05);
-    border: 1px solid var(--glass-10);
-    color: var(--white);
-    padding: 12px 15px;
-}
-
-.glass-input:focus {
-    background: var(--glass-10);
-    border-color: var(--rooq-gold);
-    color: var(--white);
-    box-shadow: 0 0 10px var(--gold-20);
-}
-
-select.glass-input option {
-    background-color: var(--bg-radial-start);
-    color: var(--white);
-}
-
-.glass-input::placeholder {
-    color: var(--glass-30);
 }
 
 /* Live Search Dropdown */
@@ -353,11 +419,6 @@ select.glass-input option {
     border-radius: 15px;
 }
 
-.form-check-input-gold:checked {
-    background-color: var(--rooq-gold);
-    border-color: var(--rooq-gold);
-}
-
 /* =========================================
    USER PROFILES & AVATARS
    ========================================= */
@@ -394,7 +455,6 @@ select.glass-input option {
     color: var(--glass-80);
 }
 
-/* UNIFIED PREMIUM AVATAR */
 .avatar-circle-refined {
     display: flex;
     align-items: center;
@@ -449,44 +509,67 @@ a:hover .avatar-circle-refined,
 }
 
 /* =========================================
-   SIDEBAR
+   TABLES & MODALS
    ========================================= */
-.nav-link {
-    color: var(--glass-70);
-    padding: 12px 25px;
-    transition: all 0.2s;
-    border-left: 3px solid var(--transparent);
-}
-
-.nav-link:hover {
-    color: var(--white);
+.table-hover tbody tr:hover {
     background: var(--glass-05);
 }
 
-.active-glass {
-    background: var(--gold-15);
-    color: var(--white) !important;
-    border-left-color: var(--rooq-gold);
-    backdrop-filter: blur(5px);
+.glass-modal {
+    background: var(--bg-modal);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--rooq-gold);
 }
 
-.portal-sidebar {
-    position: fixed;
-    top: 60px;
-    left: -100%;
-    width: 260px;
-    height: calc(100vh - 60px);
-    background: linear-gradient(180deg, var(--bg-sidebar-start) 0%, var(--bg-sidebar-end) 100%);
-    backdrop-filter: blur(10px);
-    z-index: 1040;
-    transition: left 0.3s ease-in-out;
-    border-right: 1px solid var(--glass-10);
-    overflow-y: auto;
+.view-section-title {
+    color: var(--rooq-gold);
+    font-size: var(--fs-base);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--glass-10);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    margin-top: 20px;
 }
 
-.portal-sidebar.show {
-    left: 0 !important;
-    box-shadow: 10px 0 30px var(--black-50);
+.view-label {
+    color: var(--glass-50);
+    font-size: var(--fs-xxs);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.view-value {
+    color: var(--white);
+    font-weight: var(--fw-medium);
+    font-size: var(--fs-md);
+    margin-bottom: 15px;
+}
+
+.view-badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    display: inline-block;
+}
+
+.badge-approved {
+    background: var(--badge-success-bg);
+    color: var(--status-success);
+    border: 1px solid var(--badge-success-border);
+}
+
+.badge-pending {
+    background: var(--badge-warning-bg);
+    color: var(--badge-warning-text);
+    border: 1px solid var(--badge-warning-border);
+}
+
+.badge-default {
+    background: var(--glass-10);
+    color: var(--badge-text-default);
+    border: 1px solid var(--glass-10);
 }
 
 /* =========================================
@@ -632,70 +715,6 @@ a:hover .avatar-circle-refined,
     color: var(--rooq-gold);
     font-size: var(--fs-base);
     margin-top: 2px;
-}
-
-/* =========================================
-   TABLES & MODALS
-   ========================================= */
-.table-hover tbody tr:hover {
-    background: var(--glass-05);
-}
-
-.glass-modal {
-    background: var(--bg-modal);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--rooq-gold);
-}
-
-.view-section-title {
-    color: var(--rooq-gold);
-    font-size: var(--fs-base);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-bottom: 1px solid var(--glass-10);
-    padding-bottom: 5px;
-    margin-bottom: 15px;
-    margin-top: 20px;
-}
-
-.view-label {
-    color: var(--glass-50);
-    font-size: var(--fs-xxs);
-    text-transform: uppercase;
-    margin-bottom: 2px;
-}
-
-.view-value {
-    color: var(--white);
-    font-weight: var(--fw-medium);
-    font-size: var(--fs-md);
-    margin-bottom: 15px;
-}
-
-.view-badge {
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-bold);
-    display: inline-block;
-}
-
-.badge-approved {
-    background: var(--badge-success-bg);
-    color: var(--status-success);
-    border: 1px solid var(--badge-success-border);
-}
-
-.badge-pending {
-    background: var(--badge-warning-bg);
-    color: var(--badge-warning-text);
-    border: 1px solid var(--badge-warning-border);
-}
-
-.badge-default {
-    background: var(--glass-10);
-    color: var(--badge-text-default);
-    border: 1px solid var(--glass-10);
 }
 
 /* =========================================
@@ -874,4 +893,44 @@ a:hover .avatar-circle-refined,
 
 #chatMainBox .btn-rooq-primary {
     padding: 12px 20px;
+}
+
+/* =========================================
+   LOGIN SCREEN
+   ========================================= */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+}
+
+.login-brand-side {
+    background: linear-gradient(135deg, var(--rooq-burgundy) 0%, var(--bg-login-end) 100%);
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-brand-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.4;
+}
+
+.login-form-side {
+    background: var(--white);
+    backdrop-filter: blur(10px);
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
 }

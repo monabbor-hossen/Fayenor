@@ -12,8 +12,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
 $db = (new Database())->getConnection();
 $account_id = $_SESSION['account_id'] ?? $_SESSION['user_id']; 
 
-// --- GET FILTER ---
+// --- GET FILTERS ---
 $filter_client_id = isset($_GET['client_id']) ? $_GET['client_id'] : 'all';
+$start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+$end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
 
 try {
     // --- 1. FETCH ALL ACTIVE PROJECTS FOR DROPDOWN ---
@@ -21,36 +23,40 @@ try {
     $stmtApps->execute([$account_id]);
     $apps = $stmtApps->fetchAll(PDO::FETCH_ASSOC);
 
-    // --- 2. CALCULATE FILTERED FINANCIAL SUMMARY ---
+    // --- 2. CALCULATE FILTERED CONTRACT SUMMARY ---
     $total_contract = 0;
     $filtered_apps_count = 0;
 
     foreach ($apps as $app) {
-        // If "all" is selected OR this app matches the selected filter
         if ($filter_client_id === 'all' || $filter_client_id == $app['client_id']) {
             $total_contract += floatval($app['contract_value']);
             $filtered_apps_count++;
         }
     }
 
-    // --- 3. FETCH PAYMENT HISTORY BASED ON FILTER ---
+    // --- 3. FETCH PAYMENT HISTORY (WITH DATE & PROJECT FILTERS) ---
+    $pay_query = "SELECT p.*, c.company_name, c.client_id 
+                  FROM payments p 
+                  JOIN clients c ON p.client_id = c.client_id 
+                  WHERE c.account_id = ?";
+    $pay_params = [$account_id];
+
     if ($filter_client_id !== 'all') {
-        // Fetch only payments for the specific filtered project
-        $stmtPay = $db->prepare("SELECT p.*, c.company_name, c.client_id 
-                                 FROM payments p 
-                                 JOIN clients c ON p.client_id = c.client_id 
-                                 WHERE c.account_id = ? AND p.client_id = ? 
-                                 ORDER BY p.payment_date DESC");
-        $stmtPay->execute([$account_id, $filter_client_id]);
-    } else {
-        // Fetch all payments for all projects
-        $stmtPay = $db->prepare("SELECT p.*, c.company_name, c.client_id 
-                                 FROM payments p 
-                                 JOIN clients c ON p.client_id = c.client_id 
-                                 WHERE c.account_id = ? 
-                                 ORDER BY p.payment_date DESC");
-        $stmtPay->execute([$account_id]);
+        $pay_query .= " AND p.client_id = ?";
+        $pay_params[] = $filter_client_id;
     }
+    if (!empty($start_date)) {
+        $pay_query .= " AND p.payment_date >= ?";
+        $pay_params[] = $start_date;
+    }
+    if (!empty($end_date)) {
+        $pay_query .= " AND p.payment_date <= ?";
+        $pay_params[] = $end_date;
+    }
+    $pay_query .= " ORDER BY p.payment_date DESC";
+
+    $stmtPay = $db->prepare($pay_query);
+    $stmtPay->execute($pay_params);
     $payments = $stmtPay->fetchAll(PDO::FETCH_ASSOC);
 
     // --- 4. CALCULATE PAID & DUE ---
@@ -60,11 +66,26 @@ try {
             $total_paid += floatval($pay['amount']);
         }
     }
-
     $total_due = $total_contract - $total_paid;
 
+    // --- 5. FETCH TOTAL EXPENSES (WITH DATE FILTER) ---
+    $exp_query = "SELECT SUM(amount) as total_exp FROM expenses WHERE created_by = ?";
+    $exp_params = [$_SESSION['user_id']];
+
+    if (!empty($start_date)) {
+        $exp_query .= " AND expense_date >= ?";
+        $exp_params[] = $start_date;
+    }
+    if (!empty($end_date)) {
+        $exp_query .= " AND expense_date <= ?";
+        $exp_params[] = $end_date;
+    }
+
+    $stmtExp = $db->prepare($exp_query);
+    $stmtExp->execute($exp_params);
+    $total_expenses = $stmtExp->fetch(PDO::FETCH_ASSOC)['total_exp'] ?? 0.00;
+
 } catch (PDOException $e) {
-    // Safety Net - If database crashes, hide loader and show error
     echo "<script>document.addEventListener('DOMContentLoaded', function() { document.querySelector('.global-loader').classList.add('hidden'); });</script>";
     die("<div class='container mt-5'><div class='alert alert-danger p-4 rounded-4 shadow'><b>Database Error:</b> " . $e->getMessage() . "</div></div>");
 }
@@ -79,66 +100,103 @@ try {
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="text-white fw-bold mb-1"><i class="bi bi-receipt text-gold me-3"></i>Billing & Invoices</h2>
-            <p class="text-white-50 small mb-0">Overview of all your project financials and payment history.</p>
+            <h2 class="text-white fw-bold mb-1"><i class="bi bi-receipt text-gold me-3"></i>Billing & Financials</h2>
+            <p class="text-white-50 small mb-0">Overview of all your project financials, payments, and expenses.</p>
         </div>
         <button class="btn btn-outline-light btn-sm rounded-pill px-4 d-none d-md-block" onclick="window.print()">
             <i class="bi bi-printer me-2"></i> Print Statement
         </button>
     </div>
 
-    <div class="glass-panel p-3 mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 25px !important;">
-        <div>
-            <h6 class="text-gold fw-bold mb-0"><i class="bi bi-funnel-fill me-2"></i>Filter by Company/Project</h6>
-        </div>
-        <form method="GET" action="billing.php" class="m-0">
-            <select name="client_id" class="form-select glass-input rounded-pill shadow-sm py-2 px-4" style="min-width: 280px; cursor: pointer;" onchange="this.form.submit()">
-                <option value="all" <?php echo ($filter_client_id === 'all') ? 'selected' : ''; ?>>All Companies & Projects</option>
-                <?php foreach ($apps as $app): ?>
-                    <option value="<?php echo $app['client_id']; ?>" <?php echo ($filter_client_id == $app['client_id']) ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($app['company_name']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+    <div class="glass-panel p-3 mb-4">
+        <h6 class="text-gold fw-bold mb-3"><i class="bi bi-funnel-fill me-2"></i>Advanced Filters</h6>
+        <form method="GET" action="billing.php" class="m-0 row g-3">
+            
+            <div class="col-md-4">
+                <label class="text-white-50 small mb-1">Project / Company</label>
+                <select name="client_id" class="form-select glass-input rounded-3 shadow-sm py-2 px-3" style="cursor: pointer;">
+                    <option value="all" <?php echo ($filter_client_id === 'all') ? 'selected' : ''; ?>>All Companies & Projects</option>
+                    <?php foreach ($apps as $app): ?>
+                        <option value="<?php echo $app['client_id']; ?>" <?php echo ($filter_client_id == $app['client_id']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($app['company_name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="text-white-50 small mb-1">Start Date</label>
+                <input type="date" name="start_date" class="form-control glass-input rounded-3 shadow-sm py-2 px-3" value="<?php echo htmlspecialchars($start_date); ?>">
+            </div>
+
+            <div class="col-md-3">
+                <label class="text-white-50 small mb-1">End Date</label>
+                <input type="date" name="end_date" class="form-control glass-input rounded-3 shadow-sm py-2 px-3" value="<?php echo htmlspecialchars($end_date); ?>">
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-rooq-primary w-100 rounded-3 shadow-sm py-2">
+                    <i class="bi bi-search me-1"></i> Apply Filter
+                </button>
+            </div>
+            
+            <?php if ($filter_client_id !== 'all' || !empty($start_date) || !empty($end_date)): ?>
+                <div class="col-12 mt-2 text-end">
+                    <a href="billing.php" class="text-danger small text-decoration-none hover-white"><i class="bi bi-x-circle me-1"></i>Clear Filters</a>
+                </div>
+            <?php endif; ?>
         </form>
     </div>
 
     <div class="row g-3 mb-5">
-        <div class="col-md-4">
+        <div class="col-md-6 col-lg-3">
             <div class="glass-panel p-4 border-bottom border-3 border-secondary text-center h-100" style="background: rgba(255,255,255,0.02);">
                 <div class="icon-box bg-secondary bg-opacity-25 text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px;">
                     <i class="bi bi-briefcase fs-4"></i>
                 </div>
-                <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Total Contract Value</h6>
-                <h3 class="text-white mb-0 fw-bold"><?php echo number_format($total_contract, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
-                <div class="small text-white-50 mt-2">Across <?php echo $filtered_apps_count; ?> active project(s)</div>
+                <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Contract Value</h6>
+                <h4 class="text-white mb-0 fw-bold"><?php echo number_format($total_contract, 2); ?></h4>
+                <div class="small text-white-50 mt-2"><?php echo $filtered_apps_count; ?> active project(s)</div>
             </div>
         </div>
-        <div class="col-md-4">
+        
+        <div class="col-md-6 col-lg-3">
             <div class="glass-panel p-4 border-bottom border-3 border-success text-center h-100" style="background: rgba(255,255,255,0.02);">
                 <div class="icon-box bg-success bg-opacity-25 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px;">
                     <i class="bi bi-check-circle fs-4"></i>
                 </div>
                 <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Total Paid</h6>
-                <h3 class="text-success mb-0 fw-bold"><?php echo number_format($total_paid, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
-                <div class="small text-white-50 mt-2">All completed transactions</div>
+                <h4 class="text-success mb-0 fw-bold"><?php echo number_format($total_paid, 2); ?></h4>
+                <div class="small text-white-50 mt-2">Completed transactions</div>
             </div>
         </div>
-        <div class="col-md-4">
+
+        <div class="col-md-6 col-lg-3">
             <div class="glass-panel p-4 border-bottom border-3 border-danger text-center h-100" style="background: rgba(255,255,255,0.02);">
                 <div class="icon-box bg-danger bg-opacity-25 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px;">
                     <i class="bi bi-exclamation-circle fs-4"></i>
                 </div>
                 <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Remaining Balance</h6>
-                <h3 class="text-danger mb-0 fw-bold"><?php echo number_format($total_due, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
-                <div class="small text-white-50 mt-2">Total amount currently due</div>
+                <h4 class="text-danger mb-0 fw-bold"><?php echo number_format($total_due, 2); ?></h4>
+                <div class="small text-white-50 mt-2">Amount currently due</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-panel p-4 border-bottom border-3 border-warning text-center h-100" style="background: rgba(255,255,255,0.02);">
+                <div class="icon-box bg-warning bg-opacity-25 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-wallet2 fs-4"></i>
+                </div>
+                <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Total Expenses</h6>
+                <h4 class="text-warning mb-0 fw-bold"><?php echo number_format($total_expenses, 2); ?></h4>
+                <div class="small text-white-50 mt-2">In selected date range</div>
             </div>
         </div>
     </div>
 
     <div class="card-box p-0 overflow-hidden">
         <div class="p-4 border-bottom border-light border-opacity-10 d-flex justify-content-between align-items-center bg-dark bg-opacity-50">
-            <h5 class="text-gold fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Transaction History</h5>
+            <h5 class="text-gold fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Filtered Transactions</h5>
         </div>
         
         <div class="table-responsive">
@@ -191,9 +249,9 @@ try {
                     <?php else: ?>
                         <tr>
                             <td colspan="5" class="text-center py-5">
-                                <i class="bi bi-receipt text-white-50 fs-1 mb-3 d-block"></i>
-                                <h5 class="text-white">No transactions found.</h5>
-                                <p class="text-white-50 small mb-0">Your payment history will appear here once recorded by the administration.</p>
+                                <i class="bi bi-funnel text-white-50 fs-1 mb-3 d-block"></i>
+                                <h5 class="text-white">No transactions found for these filters.</h5>
+                                <p class="text-white-50 small mb-0">Try adjusting your date range or project selection.</p>
                             </td>
                         </tr>
                     <?php endif; ?>

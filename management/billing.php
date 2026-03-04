@@ -68,8 +68,9 @@ try {
     }
     $total_due = $total_contract - $total_paid;
 
-    // --- 5. FETCH TOTAL EXPENSES (WITH DATE FILTER) ---
-    $exp_query = "SELECT SUM(amount) as total_exp FROM expenses WHERE created_by = ?";
+    // --- 5. FETCH TOTAL & INDIVIDUAL EXPENSES (WITH DATE FILTER) ---
+    // Note: Expenses are tied to the user, not a specific project, so they only filter by date.
+    $exp_query = "SELECT * FROM expenses WHERE created_by = ?";
     $exp_params = [$_SESSION['user_id']];
 
     if (!empty($start_date)) {
@@ -80,11 +81,17 @@ try {
         $exp_query .= " AND expense_date <= ?";
         $exp_params[] = $end_date;
     }
+    $exp_query .= " ORDER BY expense_date DESC";
 
     $stmtExp = $db->prepare($exp_query);
     $stmtExp->execute($exp_params);
-    $total_expenses = $stmtExp->fetch(PDO::FETCH_ASSOC)['total_exp'] ?? 0.00;
+    $expense_records = $stmtExp->fetchAll(PDO::FETCH_ASSOC);
 
+    // Calculate the total from the fetched records
+    $total_expenses = 0;
+    foreach ($expense_records as $exp) {
+        $total_expenses += floatval($exp['amount']);
+    }
 } catch (PDOException $e) {
     echo "<script>document.addEventListener('DOMContentLoaded', function() { document.querySelector('.global-loader').classList.add('hidden'); });</script>";
     die("<div class='container mt-5'><div class='alert alert-danger p-4 rounded-4 shadow'><b>Database Error:</b> " . $e->getMessage() . "</div></div>");
@@ -270,5 +277,61 @@ try {
         </div>
     </div>
 </div>
+<div class="card-box p-0 overflow-hidden mt-5">
+        <div class="p-4 border-bottom border-light border-opacity-10 d-flex justify-content-between align-items-center bg-dark bg-opacity-50">
+            <h5 class="text-warning fw-bold mb-0"><i class="bi bi-wallet2 me-2"></i>Recorded Expenses</h5>
+            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 shadow-sm">
+                Total: SAR <?php echo number_format($total_expenses, 2); ?>
+            </span>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent;">
+                <thead>
+                    <tr style="background: rgba(255,255,255,0.05);">
+                        <th class="py-3 ps-4 text-warning text-uppercase small">Date</th>
+                        <th class="py-3 text-warning text-uppercase small">Expense Title</th>
+                        <th class="py-3 text-warning text-uppercase small">Category</th>
+                        <th class="py-3 text-end pe-4 text-warning text-uppercase small">Amount (SAR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (count($expense_records) > 0): ?>
+                        <?php foreach ($expense_records as $exp): ?>
+                        <tr>
+                            <td class="ps-4">
+                                <div class="text-white fw-bold"><?php echo date('M d, Y', strtotime($exp['expense_date'])); ?></div>
+                            </td>
+                            <td>
+                                <div class="text-white fw-bold"><?php echo htmlspecialchars($exp['title']); ?></div>
+                                <?php if (!empty($exp['description'])): ?>
+                                    <div class="small text-white-50 text-truncate" style="max-width: 300px;">
+                                        <?php echo htmlspecialchars($exp['description']); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <span class="badge bg-dark border border-warning text-warning px-2 py-1">
+                                    <?php echo htmlspecialchars($exp['category']); ?>
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <span class="fw-bold fs-6 text-warning">- <?php echo number_format($exp['amount'], 2); ?></span>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4" class="text-center py-5">
+                                <i class="bi bi-inbox text-white-50 fs-1 mb-3 d-block"></i>
+                                <h5 class="text-white">No expenses recorded.</h5>
+                                <p class="text-white-50 small mb-0">Expenses falling within your date filter will appear here.</p>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 <?php require_once '../portal/includes/footer.php'; ?>

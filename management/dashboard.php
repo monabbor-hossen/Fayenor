@@ -100,53 +100,58 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
         </div>
     </div>
 
-    <div class="row g-3 mb-5">
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-panel p-4 border-bottom border-3 border-info text-center h-100" style="background: rgba(255,255,255,0.02);">
-                <div class="icon-box bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                    <i class="bi bi-briefcase fs-3"></i>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-3 mb-5">
+        
+        <div class="col">
+            <div class="glass-panel p-3 border-bottom border-3 border-info text-center h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.02); transition: transform 0.3s ease;">
+                <div class="icon-box bg-info bg-opacity-25 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto shadow-sm" style="width: 48px; height: 48px;">
+                    <i class="bi bi-folder-fill fs-5"></i>
                 </div>
-                <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Active Applications</h6>
-                <h3 class="text-white mb-0 fw-bold"><?php echo $total_apps; ?></h3>
+                <h6 class="text-white-50 small text-uppercase fw-bold mb-1" style="letter-spacing: 0.5px;">Active Projects</h6>
+                <h4 class="text-white mb-0 fw-bold"><?php echo $total_apps; ?></h4>
             </div>
         </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-panel p-4 border-bottom border-3 border-primary text-center h-100" style="background: rgba(255,255,255,0.02);">
-                <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                    <i class="bi bi-bar-chart-steps fs-3"></i>
+
+        <div class="col">
+            <div class="glass-panel p-3 border-bottom border-3 border-secondary text-center h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.02); transition: transform 0.3s ease;">
+                <div class="icon-box bg-secondary bg-opacity-25 text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto shadow-sm" style="width: 48px; height: 48px;">
+                    <i class="bi bi-briefcase fs-5"></i>
                 </div>
-                <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Overall Progress</h6>
-                <h3 class="text-white mb-0 fw-bold"><?php echo $overall_progress; ?>%</h3>
+                <h6 class="text-white-50 small text-uppercase fw-bold mb-1" style="letter-spacing: 0.5px;">Contract Value</h6>
+                <h4 class="text-white mb-0 fw-bold"><?php echo number_format($total_contract_value, 2); ?></h4>
             </div>
         </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-panel p-4 border-bottom border-3 border-success text-center h-100" style="background: rgba(255,255,255,0.02);">
-                <div class="icon-box bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                    <i class="bi bi-cash-stack fs-3"></i>
+        
+        <div class="col">
+            <div class="glass-panel p-3 border-bottom border-3 border-success text-center h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.02); transition: transform 0.3s ease;">
+                <div class="icon-box bg-success bg-opacity-25 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto shadow-sm" style="width: 48px; height: 48px;">
+                    <i class="bi bi-check-circle fs-5"></i>
                 </div>
-                <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Total Paid</h6>
-                <h3 class="text-success mb-0 fw-bold"><?php echo number_format($total_paid, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
+                <h6 class="text-white-50 small text-uppercase fw-bold mb-1" style="letter-spacing: 0.5px;">Total Paid</h6>
+                <h4 class="text-success mb-0 fw-bold"><?php echo number_format($total_paid, 2); ?></h4>
             </div>
         </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-panel p-4 border-bottom border-3 border-danger text-center h-100" style="background: rgba(255,255,255,0.02);">
-                <div class="icon-box bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                    <i class="bi bi-wallet2 fs-3"></i>
+
+        <div class="col">
+            <div class="glass-panel p-3 border-bottom border-3 border-danger text-center h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.02); transition: transform 0.3s ease;">
+                <div class="icon-box bg-danger bg-opacity-25 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto shadow-sm" style="width: 48px; height: 48px;">
+                    <i class="bi bi-exclamation-circle fs-5"></i>
                 </div>
-                <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Remaining Balance</h6>
-                <h3 class="text-danger mb-0 fw-bold"><?php echo number_format($total_due, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
+                <h6 class="text-white-50 small text-uppercase fw-bold mb-1" style="letter-spacing: 0.5px;">Remaining Due</h6>
+                <h4 class="text-danger mb-0 fw-bold"><?php echo number_format($total_due, 2); ?></h4>
             </div>
         </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-panel p-4 border-bottom border-3 border-warning text-center h-100" style="background: rgba(255,255,255,0.02); transition: transform 0.3s ease;">
-                <div class="icon-box bg-warning bg-opacity-25 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 55px; height: 55px;">
-                    <i class="bi bi-wallet2 fs-4"></i>
+
+        <div class="col">
+            <div class="glass-panel p-3 border-bottom border-3 border-warning text-center h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.02); transition: transform 0.3s ease;">
+                <div class="icon-box bg-warning bg-opacity-25 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto shadow-sm" style="width: 48px; height: 48px;">
+                    <i class="bi bi-wallet2 fs-5"></i>
                 </div>
-                <h6 class="text-white-50 small text-uppercase fw-bold mb-2" style="letter-spacing: 0.5px;">Total Expenses</h6>
-                <h3 class="text-warning mb-0 fw-bold"><?php echo number_format($total_expenses, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
-                <a href="expenses.php" class="small text-warning text-decoration-none mt-2 d-inline-block hover-white">View Details <i class="bi bi-arrow-right ms-1"></i></a>
+                <h6 class="text-white-50 small text-uppercase fw-bold mb-1" style="letter-spacing: 0.5px;">Total Expenses</h6>
+                <h4 class="text-warning mb-0 fw-bold"><?php echo number_format($total_expenses, 2); ?></h4>
             </div>
         </div>
+        
     </div>
 
     <div class="row g-4">

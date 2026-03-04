@@ -66,21 +66,27 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         <ul class="nav flex-column gap-1">
             <li class="nav-item">
-                <a class="nav-link <?php echo (in_array($current_page, ['users.php', 'user-add.php', 'user-edit.php'])) ? 'active-glass' : ''; ?>"
+                <a class="nav-link <?php echo (in_array($current_page, ['users.php', 'user-add.php', 'user-edit.php'])) ? 'active-glass' : ''; ?> rounded"
                     href="users.php">
                     <i class="bi bi-shield-lock-fill me-3"></i> User Access
                 </a>
             </li>
             <li class="nav-item mb-2">
                 <a href="payroll.php"
-                    class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'payroll.php' || basename($_SERVER['PHP_SELF']) == 'user-payroll.php') ? 'active-glass' : ''; ?> "
+                    class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'payroll.php' || basename($_SERVER['PHP_SELF']) == 'user-payroll.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-cash-coin me-3"></i>
                     <span class="fw-bold">Payroll</span>
                 </a>
             </li>
+            <li class="nav-item mb-2">
+                    <a href="expenses.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'expenses.php') ? 'active-glass' : ''; ?> rounded">
+                        <i class="bi bi-wallet2 me-3"></i>
+                        <span class="flex-grow-1">Expenses</span>
+                    </a>
+                </li>
             <li class="nav-item">
-                <a class="nav-link <?php echo ($current_page == 'settings.php') ? 'active-glass' : ''; ?>"
+                <a class="nav-link <?php echo ($current_page == 'settings.php') ? 'active-glass' : ''; ?> rounded"
                     href="settings.php">
                     <i class="bi bi-gear-fill me-3"></i> Settings
                 </a>

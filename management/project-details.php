@@ -221,7 +221,7 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
                 <h6 class="text-gold fw-bold mb-3 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-info-circle me-2"></i>Registered Details</h6>
                 <div class="mb-2">
                     <small class="text-white-50 d-block">Contact Name</small>
-                    <span class="text-white"><?php echo htmlspecialchars($project['contact_name'] ?? 'N/A'); ?></span>
+                    <span class="text-white"><?php echo htmlspecialchars($project['client_name'] ?? 'N/A'); ?></span>
                 </div>
                 <div class="mb-2">
                     <small class="text-white-50 d-block">Email Address</small>
@@ -229,7 +229,7 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
                 </div>
                 <div>
                     <small class="text-white-50 d-block">Phone Number</small>
-                    <span class="text-white"><?php echo htmlspecialchars($project['phone'] ?? 'N/A'); ?></span>
+                    <span class="text-white"><?php echo htmlspecialchars($project['phone_number'] ?? 'N/A'); ?></span>
                 </div>
             </div>
 

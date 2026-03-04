@@ -75,6 +75,15 @@ foreach ($applications as &$app) {
     $app['progress_percent'] = ($app_active_steps > 0) ? round(($app_approved / $app_active_steps) * 100) : 0;
 }
 unset($app);
+// --- FETCH TOTAL EXPENSES FOR DASHBOARD ---
+$stmtExpTotal = $db->prepare("SELECT SUM(amount) as total FROM expenses WHERE created_by = ?");
+$stmtExpTotal->execute([$_SESSION['user_id']]);
+$total_expenses = $stmtExpTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
+
+// --- FETCH 5 RECENT EXPENSES FOR WIDGET ---
+$stmtRecentExp = $db->prepare("SELECT title, amount, expense_date, category FROM expenses WHERE created_by = ? ORDER BY expense_date DESC, created_at DESC LIMIT 5");
+$stmtRecentExp->execute([$_SESSION['user_id']]);
+$recent_expenses = $stmtRecentExp->fetchAll(PDO::FETCH_ASSOC);
 
 $total_due = $total_contract_value - $total_paid;
 $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $total_active_steps) * 100) : 0;
@@ -126,6 +135,16 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
                 </div>
                 <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Remaining Balance</h6>
                 <h3 class="text-danger mb-0 fw-bold"><?php echo number_format($total_due, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-panel p-4 border-bottom border-3 border-warning text-center h-100" style="background: rgba(255,255,255,0.02); transition: transform 0.3s ease;">
+                <div class="icon-box bg-warning bg-opacity-25 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 55px; height: 55px;">
+                    <i class="bi bi-wallet2 fs-4"></i>
+                </div>
+                <h6 class="text-white-50 small text-uppercase fw-bold mb-2" style="letter-spacing: 0.5px;">Total Expenses</h6>
+                <h3 class="text-warning mb-0 fw-bold"><?php echo number_format($total_expenses, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
+                <a href="expenses.php" class="small text-warning text-decoration-none mt-2 d-inline-block hover-white">View Details <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
         </div>
     </div>

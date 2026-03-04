@@ -3,38 +3,50 @@
 require_once '../portal/includes/header.php';
 require_once __DIR__ . '/../app/Config/Database.php';
 
-// --- SECURITY: ENSURE ONLY CLIENTS ACCESS THIS ---
+// --- 1. SECURITY: STRICT ACCESS CONTROL ---
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
     header("Location: ../public/login.php");
     exit();
 }
 
 $db = (new Database())->getConnection();
-$account_id = $_SESSION['account_id'] ?? $_SESSION['user_id']; 
+$account_id = intval($_SESSION['account_id'] ?? $_SESSION['user_id']); 
 
-// --- GET FILTERS ---
-$filter_client_id = isset($_GET['client_id']) ? $_GET['client_id'] : 'all';
-$start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
-$end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
+// --- 2. SECURITY: STRICT INPUT VALIDATION & SANITIZATION ---
+// Validate client_id filter
+$raw_filter = $_GET['client_id'] ?? 'all';
+$filter_client_id = ($raw_filter === 'all') ? 'all' : intval($raw_filter);
+
+// Helper function to strictly validate dates
+function isValidDate($date, $format = 'Y-m-d') {
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) === $date;
+}
+
+$raw_start = $_GET['start_date'] ?? '';
+$raw_end = $_GET['end_date'] ?? '';
+
+$start_date = isValidDate($raw_start) ? $raw_start : '';
+$end_date = isValidDate($raw_end) ? $raw_end : '';
 
 try {
-    // --- 1. FETCH ALL ACTIVE PROJECTS FOR DROPDOWN ---
+    // --- 3. FETCH ALL ACTIVE PROJECTS FOR DROPDOWN ---
     $stmtApps = $db->prepare("SELECT client_id, company_name, contract_value FROM clients WHERE account_id = ? AND is_active = 1 ORDER BY company_name ASC");
     $stmtApps->execute([$account_id]);
     $apps = $stmtApps->fetchAll(PDO::FETCH_ASSOC);
 
-    // --- 2. CALCULATE FILTERED CONTRACT SUMMARY ---
-    $total_contract = 0;
+    // --- 4. CALCULATE FILTERED CONTRACT SUMMARY (Optimized Math) ---
+    $total_contract = 0.00;
     $filtered_apps_count = 0;
 
     foreach ($apps as $app) {
-        if ($filter_client_id === 'all' || $filter_client_id == $app['client_id']) {
+        if ($filter_client_id === 'all' || $filter_client_id === intval($app['client_id'])) {
             $total_contract += floatval($app['contract_value']);
             $filtered_apps_count++;
         }
     }
 
-    // --- 3. FETCH PAYMENT HISTORY (WITH DATE & PROJECT FILTERS) ---
+    // --- 5. FETCH PAYMENT HISTORY (WITH DATE & PROJECT FILTERS) ---
     $pay_query = "SELECT p.*, c.company_name, c.client_id 
                   FROM payments p 
                   JOIN clients c ON p.client_id = c.client_id 
@@ -45,11 +57,11 @@ try {
         $pay_query .= " AND p.client_id = ?";
         $pay_params[] = $filter_client_id;
     }
-    if (!empty($start_date)) {
+    if ($start_date !== '') {
         $pay_query .= " AND p.payment_date >= ?";
         $pay_params[] = $start_date;
     }
-    if (!empty($end_date)) {
+    if ($end_date !== '') {
         $pay_query .= " AND p.payment_date <= ?";
         $pay_params[] = $end_date;
     }
@@ -59,42 +71,50 @@ try {
     $stmtPay->execute($pay_params);
     $payments = $stmtPay->fetchAll(PDO::FETCH_ASSOC);
 
-    // --- 4. CALCULATE PAID & DUE ---
-    $total_paid = 0;
+    // --- 6. CALCULATE PAID & DUE ---
+    $total_paid = 0.00;
     foreach ($payments as $pay) {
         if ($pay['payment_status'] === 'Completed') {
             $total_paid += floatval($pay['amount']);
         }
     }
-    $total_due = $total_contract - $total_paid;
+    $total_due = max(0, $total_contract - $total_paid); // max() prevents negative due amounts
 
-    // --- 5. FETCH TOTAL & INDIVIDUAL EXPENSES (WITH DATE FILTER) ---
-    // Note: Expenses are tied to the user, not a specific project, so they only filter by date.
-    $exp_query = "SELECT * FROM expenses WHERE created_by = ?";
-    $exp_params = [$_SESSION['user_id']];
+    // --- 7. FETCH TOTAL & INDIVIDUAL EXPENSES (WITH DATE & PROJECT FILTER) ---
+    $exp_query = "SELECT e.*, c.company_name 
+                  FROM expenses e 
+                  LEFT JOIN clients c ON e.client_id = c.client_id 
+                  WHERE e.created_by = ?";
+    $exp_params = [intval($_SESSION['user_id'])];
 
-    if (!empty($start_date)) {
-        $exp_query .= " AND expense_date >= ?";
+    if ($filter_client_id !== 'all') {
+        $exp_query .= " AND e.client_id = ?";
+        $exp_params[] = $filter_client_id;
+    }
+    if ($start_date !== '') {
+        $exp_query .= " AND e.expense_date >= ?";
         $exp_params[] = $start_date;
     }
-    if (!empty($end_date)) {
-        $exp_query .= " AND expense_date <= ?";
+    if ($end_date !== '') {
+        $exp_query .= " AND e.expense_date <= ?";
         $exp_params[] = $end_date;
     }
-    $exp_query .= " ORDER BY expense_date DESC";
+    $exp_query .= " ORDER BY e.expense_date DESC";
 
     $stmtExp = $db->prepare($exp_query);
     $stmtExp->execute($exp_params);
     $expense_records = $stmtExp->fetchAll(PDO::FETCH_ASSOC);
 
     // Calculate the total from the fetched records
-    $total_expenses = 0;
+    $total_expenses = 0.00;
     foreach ($expense_records as $exp) {
         $total_expenses += floatval($exp['amount']);
     }
+
 } catch (PDOException $e) {
     echo "<script>document.addEventListener('DOMContentLoaded', function() { document.querySelector('.global-loader').classList.add('hidden'); });</script>";
-    die("<div class='container mt-5'><div class='alert alert-danger p-4 rounded-4 shadow'><b>Database Error:</b> " . $e->getMessage() . "</div></div>");
+    // Security: In a real production environment, you might want to hide the exact $e->getMessage() from the client to prevent exposing table names.
+    die("<div class='container mt-5'><div class='alert alert-danger p-4 rounded-4 shadow'><b>Database Error:</b> An error occurred while fetching your financial records. Please contact support.</div></div>");
 }
 ?>
 

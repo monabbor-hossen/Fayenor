@@ -1,6 +1,6 @@
 <?php
 // management/expenses.php
-require_once '../portal/includes/header.php'; // Adjust this path if your client header is located elsewhere
+require_once '../portal/includes/header.php'; 
 require_once __DIR__ . '/../app/Config/Database.php';
 
 // Security check: Only Clients can access this specific page
@@ -10,20 +10,25 @@ if ($_SESSION['role'] !== 'client') {
 }
 
 $db = (new Database())->getConnection();
-$client_id = $_SESSION['user_id']; // Lock data to the logged-in client
+$user_id = $_SESSION['user_id']; 
+$account_id = $_SESSION['account_id'] ?? $_SESSION['user_id'];
 
 // --- Grab messages from the Session (PRG Pattern) ---
 $success_msg = $_SESSION['success_msg'] ?? '';
 $error_msg = $_SESSION['error_msg'] ?? '';
 unset($_SESSION['success_msg'], $_SESSION['error_msg']);
 
-// --- Handle DELETE Expense (Only their own!) ---
+// --- Fetch Active Companies for the Dropdown ---
+$stmtApps = $db->prepare("SELECT client_id, company_name FROM clients WHERE account_id = ? AND is_active = 1 ORDER BY company_name ASC");
+$stmtApps->execute([$account_id]);
+$client_companies = $stmtApps->fetchAll(PDO::FETCH_ASSOC);
+
+// --- Handle DELETE Expense ---
 if (isset($_GET['delete_id'])) {
     $delete_id = intval($_GET['delete_id']);
     try {
-        // Secure Delete: Ensure the expense belongs to this specific client
         $stmt = $db->prepare("DELETE FROM expenses WHERE id = ? AND created_by = ?");
-        $stmt->execute([$delete_id, $client_id]);
+        $stmt->execute([$delete_id, $user_id]);
         
         $_SESSION['success_msg'] = "Expense deleted successfully!";
         echo "<script>window.location.href='expenses.php';</script>";
@@ -37,6 +42,7 @@ if (isset($_GET['delete_id'])) {
 
 // --- Handle ADD Expense Form Submission ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
+    $project_id = !empty($_POST['client_id']) ? intval($_POST['client_id']) : null; // Can be null if "General Expense"
     $title = trim($_POST['title']);
     $amount = floatval($_POST['amount']);
     $date = $_POST['expense_date'];
@@ -45,10 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
 
     if (!empty($title) && $amount > 0 && !empty($date) && !empty($category)) {
         try {
-            $stmt = $db->prepare("INSERT INTO expenses (title, amount, expense_date, category, description, created_by) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $amount, $date, $category, $description, $client_id]);
+            // INSERT with the new client_id column!
+            $stmt = $db->prepare("INSERT INTO expenses (client_id, title, amount, expense_date, category, description, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$project_id, $title, $amount, $date, $category, $description, $user_id]);
             
-            $_SESSION['success_msg'] = "Expense added successfully!";
+            $_SESSION['success_msg'] = "Expense recorded successfully!";
             echo "<script>window.location.href='expenses.php';</script>";
             exit();
             
@@ -60,13 +67,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
     }
 }
 
-// --- Fetch Data for UI (Only this client's data) ---
-$stmt = $db->prepare("SELECT e.*, u.full_name FROM expenses e LEFT JOIN users u ON e.created_by = u.id WHERE e.created_by = ? ORDER BY e.expense_date DESC, e.created_at DESC LIMIT 50");
-$stmt->execute([$client_id]);
+// --- Fetch Data for UI (Joining with clients table to get company name) ---
+$stmt = $db->prepare("
+    SELECT e.*, c.company_name 
+    FROM expenses e 
+    LEFT JOIN clients c ON e.client_id = c.client_id 
+    WHERE e.created_by = ? 
+    ORDER BY e.expense_date DESC, e.created_at DESC LIMIT 50
+");
+$stmt->execute([$user_id]);
 $expenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $total_stmt = $db->prepare("SELECT SUM(amount) as total FROM expenses WHERE created_by = ?");
-$total_stmt->execute([$client_id]);
+$total_stmt->execute([$user_id]);
 $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
 ?>
 
@@ -102,6 +115,19 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                 <h5 class="text-gold fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Record Expense</h5>
                 
                 <form action="expenses.php" method="POST">
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-white-50 small">Project / Company</label>
+                        <select name="client_id" class="form-select glass-input rounded-3" style="cursor: pointer;">
+                            <option value="">-- General Expense (No Project) --</option>
+                            <?php foreach ($client_companies as $company): ?>
+                                <option value="<?php echo $company['client_id']; ?>">
+                                    <?php echo htmlspecialchars($company['company_name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label text-white-50 small">Expense Title *</label>
                         <input type="text" name="title" class="form-control glass-input rounded-3" placeholder="e.g., Material Costs" required>
@@ -114,7 +140,10 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label text-white-50 small">Date *</label>
-                            <input type="date" name="expense_date" class="form-control glass-input rounded-3" value="<?php echo date('Y-m-d'); ?>" required>
+                            <div class="position-relative">
+                                <input type="text" name="expense_date" class="form-control glass-input rounded-3 rooq-date" value="<?php echo date('Y-m-d'); ?>" readonly style="cursor: pointer;" required>
+                                <i class="bi bi-calendar-date position-absolute text-gold" style="right: 15px; top: 10px; pointer-events: none;"></i>
+                            </div>
                         </div>
                     </div>
 
@@ -150,7 +179,8 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                         <thead class="text-white-50 small text-uppercase">
                             <tr>
                                 <th class="bg-transparent border-bottom border-light border-opacity-10 py-3">Date</th>
-                                <th class="bg-transparent border-bottom border-light border-opacity-10 py-3">Details</th>
+                                <th class="bg-transparent border-bottom border-light border-opacity-10 py-3">Expense Details</th>
+                                <th class="bg-transparent border-bottom border-light border-opacity-10 py-3">Project / Company</th>
                                 <th class="bg-transparent border-bottom border-light border-opacity-10 py-3 text-end">Amount</th>
                                 <th class="bg-transparent border-bottom border-light border-opacity-10 py-3 text-center">Actions</th>
                             </tr>
@@ -165,8 +195,15 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                                         <td class="bg-transparent border-light border-opacity-10">
                                             <div class="fw-bold text-white"><?php echo htmlspecialchars($exp['title']); ?></div>
                                             <div class="small text-white-50">
-                                                <span class="text-gold me-1">[<?php echo htmlspecialchars($exp['category']); ?>]</span>
+                                                <span class="badge bg-dark border border-warning text-warning px-2 py-1 mt-1"><?php echo htmlspecialchars($exp['category']); ?></span>
                                             </div>
+                                        </td>
+                                        <td class="bg-transparent border-light border-opacity-10">
+                                            <?php if (!empty($exp['company_name'])): ?>
+                                                <span class="text-info fw-bold"><i class="bi bi-building me-1"></i><?php echo htmlspecialchars($exp['company_name']); ?></span>
+                                            <?php else: ?>
+                                                <span class="text-white-50 small fst-italic">General (No Project)</span>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="bg-transparent border-light border-opacity-10 text-end fw-bold text-danger">
                                             - <?php echo number_format($exp['amount'], 2); ?>
@@ -179,16 +216,16 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                                                     '<?php echo number_format($exp['amount'], 2); ?>', 
                                                     '<?php echo date('F d, Y', strtotime($exp['expense_date'])); ?>', 
                                                     '<?php echo htmlspecialchars(addslashes($exp['category'])); ?>', 
-                                                    '<?php echo htmlspecialchars(addslashes($exp['description'] ?? 'No additional description provided.')); ?>',
-                                                    '<?php echo htmlspecialchars(addslashes($exp['full_name'])); ?>'
+                                                    '<?php echo htmlspecialchars(addslashes($exp['description'] ?? 'No description provided.')); ?>',
+                                                    '<?php echo htmlspecialchars(addslashes($exp['company_name'] ?? 'General (No Project)')); ?>'
                                                 )">
                                                 <i class="bi bi-eye"></i>
                                             </button>
 
                                             <a href="expenses.php?delete_id=<?php echo $exp['id']; ?>" 
-                                               class="btn btn-sm btn-outline-danger rounded-circle border-0 shadow-none" 
-                                               title="Delete Expense"
-                                               onclick="return confirm('Are you sure you want to completely delete this expense? This action cannot be undone.');">
+                                            class="btn btn-sm btn-outline-danger rounded-circle border-0 shadow-none" 
+                                            title="Delete Expense"
+                                            onclick="return confirm('Are you sure you want to completely delete this expense? This action cannot be undone.');">
                                                 <i class="bi bi-trash"></i>
                                             </a>
                                         </td>
@@ -196,7 +233,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="4" class="text-center text-white-50 py-5 bg-transparent border-0">
+                                    <td colspan="5" class="text-center text-white-50 py-5 bg-transparent border-0">
                                         <i class="bi bi-inbox fs-1 d-block mb-3 text-gold opacity-50"></i>
                                         No expenses recorded yet.
                                     </td>
@@ -210,49 +247,4 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
     </div>
 </div>
 
-<div class="modal fade" id="viewExpenseModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-modal rounded-4 shadow-lg">
-            <div class="modal-header border-bottom border-light border-opacity-10">
-                <h5 class="modal-title text-white fw-bold"><i class="bi bi-receipt text-gold me-2"></i>Expense Details</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                
-                <h4 id="viewTitle" class="text-white fw-bold mb-3">--</h4>
-                
-                <div class="row mb-4">
-                    <div class="col-6">
-                        <div class="view-label">Amount</div>
-                        <div class="view-value text-danger fw-bold fs-4">SAR <span id="viewAmount">0.00</span></div>
-                    </div>
-                    <div class="col-6">
-                        <div class="view-label">Category</div>
-                        <div class="view-value"><span id="viewCategory" class="badge bg-dark border border-gold text-gold px-3 py-2">--</span></div>
-                    </div>
-                </div>
-
-                <div class="row mb-4 border-top border-light border-opacity-10 pt-3">
-                    <div class="col-6">
-                        <div class="view-label">Date</div>
-                        <div class="view-value fs-6" id="viewDate">--</div>
-                    </div>
-                    <div class="col-6">
-                        <div class="view-label">Added By</div>
-                        <div class="view-value fs-6" id="viewUser">--</div>
-                    </div>
-                </div>
-
-                <div class="bg-dark bg-opacity-50 p-3 rounded-3 border border-light border-opacity-10">
-                    <div class="view-label mb-2"><i class="bi bi-card-text me-1 text-gold"></i> Description</div>
-                    <div class="text-white-50 small" id="viewDesc" style="white-space: pre-wrap; line-height: 1.6;">--</div>
-                </div>
-
-            </div>
-            <div class="modal-footer border-top border-light border-opacity-10">
-                <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<?php require_once '../portal/includes/footer.php';?>
+<?php require_once '../portal/includes/footer.php'; ?>

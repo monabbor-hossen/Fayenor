@@ -126,6 +126,51 @@
     </div>
 </div>
 
+<div class="modal fade" id="viewExpenseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-modal rounded-4 shadow-lg">
+            <div class="modal-header border-bottom border-light border-opacity-10">
+                <h5 class="modal-title text-white fw-bold"><i class="bi bi-receipt text-gold me-2"></i>Expense Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                
+                <h4 id="viewTitle" class="text-white fw-bold mb-3">--</h4>
+                
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <div class="view-label text-white-50 small text-uppercase">Amount</div>
+                        <div class="view-value text-danger fw-bold fs-4">SAR <span id="viewAmount">0.00</span></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="view-label text-white-50 small text-uppercase mb-1">Category</div>
+                        <div class="view-value"><span id="viewCategory" class="badge bg-dark border border-warning text-warning px-3 py-2">--</span></div>
+                    </div>
+                </div>
+
+                <div class="row mb-4 border-top border-light border-opacity-10 pt-3">
+                    <div class="col-6">
+                        <div class="view-label text-white-50 small text-uppercase">Date</div>
+                        <div class="view-value text-white fs-6" id="viewDate">--</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="view-label text-white-50 small text-uppercase">Project / Company</div>
+                        <div class="view-value text-info fw-bold fs-6" id="viewUser">--</div>
+                    </div>
+                </div>
+
+                <div class="bg-dark bg-opacity-50 p-3 rounded-3 border border-light border-opacity-10">
+                    <div class="view-label text-white-50 small text-uppercase mb-2"><i class="bi bi-card-text me-1 text-gold"></i> Description</div>
+                    <div class="text-white small" id="viewDesc" style="white-space: pre-wrap; line-height: 1.6;">--</div>
+                </div>
+
+            </div>
+            <div class="modal-footer border-top border-light border-opacity-10">
+                <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="<?php echo BASE_URL; ?>assets/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/all.min.js"></script>

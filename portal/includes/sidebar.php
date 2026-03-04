@@ -34,6 +34,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <?php endif; ?>
                 </a>
             </li>
+            <li class="nav-item mb-2">
+                <a href="expenses.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'expenses.php') ? 'active-glass fw-bold' : ''; ?> d-flex align-items-center rounded px-3 py-2" style="transition: all 0.3s ease;">
+                    <i class="bi bi-wallet2 fs-5 me-3 text-gold"></i>
+                    <span class="flex-grow-1">My Expenses</span>
+                </a>
+            </li>
         </ul>
             <?php else: ?>
 
@@ -52,14 +58,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
             <li class="nav-item mb-2">
-                    <a href="chat.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'chat.php') ? 'active-glass active bg-rooq-primary text-white shadow-sm' : 'text-white-50 hover-white'; ?> d-flex align-items-center rounded px-3 py-2" style="transition: all 0.3s ease;">
-                        <i class="bi bi-chat-dots fs-5 me-3 text-gold"></i>
-                        <span class="fw-bold flex-grow-1">Client Messages</span>
-                        <?php if (($unread_count ?? 0) > 0): ?>
-                            <span class="badge bg-danger rounded-pill shadow-sm"><?php echo $unread_count; ?></span>
-                        <?php endif; ?>
-                    </a>
-                </li>
+                <a href="chat.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'chat.php') ? 'active-glass active bg-rooq-primary text-white shadow-sm' : 'text-white-50 hover-white'; ?> d-flex align-items-center rounded px-3 py-2" style="transition: all 0.3s ease;">
+                    <i class="bi bi-chat-dots fs-5 me-3 text-gold"></i>
+                    <span class="fw-bold flex-grow-1">Client Messages</span>
+                    <?php if (($unread_count ?? 0) > 0): ?>
+                        <span class="badge bg-danger rounded-pill shadow-sm"><?php echo $unread_count; ?></span>
+                    <?php endif; ?>
+                </a>
+            </li>
         </ul>
 
         <p class="px-4 text-white-50 small text-uppercase fw-bold mb-3 mt-4" style="letter-spacing: 1px;">System</p>
@@ -85,6 +91,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <span class="flex-grow-1">Expenses</span>
                     </a>
                 </li>
+                
             <li class="nav-item">
                 <a class="nav-link <?php echo ($current_page == 'settings.php') ? 'active-glass' : ''; ?> rounded"
                     href="settings.php">

@@ -6,7 +6,11 @@ require_once __DIR__ . '/../app/Config/Database.php';
 $db = (new Database())->getConnection();
 $user_id = $_SESSION['user_id'];
 $message = '';
+// 1. Grab the message from the session
+$success_msg = $_SESSION['success_msg'] ?? '';
 
+// 2. Delete it instantly so it only shows once!
+unset($_SESSION['success_msg']);
 // --- HANDLE FORM SUBMISSIONS ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Security::checkCSRF($_POST['csrf_token'] ?? '');
@@ -25,6 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Update Session variables so the top right name changes instantly
                 $_SESSION['full_name'] = $full_name;
+                 // Save message and safely redirect using JavaScript
+                $_SESSION['success_msg'] = "Expense added successfully!";
+                echo "<script>window.location.href='settings.php';</script>";
+                exit();
             }
         } catch (PDOException $e) {
             $message = "<div class='alert alert-danger bg-danger bg-opacity-25 text-white border-danger'>Error updating profile.</div>";
@@ -54,6 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->execute([$hashed_password, $user_id])) {
                 $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'><i class='bi bi-shield-check me-2'></i>Password changed successfully!</div>";
                 Security::logActivity("Changed account password");
+                // Save message and safely redirect using JavaScript
+                $_SESSION['success_msg'] = "Expense added successfully!";
+                echo "<script>window.location.href='settings.php';</script>";
+                exit();
             }
         }
     }

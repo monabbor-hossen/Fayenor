@@ -5,10 +5,25 @@ require_once __DIR__ . '/../app/Config/Database.php';
 require_once __DIR__ . '/../app/Helpers/Security.php';
 require_once 'includes/header.php';
 
-$client_id = $_GET['id'] ?? null;
+//$client_id = $_GET['id'] ?? null;
+$client_id = isset($_GET['id']) ? intval($_GET['id']) : (isset($_GET['client_id']) ? intval($_GET['client_id']) : 0);
 if (!$client_id) { header("Location: clients.php"); exit(); }
 
 $db = (new Database())->getConnection();
+// --- GET THE CLIENT ID FROM THE URL ---
+
+$company_name = "Unknown Company"; // Default fallback
+
+// --- FETCH THE COMPANY NAME ---
+if ($client_id > 0) {
+    $stmtClient = $db->prepare("SELECT company_name FROM clients WHERE client_id = ?");
+    $stmtClient->execute([$client_id]);
+    $fetched_name = $stmtClient->fetchColumn();
+    
+    if ($fetched_name) {
+        $company_name = $fetched_name;
+    }
+}
 $message = "";
 
 // --- ADD PAYMENT LOGIC ---

@@ -145,9 +145,11 @@ $text = $translator->getTranslation($lang);
                         <?php echo htmlspecialchars($full_name); ?> <br>
                         <small class="text-gold"><?php echo $role_text; ?></small>
                     </li>
+                    <?php if ($_SESSION['role'] !== 'client') :?>
                     <li><a class="dropdown-item text-white-50 hover-white" href="profile.php"><i class="bi bi-person-gear me-2 text-gold"></i> Settings</a></li>
                     <li><a class="dropdown-item text-white-50 hover-white" href="#"><i class="bi bi-activity me-2 text-gold"></i> Activity</a></li>
                     <li><hr class="dropdown-divider bg-light opacity-10"></li>
+                    <?php endif;?>
                     <li><a class="dropdown-item text-danger fw-bold" href="<?php echo BASE_URL; ?>public/logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
                 </ul>
             </div>

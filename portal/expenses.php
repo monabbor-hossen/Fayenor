@@ -61,12 +61,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
     }
 }
 
-// --- Fetch Data for UI ---
-$stmt = $db->prepare("SELECT e.*, u.full_name FROM expenses e LEFT JOIN users u ON e.created_by = u.id ORDER BY e.expense_date DESC, e.created_at DESC LIMIT 50");
+// --- Fetch Data for UI (Strictly Internal/Admin Expenses) ---
+$stmt = $db->prepare("
+    SELECT e.*, u.full_name 
+    FROM expenses e 
+    LEFT JOIN users u ON e.created_by = u.id 
+    WHERE u.role != 'client' 
+    ORDER BY e.expense_date DESC, e.created_at DESC 
+    LIMIT 50
+");
 $stmt->execute();
 $expenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$total_stmt = $db->prepare("SELECT SUM(amount) as total FROM expenses");
+// --- Fetch Total Expenses (Strictly Internal) ---
+$total_stmt = $db->prepare("
+    SELECT SUM(e.amount) as total 
+    FROM expenses e 
+    LEFT JOIN users u ON e.created_by = u.id 
+    WHERE u.role != 'client'
+");
+$stmt->execute();
+$expenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $total_stmt->execute();
 $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
 ?>

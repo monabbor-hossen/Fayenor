@@ -10,7 +10,7 @@ if (!$client_id) { echo "<script>window.location.href='clients.php';</script>"; 
 
 $db = (new Database())->getConnection();
 
-// --- FETCH THE COMPANY NAME (Fixes the Warning) ---
+// --- FETCH THE COMPANY NAME ---
 $company_name = "Unknown Company";
 if ($client_id > 0) {
     $stmtClient = $db->prepare("SELECT company_name FROM clients WHERE client_id = ?");
@@ -32,7 +32,19 @@ if (isset($_SESSION['error_msg'])) {
     unset($_SESSION['error_msg']);
 }
 
-// --- ADD PAYMENT LOGIC (PRG PATTERN) ---
+// --- 1. PRE-CALCULATE FINANCIALS (Must happen before form submission) ---
+$stmt = $db->prepare("SELECT * FROM clients WHERE client_id = ?");
+$stmt->execute([$client_id]);
+$client = $stmt->fetch(PDO::FETCH_ASSOC);
+$contract_value = floatval($client['contract_value']);
+
+$stmtPayTotal = $db->prepare("SELECT SUM(amount) as total_paid FROM payments WHERE client_id = ? AND payment_status = 'Completed'");
+$stmtPayTotal->execute([$client_id]);
+$total_paid = floatval($stmtPayTotal->fetchColumn() ?? 0);
+
+$due_amount = max(0, $contract_value - $total_paid);
+
+// --- 2. ADD PAYMENT LOGIC (PRG PATTERN WITH OVERPAYMENT PROTECTION) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_payment'])) {
     Security::checkCSRF($_POST['csrf_token']);
     
@@ -41,13 +53,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_payment'])) {
     $status = Security::clean($_POST['payment_status']);
     $note   = Security::clean($_POST['notes']);
 
+    // SECURITY CHECK: Ensure amount does not exceed due amount
+    if ($amount > $due_amount) {
+        $_SESSION['error_msg'] = "Error: Payment amount (" . number_format($amount, 2) . ") cannot exceed the remaining balance (" . number_format($due_amount, 2) . ").";
+        echo "<script>window.location.href='client-finance.php?id=" . $client_id . "';</script>";
+        exit();
+    }
+
     try {
-        $stmt = $db->prepare("INSERT INTO payments (client_id, amount, payment_method, payment_status, notes) VALUES (?, ?, ?, ?, ?)");
-        if ($stmt->execute([$client_id, $amount, $method, $status, $note])) {
+        $stmtInsert = $db->prepare("INSERT INTO payments (client_id, amount, payment_method, payment_status, notes) VALUES (?, ?, ?, ?, ?)");
+        if ($stmtInsert->execute([$client_id, $amount, $method, $status, $note])) {
             
             Security::logActivity("Recorded client payment of " . number_format($amount, 2) . " SAR for: " . $company_name);
             
-            // Success! Save message and REDIRECT using Javascript
             $_SESSION['success_msg'] = "Payment recorded successfully!";
             echo "<script>window.location.href='client-finance.php?id=" . $client_id . "';</script>";
             exit();
@@ -59,21 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_payment'])) {
     }
 }
 
-// --- FETCH DATA ---
-$stmt = $db->prepare("SELECT * FROM clients WHERE client_id = ?");
-$stmt->execute([$client_id]);
-$client = $stmt->fetch(PDO::FETCH_ASSOC);
-
-$stmt = $db->prepare("SELECT * FROM payments WHERE client_id = ? ORDER BY payment_date DESC");
-$stmt->execute([$client_id]);
-$payments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Calculate Totals
-$total_paid = 0;
-foreach($payments as $p) {
-    if($p['payment_status'] == 'Completed') $total_paid += floatval($p['amount']);
-}
-$due_amount = floatval($client['contract_value']) - $total_paid;
+// --- 3. FETCH FULL PAYMENT HISTORY FOR TABLE ---
+$stmtHistory = $db->prepare("SELECT * FROM payments WHERE client_id = ? ORDER BY payment_date DESC");
+$stmtHistory->execute([$client_id]);
+$payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="d-flex portal-wrapper">
@@ -94,7 +101,7 @@ $due_amount = floatval($client['contract_value']) - $total_paid;
                 <div class="col-md-4">
                     <div class="card-box text-center border-warning">
                         <small class="text-gold text-uppercase fw-bold">Contract Value</small>
-                        <h2 class="text-white mt-2"><?php echo number_format($client['contract_value'] ?? 0, 2); ?> SAR</h2>
+                        <h2 class="text-white mt-2"><?php echo number_format($contract_value, 2); ?> SAR</h2>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -106,7 +113,7 @@ $due_amount = floatval($client['contract_value']) - $total_paid;
                 <div class="col-md-4">
                     <div class="card-box text-center <?php echo ($due_amount > 0) ? 'border-danger' : 'border-success'; ?>">
                         <small class="text-danger text-uppercase fw-bold">Due Amount</small>
-                        <h2 class="text-danger mt-2"><?php echo number_format(max(0, $due_amount), 2); ?> SAR</h2>
+                        <h2 class="text-danger mt-2"><?php echo number_format($due_amount, 2); ?> SAR</h2>
                     </div>
                 </div>
             </div>
@@ -114,51 +121,64 @@ $due_amount = floatval($client['contract_value']) - $total_paid;
             <div class="row">
                 <div class="col-lg-4 mb-4">
                     <div class="card-box">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="text-gold mb-0"><i class="bi bi-plus-circle me-2"></i>Add Payment</h5>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="unlockPaymentForm">
-                                <label class="form-check-label text-white-50 small" for="unlockPaymentForm">Enable Edit</label>
+                        <?php if ($due_amount <= 0): ?>
+                            <div class="text-center py-5">
+                                <div class="icon-box bg-success bg-opacity-25 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                    <i class="bi bi-check-all fs-2"></i>
+                                </div>
+                                <h5 class="text-success fw-bold">Contract Fully Paid</h5>
+                                <p class="text-white-50 small mb-0">No further payments can be added to this project.</p>
                             </div>
-                        </div>
-
-                        <form method="POST" id="paymentForm">
-                            <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
-                            <input type="hidden" name="add_payment" value="1">
-
-                            <div class="mb-3">
-                                <label class="text-white-50 small mb-1">Amount</label>
-                                <input type="number" step="0.01" name="amount" class="form-control glass-input" required placeholder="0.00" disabled>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="text-white-50 small mb-1">Payment Method</label>
-                                <select name="payment_method" class="form-select glass-input" disabled>
-                                    <option value="Cash">Cash</option>
-                                    <option value="Card">Card</option>
-                                    <option value="Bank Transfer">Bank Transfer</option>
-                                    <option value="Cheque">Cheque</option>
-                                    <option value="Other">Other</option>
-                                </select>
+                        <?php else: ?>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="text-gold mb-0"><i class="bi bi-plus-circle me-2"></i>Add Payment</h5>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="unlockPaymentForm">
+                                    <label class="form-check-label text-white-50 small" for="unlockPaymentForm">Enable Edit</label>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="text-white-50 small mb-1">Status</label>
-                                <select name="payment_status" class="form-select glass-input" disabled>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Pending">Pending</option>
-                                </select>
-                            </div>
+                            <form method="POST" id="paymentForm">
+                                <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
+                                <input type="hidden" name="add_payment" value="1">
 
-                            <div class="mb-3">
-                                <label class="text-white-50 small mb-1">Notes</label>
-                                <textarea name="notes" class="form-control glass-input" rows="2" disabled></textarea>
-                            </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <label class="text-white-50 small mb-1">Amount</label>
+                                        <small class="text-gold">Max: <?php echo number_format($due_amount, 2); ?></small>
+                                    </div>
+                                    <input type="number" step="0.01" max="<?php echo $due_amount; ?>" name="amount" class="form-control glass-input" required placeholder="0.00" disabled>
+                                </div>
 
-                            <button type="submit" class="btn btn-rooq-primary w-100 fw-bold" id="submitBtn" disabled>
-                                Record Payment
-                            </button>
-                        </form>
+                                <div class="mb-3">
+                                    <label class="text-white-50 small mb-1">Payment Method</label>
+                                    <select name="payment_method" class="form-select glass-input" disabled>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Cheque">Cheque</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-white-50 small mb-1">Status</label>
+                                    <select name="payment_status" class="form-select glass-input" disabled>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Pending">Pending</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-white-50 small mb-1">Notes</label>
+                                    <textarea name="notes" class="form-control glass-input" rows="2" disabled></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-rooq-primary w-100 fw-bold" id="submitBtn" disabled>
+                                    Record Payment
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -231,18 +251,19 @@ $due_amount = floatval($client['contract_value']) - $total_paid;
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const toggleSwitch = document.getElementById('unlockPaymentForm');
-    const form = document.getElementById('paymentForm');
-    const inputs = form.querySelectorAll('input, select, textarea, button');
+    if(toggleSwitch) {
+        const form = document.getElementById('paymentForm');
+        const inputs = form.querySelectorAll('input, select, textarea, button');
 
-    toggleSwitch.addEventListener('change', function() {
-        const isEnabled = this.checked;
-        inputs.forEach(input => {
-            // Only toggle inputs that are NOT hidden fields
-            if (input.type !== 'hidden') {
-                input.disabled = !isEnabled;
-            }
+        toggleSwitch.addEventListener('change', function() {
+            const isEnabled = this.checked;
+            inputs.forEach(input => {
+                if (input.type !== 'hidden') {
+                    input.disabled = !isEnabled;
+                }
+            });
         });
-    });
+    }
 
     // Initialize Tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

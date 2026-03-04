@@ -12,35 +12,62 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
 $db = (new Database())->getConnection();
 $account_id = $_SESSION['account_id'] ?? $_SESSION['user_id']; 
 
-// --- 1. CALCULATE MASTER FINANCIAL SUMMARY ---
-// Fetch all active projects for this account to sum up the total contract value
-$stmtApps = $db->prepare("SELECT client_id, company_name, contract_value FROM clients WHERE account_id = ? AND is_active = 1");
-$stmtApps->execute([$account_id]);
-$apps = $stmtApps->fetchAll(PDO::FETCH_ASSOC);
+// --- GET FILTER ---
+$filter_client_id = isset($_GET['client_id']) ? $_GET['client_id'] : 'all';
 
-$total_contract = 0;
-foreach ($apps as $app) {
-    $total_contract += floatval($app['contract_value']);
-}
+try {
+    // --- 1. FETCH ALL ACTIVE PROJECTS FOR DROPDOWN ---
+    $stmtApps = $db->prepare("SELECT client_id, company_name, contract_value FROM clients WHERE account_id = ? AND is_active = 1 ORDER BY company_name ASC");
+    $stmtApps->execute([$account_id]);
+    $apps = $stmtApps->fetchAll(PDO::FETCH_ASSOC);
 
-// --- 2. FETCH ALL PAYMENT HISTORY ---
-// Joins the payments table with the clients table to ensure they only see their own payments
-$stmtPay = $db->prepare("SELECT p.*, c.company_name, c.client_id 
-                         FROM payments p 
-                         JOIN clients c ON p.client_id = c.client_id 
-                         WHERE c.account_id = ? 
-                         ORDER BY p.payment_date DESC");
-$stmtPay->execute([$account_id]);
-$payments = $stmtPay->fetchAll(PDO::FETCH_ASSOC);
+    // --- 2. CALCULATE FILTERED FINANCIAL SUMMARY ---
+    $total_contract = 0;
+    $filtered_apps_count = 0;
 
-$total_paid = 0;
-foreach ($payments as $pay) {
-    if ($pay['payment_status'] === 'Completed') {
-        $total_paid += floatval($pay['amount']);
+    foreach ($apps as $app) {
+        // If "all" is selected OR this app matches the selected filter
+        if ($filter_client_id === 'all' || $filter_client_id == $app['client_id']) {
+            $total_contract += floatval($app['contract_value']);
+            $filtered_apps_count++;
+        }
     }
-}
 
-$total_due = $total_contract - $total_paid;
+    // --- 3. FETCH PAYMENT HISTORY BASED ON FILTER ---
+    if ($filter_client_id !== 'all') {
+        // Fetch only payments for the specific filtered project
+        $stmtPay = $db->prepare("SELECT p.*, c.company_name, c.client_id 
+                                 FROM payments p 
+                                 JOIN clients c ON p.client_id = c.client_id 
+                                 WHERE c.account_id = ? AND p.client_id = ? 
+                                 ORDER BY p.payment_date DESC");
+        $stmtPay->execute([$account_id, $filter_client_id]);
+    } else {
+        // Fetch all payments for all projects
+        $stmtPay = $db->prepare("SELECT p.*, c.company_name, c.client_id 
+                                 FROM payments p 
+                                 JOIN clients c ON p.client_id = c.client_id 
+                                 WHERE c.account_id = ? 
+                                 ORDER BY p.payment_date DESC");
+        $stmtPay->execute([$account_id]);
+    }
+    $payments = $stmtPay->fetchAll(PDO::FETCH_ASSOC);
+
+    // --- 4. CALCULATE PAID & DUE ---
+    $total_paid = 0;
+    foreach ($payments as $pay) {
+        if ($pay['payment_status'] === 'Completed') {
+            $total_paid += floatval($pay['amount']);
+        }
+    }
+
+    $total_due = $total_contract - $total_paid;
+
+} catch (PDOException $e) {
+    // Safety Net - If database crashes, hide loader and show error
+    echo "<script>document.addEventListener('DOMContentLoaded', function() { document.querySelector('.global-loader').classList.add('hidden'); });</script>";
+    die("<div class='container mt-5'><div class='alert alert-danger p-4 rounded-4 shadow'><b>Database Error:</b> " . $e->getMessage() . "</div></div>");
+}
 ?>
 
 <div class="container-fluid py-4">
@@ -60,6 +87,22 @@ $total_due = $total_contract - $total_paid;
         </button>
     </div>
 
+    <div class="glass-panel p-3 mb-4 d-flex justify-content-between align-items-center" style="padding: 15px 25px !important;">
+        <div>
+            <h6 class="text-gold fw-bold mb-0"><i class="bi bi-funnel-fill me-2"></i>Filter by Company/Project</h6>
+        </div>
+        <form method="GET" action="billing.php" class="m-0">
+            <select name="client_id" class="form-select glass-input rounded-pill shadow-sm py-2 px-4" style="min-width: 280px; cursor: pointer;" onchange="this.form.submit()">
+                <option value="all" <?php echo ($filter_client_id === 'all') ? 'selected' : ''; ?>>All Companies & Projects</option>
+                <?php foreach ($apps as $app): ?>
+                    <option value="<?php echo $app['client_id']; ?>" <?php echo ($filter_client_id == $app['client_id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($app['company_name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </form>
+    </div>
+
     <div class="row g-3 mb-5">
         <div class="col-md-4">
             <div class="glass-panel p-4 border-bottom border-3 border-secondary text-center h-100" style="background: rgba(255,255,255,0.02);">
@@ -68,7 +111,7 @@ $total_due = $total_contract - $total_paid;
                 </div>
                 <h6 class="text-white-50 small text-uppercase fw-bold mb-1">Total Contract Value</h6>
                 <h3 class="text-white mb-0 fw-bold"><?php echo number_format($total_contract, 2); ?> <small class="fs-6 text-white-50">SAR</small></h3>
-                <div class="small text-white-50 mt-2">Across <?php echo count($apps); ?> active projects</div>
+                <div class="small text-white-50 mt-2">Across <?php echo $filtered_apps_count; ?> active project(s)</div>
             </div>
         </div>
         <div class="col-md-4">

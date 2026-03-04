@@ -5,28 +5,34 @@ require_once __DIR__ . '/../app/Config/Database.php';
 require_once __DIR__ . '/../app/Helpers/Security.php';
 require_once 'includes/header.php';
 
-//$client_id = $_GET['id'] ?? null;
 $client_id = isset($_GET['id']) ? intval($_GET['id']) : (isset($_GET['client_id']) ? intval($_GET['client_id']) : 0);
-if (!$client_id) { header("Location: clients.php"); exit(); }
+if (!$client_id) { echo "<script>window.location.href='clients.php';</script>"; exit(); }
 
 $db = (new Database())->getConnection();
-// --- GET THE CLIENT ID FROM THE URL ---
 
-$company_name = "Unknown Company"; // Default fallback
-
-// --- FETCH THE COMPANY NAME ---
+// --- FETCH THE COMPANY NAME (Fixes the Warning) ---
+$company_name = "Unknown Company";
 if ($client_id > 0) {
     $stmtClient = $db->prepare("SELECT company_name FROM clients WHERE client_id = ?");
     $stmtClient->execute([$client_id]);
     $fetched_name = $stmtClient->fetchColumn();
-    
     if ($fetched_name) {
         $company_name = $fetched_name;
     }
 }
-$message = "";
 
-// --- ADD PAYMENT LOGIC ---
+// --- GRAB PRG SESSION MESSAGES ---
+$message = "";
+if (isset($_SESSION['success_msg'])) {
+    $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success alert-dismissible fade show rounded-3'>" . $_SESSION['success_msg'] . "<button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert'></button></div>";
+    unset($_SESSION['success_msg']);
+}
+if (isset($_SESSION['error_msg'])) {
+    $message = "<div class='alert alert-danger bg-danger bg-opacity-25 text-white border-danger alert-dismissible fade show rounded-3'>" . $_SESSION['error_msg'] . "<button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert'></button></div>";
+    unset($_SESSION['error_msg']);
+}
+
+// --- ADD PAYMENT LOGIC (PRG PATTERN) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_payment'])) {
     Security::checkCSRF($_POST['csrf_token']);
     
@@ -35,11 +41,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_payment'])) {
     $status = Security::clean($_POST['payment_status']);
     $note   = Security::clean($_POST['notes']);
 
-    $stmt = $db->prepare("INSERT INTO payments (client_id, amount, payment_method, payment_status, notes) VALUES (?, ?, ?, ?, ?)");
-    if ($stmt->execute([$client_id, $amount, $method, $status, $note])) {
-        $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'>Payment recorded successfully!</div>";
-        // Assuming you have variables like $amount and $company_name already available in this file
-           Security::logActivity("Recorded client payment of " . number_format($amount, 2) . " SAR for: " . $company_name);
+    try {
+        $stmt = $db->prepare("INSERT INTO payments (client_id, amount, payment_method, payment_status, notes) VALUES (?, ?, ?, ?, ?)");
+        if ($stmt->execute([$client_id, $amount, $method, $status, $note])) {
+            
+            Security::logActivity("Recorded client payment of " . number_format($amount, 2) . " SAR for: " . $company_name);
+            
+            // Success! Save message and REDIRECT using Javascript
+            $_SESSION['success_msg'] = "Payment recorded successfully!";
+            echo "<script>window.location.href='client-finance.php?id=" . $client_id . "';</script>";
+            exit();
+        }
+    } catch (PDOException $e) {
+        $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
+        echo "<script>window.location.href='client-finance.php?id=" . $client_id . "';</script>";
+        exit();
     }
 }
 
@@ -55,9 +71,9 @@ $payments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Calculate Totals
 $total_paid = 0;
 foreach($payments as $p) {
-    if($p['payment_status'] == 'Completed') $total_paid += $p['amount'];
+    if($p['payment_status'] == 'Completed') $total_paid += floatval($p['amount']);
 }
-$due_amount = $client['contract_value'] - $total_paid;
+$due_amount = floatval($client['contract_value']) - $total_paid;
 ?>
 
 <div class="d-flex portal-wrapper">
@@ -69,7 +85,7 @@ $due_amount = $client['contract_value'] - $total_paid;
                 <a href="clients.php" class="text-white-50 text-decoration-none hover-white">
                     <i class="bi bi-arrow-left me-2"></i> Back to Clients
                 </a>
-                <h4 class="text-white fw-bold mb-0">Finance: <?php echo htmlspecialchars($client['company_name']); ?></h4>
+                <h4 class="text-white fw-bold mb-0">Finance: <?php echo htmlspecialchars($client['company_name'] ?? 'Unknown'); ?></h4>
             </div>
 
             <?php echo $message; ?>
@@ -78,7 +94,7 @@ $due_amount = $client['contract_value'] - $total_paid;
                 <div class="col-md-4">
                     <div class="card-box text-center border-warning">
                         <small class="text-gold text-uppercase fw-bold">Contract Value</small>
-                        <h2 class="text-white mt-2"><?php echo number_format($client['contract_value'], 2); ?> SAR</h2>
+                        <h2 class="text-white mt-2"><?php echo number_format($client['contract_value'] ?? 0, 2); ?> SAR</h2>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -221,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function() {
     toggleSwitch.addEventListener('change', function() {
         const isEnabled = this.checked;
         inputs.forEach(input => {
-            // Only toggle inputs that are NOT hidden fields (like csrf_token)
+            // Only toggle inputs that are NOT hidden fields
             if (input.type !== 'hidden') {
                 input.disabled = !isEnabled;
             }
@@ -236,6 +252,4 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-<?php
-require_once 'includes/footer.php'
-?>
+<?php require_once 'includes/footer.php'; ?>

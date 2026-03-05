@@ -794,3 +794,67 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+
+/* ==========================================================================
+   SIDEBAR & LAYOUT LOGIC
+   ========================================================================== */
+document.addEventListener("DOMContentLoaded", function () {
+    var toggleBtn = document.getElementById("sidebarToggle");
+    var sidebar = document.getElementById("portalSidebar");
+
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener("click", function (e) {
+            e.preventDefault(); 
+            sidebar.classList.toggle("show"); 
+        });
+
+        // Close sidebar if clicking outside on mobile
+        document.addEventListener("click", function (e) {
+            if (window.innerWidth < 992 &&
+                !sidebar.contains(e.target) &&
+                !toggleBtn.contains(e.target)) {
+                sidebar.classList.remove("show");
+            }
+        });
+    }
+});
+
+/* ==========================================================================
+   LIVE NOTIFICATION AUTO-UPDATER
+   ========================================================================== */
+function checkLiveNotifications() {
+    // Safely grab the Base URL from the meta tag in the footer
+    const metaTag = document.getElementById('base_url_meta');
+    const baseUrl = metaTag ? metaTag.getAttribute('content') : '';
+
+    if (!baseUrl) return; // Safety check
+
+    fetch(baseUrl + 'app/Api/check_notifications.php')
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) return;
+
+        const badge = document.getElementById('liveNotificationBadge');
+        const list = document.getElementById('liveNotificationList');
+
+        // Update the Dropdown HTML
+        if (list && data.html) {
+            list.innerHTML = data.html;
+        }
+
+        // Update the Red Dot
+        if (badge) {
+            if (data.count > 0) {
+                badge.innerText = data.count;
+                badge.classList.remove('d-none');
+            } else {
+                badge.classList.add('d-none');
+            }
+        }
+    })
+    .catch(err => console.error("Notification check failed:", err));
+}
+
+// Check for new messages every 10 seconds silently in the background
+setInterval(checkLiveNotifications, 10000);

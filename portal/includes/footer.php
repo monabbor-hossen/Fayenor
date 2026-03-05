@@ -218,64 +218,7 @@
 <script src="<?php echo BASE_URL; ?>assets/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/all.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var toggleBtn = document.getElementById("sidebarToggle");
-        var sidebar = document.getElementById("portalSidebar");
 
-        if (toggleBtn && sidebar) {
-            toggleBtn.addEventListener("click", function (e) {
-                e.preventDefault(); // Stop page from jumping
-                sidebar.classList.toggle("show"); // Add/Remove 'show' CSS class
-            });
-
-            // Optional: Close sidebar if clicking outside on mobile
-            document.addEventListener("click", function (e) {
-                if (window.innerWidth < 992 &&
-                    !sidebar.contains(e.target) &&
-                    !toggleBtn.contains(e.target)) {
-                    sidebar.classList.remove("show");
-                }
-            });
-        } else {
-            console.error("Sidebar or Toggle Button ID not found!");
-        }
-    });
-</script>
-<script>
-// --- LIVE NOTIFICATION AUTO-UPDATER ---
-function checkLiveNotifications() {
-    fetch('<?php echo BASE_URL; ?>app/Api/check_notifications.php')
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) return;
-
-        const badge = document.getElementById('liveNotificationBadge');
-        const list = document.getElementById('liveNotificationList');
-
-        // Update the Dropdown HTML
-        if (list && data.html) {
-            list.innerHTML = data.html;
-        }
-
-        // Update the Red Dot
-        if (badge) {
-            if (data.count > 0) {
-                // If there's a new message, pop the badge!
-                badge.innerText = data.count;
-                badge.classList.remove('d-none');
-            } else {
-                // If there are no messages, hide the badge!
-                badge.classList.add('d-none');
-            }
-        }
-    })
-    .catch(err => console.error("Notification check failed:", err));
-}
-
-// Check for new messages every 10 seconds silently in the background
-setInterval(checkLiveNotifications, 10000);
-</script>
 </body>
 
 </html>

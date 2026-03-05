@@ -48,6 +48,7 @@ $text = $translator->getTranslation($lang);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta id="base_url_meta" content="<?php echo BASE_URL; ?>">
     <title>Dashboard | Basmat Rooq</title>
     
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
@@ -56,6 +57,7 @@ $text = $translator->getTranslation($lang);
     <?php if($dir == 'rtl'): ?>
         <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.rtl.min.css">
     <?php endif; ?>
+    
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/theme.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/mobile.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">

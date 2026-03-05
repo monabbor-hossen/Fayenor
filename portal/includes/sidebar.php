@@ -1,24 +1,27 @@
 <?php
 // Get the current page name (e.g., 'dashboard.php')
 $current_page = basename($_SERVER['PHP_SELF']);
+// Default to true so Admins/Staff always see it
+$can_see_expenses = true; 
 
+if ($_SESSION['role'] === 'client') {
+    // 1. Get the account ID
+    $account_id = $_SESSION['account_id'] ?? $_SESSION['user_id'];
+    
+    // 2. Fetch the permission (CRITICAL FIX: Added ->fetch())
+    $stmtExp = $db->prepare("SELECT show_expenses FROM clients WHERE account_id = ? LIMIT 1");
+    $stmtExp->execute([$account_id]);
+    $resExp = $stmtExp->fetch(PDO::FETCH_ASSOC);
+    
+    // 3. Set the boolean based on the database value
+    $can_see_expenses = ($resExp && $resExp['show_expenses'] == 1);
+}
 ?>
 
 <aside class="portal-sidebar" id="portalSidebar">
     <div class="sidebar-content h-100 py-4">
         <p class="px-4 text-white-50 small text-uppercase fw-bold mb-3" style="letter-spacing: 1px;">Main Menu</p>
-            <?php
-                // Top of sidebar.php: Define default permission
-$can_see_expenses = true; 
-
-if ($_SESSION['role'] === 'client') :
-    // We use the existing $db connection from header.php
-    $account_id = $_SESSION['account_id'] ?? $_SESSION['user_id'];
-    $stmtExp = $db->prepare("SELECT show_expenses FROM clients WHERE account_id = ? LIMIT 1");
-    $stmtExp->execute([$account_id]);
-    $resExp = $stmtExp->fetch();
-    $can_see_expenses = ($resExp && $resExp['show_expenses'] == 1);
- ?>
+            <?php if ($_SESSION['role'] === 'client') :?>
         <ul class="nav flex-column mb-auto mt-3 w-100">
 
             <li class="nav-item mb-2">

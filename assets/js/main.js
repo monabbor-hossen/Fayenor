@@ -867,8 +867,7 @@ function toggleClientExpense(clientId, checkbox) {
     const baseUrl = metaTag ? metaTag.getAttribute('content') : '../';
 
     checkbox.style.opacity = '0.5';
-
-    fetch(baseUrl + 'app/Api/toggle_expense_api.php', {
+fetch('/app/Api/toggle_expense_api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })

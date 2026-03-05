@@ -858,3 +858,33 @@ function checkLiveNotifications() {
 
 // Check for new messages every 10 seconds silently in the background
 setInterval(checkLiveNotifications, 10000);
+
+/* ==========================================================================
+   TOGGLE CLIENT EXPENSE ACCESS
+   ========================================================================== */
+function toggleClientExpense(clientId, checkbox) {
+    const isChecked = checkbox.checked ? 1 : 0;
+    
+    // Dim the checkbox while it loads
+    checkbox.style.opacity = '0.5';
+
+    fetch('../app/Api/toggle_expense_api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })
+    })
+    .then(response => response.json())
+    .then(data => {
+        checkbox.style.opacity = '1'; // Restore opacity
+        if (!data.success) {
+            alert("Error: " + data.message);
+            checkbox.checked = !isChecked; // Revert switch if it failed
+        }
+    })
+    .catch(err => {
+        console.error("Fetch Error:", err);
+        checkbox.style.opacity = '1';
+        alert("Failed to update access. Check your connection.");
+        checkbox.checked = !isChecked; // Revert switch
+    });
+}

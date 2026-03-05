@@ -34,12 +34,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <?php endif; ?>
                 </a>
             </li>
+            <?php 
+            // Check if the client is allowed to see the Expenses page
+$account_id = $_SESSION['account_id'] ?? $_SESSION['user_id'];
+$stmtExpCheck = $db->prepare("SELECT COUNT(*) FROM clients WHERE account_id = ? AND show_expenses = 1 AND is_active = 1");
+$stmtExpCheck->execute([$account_id]);
+$can_see_expenses = $stmtExpCheck->fetchColumn() > 0;
+ if ($can_see_expenses): ?>
+        
             <li class="nav-item mb-2">
                 <a href="expenses.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'expenses.php') ? 'active-glass fw-bold' : ''; ?> d-flex align-items-center rounded px-3 py-2" style="transition: all 0.3s ease;">
                     <i class="bi bi-wallet2 fs-5 me-3 text-gold"></i>
                     <span class="flex-grow-1">My Expenses</span>
                 </a>
             </li>
+            <?php endif;?>
         </ul>
             <?php else: ?>
 

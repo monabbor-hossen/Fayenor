@@ -1,63 +1,153 @@
-var modalElement;
+/* ==========================================================================
+   GLOBAL VARIABLES & MODAL INITIALIZATION
+   ========================================================================== */
+var modalElement = null;
+var viewModalElement = null;
 
-// Initialize Modal on Page Load
 document.addEventListener("DOMContentLoaded", function () {
-    var modalEl = document.getElementById('workflowModal');
-    if (modalEl) {
-        modalElement = new bootstrap.Modal(modalEl);
+    // 1. Initialize Global Workflow Modal (if it exists on the page)
+    var workflowEl = document.getElementById('workflowModal');
+    if (workflowEl) {
+        modalElement = new bootstrap.Modal(workflowEl);
     }
+
+    // 2. Initialize View Client Modal (if it exists on the page)
+    var viewEl = document.getElementById('viewClientModal');
+    if (viewEl) {
+        viewModalElement = new bootstrap.Modal(viewEl);
+    }
+    
+    // 3. Global Bootstrap Tooltip Initialization
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // 4. Initialize Live Search (if elements exist)
+    setupLiveSearch('desktopSearchInput', 'desktopSearchResults');
+    setupLiveSearch('mobileSearchInput', 'mobileSearchResults');
 });
 
-// 1. OPEN MODAL
+/* ==========================================================================
+   GLOBAL CUSTOM CONFIRM ALERT (BULLETPROOF METHOD)
+   ========================================================================== */
+
+// 1. FOR FORMS (Used on Users page)
+function triggerFormModal(formId, customMessage) {
+    document.getElementById('rooqConfirmMessage').innerText = customMessage;
+    let oldBtn = document.getElementById('rooqConfirmActionBtn');
+    let newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+    
+    newBtn.addEventListener('click', function() {
+        document.getElementById(formId).submit();
+    });
+    
+    var myModal = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
+    myModal.show();
+}
+
+// 2. FOR LINKS/URLS (Used on Expenses & Client Deletion pages)
+function triggerLinkModal(url, customMessage) {
+    document.getElementById('rooqConfirmMessage').innerText = customMessage;
+    let oldBtn = document.getElementById('rooqConfirmActionBtn');
+    let newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+    
+    newBtn.addEventListener('click', function() {
+        window.location.href = url;
+    });
+    
+    var myModal = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
+    myModal.show();
+}
+
+/* ==========================================================================
+   CLIENT ADD/EDIT PAGE & WORKFLOW LOGIC
+   ========================================================================== */
+
+// Toggle between New and Existing Account forms
+function toggleAccountFields() {
+    let accNew = document.getElementById('acc_new');
+    let newFields = document.getElementById('new_account_fields');
+    let existFields = document.getElementById('existing_account_fields');
+    
+    if (accNew && newFields && existFields) {
+        if (accNew.checked) {
+            newFields.classList.remove('d-none');
+            existFields.classList.add('d-none');
+        } else {
+            newFields.classList.add('d-none');
+            existFields.classList.remove('d-none');
+        }
+    }
+}
+
+// Dim out Workflow cards when unchecked
+function toggleWorkflowCard(key) {
+    const checkbox = document.getElementById('enable_' + key);
+    const card = document.getElementById('card_' + key);
+    const select = document.getElementById('select_' + key);
+    const editBtn = document.querySelector(`#card_${key} .btn-link`);
+
+    if(checkbox && card) {
+        if (checkbox.checked) {
+            card.style.opacity = '1';
+            card.style.filter = 'none';
+            if(select) select.disabled = false;
+            if(editBtn) editBtn.disabled = false;
+        } else {
+            card.style.opacity = '0.5';
+            card.style.filter = 'grayscale(100%)';
+            if(select) select.disabled = true;
+            if(editBtn) editBtn.disabled = true;
+        }
+    }
+}
+
+// OPEN WORKFLOW MODAL
 function openEditModal(key, label) {
-    // Set Title
     document.getElementById('modalTitle').innerText = "Update: " + label;
     document.getElementById('current_field_key').value = key;
 
-    // Get Elements from the Card
     const cardSelect = document.getElementById('select_' + key);
     const cardNote = document.getElementById('input_note_' + key);
 
-    // Sync Dropdown Options
     const modalSelect = document.getElementById('modal_status_select');
-    modalSelect.innerHTML = cardSelect.innerHTML; // Copy options
-    modalSelect.value = cardSelect.value; // Select current value
+    modalSelect.innerHTML = cardSelect.innerHTML; 
+    modalSelect.value = cardSelect.value; 
+    
+    // Fallback if note input doesn't exist yet
+    if(document.getElementById('modal_note_text')) {
+        document.getElementById('modal_note_text').value = cardNote ? cardNote.value : '';
+    }
 
-    // Sync Note Text
-    document.getElementById('modal_note_text').value = cardNote.value;
-
-    // Show Modal
     if (modalElement) modalElement.show();
 }
 
-// 2. SAVE CHANGES (Sync back to Card)
+// SAVE WORKFLOW CHANGES (Sync back to Card)
 function saveModalChanges() {
     const key = document.getElementById('current_field_key').value;
     const newStatus = document.getElementById('modal_status_select').value;
     const newNote = document.getElementById('modal_note_text').value;
 
-    // Update Card Dropdown
     document.getElementById('select_' + key).value = newStatus;
-
-    // Update Hidden Note Input (for form submission)
     document.getElementById('input_note_' + key).value = newNote;
 
-    // Show/Hide Note Indicator Icon
     const indicator = document.getElementById('note_indicator_' + key);
-    if (newNote.trim() !== "") {
-        indicator.classList.remove('d-none');
-    } else {
-        indicator.classList.add('d-none');
+    if (indicator) {
+        if (newNote.trim() !== "") {
+            indicator.classList.remove('d-none');
+        } else {
+            indicator.classList.add('d-none');
+        }
     }
 
-    // Hide Modal
     if (modalElement) modalElement.hide();
 }
 
 /**
  * Toggles Password Visibility
- * @param {string} inputId - The ID of the password input field
- * @param {string} iconId - The ID of the icon element to toggle classes
  */
 function togglePassword(inputId, iconId) {
     var input = document.getElementById(inputId);
@@ -75,18 +165,11 @@ function togglePassword(inputId, iconId) {
         }
     }
 }
-/* --- View Client Modal Logic --- */
-var viewModalElement;
 
-document.addEventListener("DOMContentLoaded", function () {
-    var viewEl = document.getElementById('viewClientModal');
-    if (viewEl) {
-        viewModalElement = new bootstrap.Modal(viewEl);
-    }
-});
-
+/* ==========================================================================
+   VIEW CLIENT MODAL LOGIC
+   ========================================================================== */
 function openViewModal(button) {
-    // 1. Retrieve Data
     try {
         var client = JSON.parse(button.getAttribute('data-client'));
     } catch (e) {
@@ -94,14 +177,12 @@ function openViewModal(button) {
         return;
     }
 
-    // 2. Set Header Info
     document.getElementById('view_company_name').innerText = client.company_name;
     document.getElementById('view_client_id').innerText = "#" + client.client_id;
 
     var editBtn = document.getElementById('view_edit_btn');
     if (editBtn) editBtn.href = "client-edit.php?id=" + client.client_id;
 
-    // 3. Populate Basic Info helper
     function setVal(id, val) {
         var el = document.getElementById(id);
         if (el) el.innerText = val ? val : '-';
@@ -110,18 +191,16 @@ function openViewModal(button) {
     setVal('v_name', client.client_name);
     setVal('v_phone', client.phone_number);
     setVal('v_email', client.email);
-    setVal('v_trade', client.trade_name_application); // Add if you have this field
+    setVal('v_trade', client.trade_name_application); 
+    
     // --- LICENSE SCOPE SECTION ---
     var scopeStatus = client.license_scope_status || 'Pending';
-    var scopeNote = client.license_scope_note || ''; // Ensure column name matches DB
+    var scopeNote = client.license_scope_note || ''; 
 
-    // 1. Set Status Text
     var scopeBadge = document.getElementById('badge_scope');
     if (scopeBadge) {
         scopeBadge.innerText = scopeStatus;
-
-        // Apply Colors
-        scopeBadge.className = 'view-badge'; // Reset
+        scopeBadge.className = 'view-badge'; 
         if (scopeStatus === 'Approved' || scopeStatus.includes('Done')) {
             scopeBadge.classList.add('badge-approved');
         } else if (scopeStatus === 'Pending' || scopeStatus === 'Applied') {
@@ -131,17 +210,17 @@ function openViewModal(button) {
         }
     }
 
-    // 2. Set Note Text
     var scopeNoteEl = document.getElementById('note_scope');
     if (scopeNoteEl) {
         if (scopeNote && scopeNote !== '-') {
             scopeNoteEl.innerText = scopeNote;
-            scopeNoteEl.style.display = 'block'; // Show if exists
+            scopeNoteEl.style.display = 'block'; 
         } else {
-            scopeNoteEl.style.display = 'none'; // Hide if empty
+            scopeNoteEl.style.display = 'none'; 
         }
     }
-    // 4. Financials
+    
+    // Financials
     var totalPaid = parseFloat(client.total_paid || 0);
     var contract = parseFloat(client.contract_value || 0);
     var due = contract - totalPaid;
@@ -150,78 +229,25 @@ function openViewModal(button) {
     setVal('v_paid', totalPaid.toLocaleString('en-US') + ' SAR');
     setVal('v_due', due > 0 ? due.toLocaleString('en-US') + ' SAR' : 'Paid');
 
-    // 5. GENERATE WORKFLOW CARDS
+    // GENERATE WORKFLOW CARDS
     var grid = document.getElementById('workflow_grid');
     if (grid) {
-        grid.innerHTML = ''; // Clear previous
-
-        // Define Steps Map
+        grid.innerHTML = ''; 
         var steps = [
-
-            {
-                key: 'hire',
-                label: 'Foreign Hire',
-                icon: 'bi-briefcase',
-                status: client.hire_foreign_company,
-                note: client.hire_foreign_company_note
-            },
-            {
-                key: 'misa',
-                label: 'MISA License',
-                icon: 'bi-award',
-                status: client.misa_application,
-                note: client.misa_application_note
-            },
-            {
-                key: 'sbc',
-                label: 'SBC App',
-                icon: 'bi-building',
-                status: client.sbc_application,
-                note: client.sbc_application_note
-            },
-            {
-                key: 'art',
-                label: 'Art. Assoc.',
-                icon: 'bi-file-text',
-                status: client.article_association,
-                note: client.article_association_note
-            },
-            {
-                key: 'qiwa',
-                label: 'Qiwa',
-                icon: 'bi-people',
-                status: client.qiwa,
-                note: client.qiwa_note
-            },
-            {
-                key: 'muq',
-                label: 'Muqeem',
-                icon: 'bi-person-badge',
-                status: client.muqeem,
-                note: client.muqeem_note
-            },
-            {
-                key: 'gosi',
-                label: 'GOSI',
-                icon: 'bi-shield-check',
-                status: client.gosi,
-                note: client.gosi_note
-            },
-            {
-                key: 'coc',
-                label: 'Chamber',
-                icon: 'bi-bank',
-                status: client.chamber_commerce,
-                note: client.chamber_commerce_note
-            }
+            { key: 'hire', label: 'Foreign Hire', icon: 'bi-briefcase', status: client.hire_foreign_company, note: client.hire_foreign_company_note },
+            { key: 'misa', label: 'MISA License', icon: 'bi-award', status: client.misa_application, note: client.misa_application_note },
+            { key: 'sbc', label: 'SBC App', icon: 'bi-building', status: client.sbc_application, note: client.sbc_application_note },
+            { key: 'art', label: 'Art. Assoc.', icon: 'bi-file-text', status: client.article_association, note: client.article_association_note },
+            { key: 'qiwa', label: 'Qiwa', icon: 'bi-people', status: client.qiwa, note: client.qiwa_note },
+            { key: 'muq', label: 'Muqeem', icon: 'bi-person-badge', status: client.muqeem, note: client.muqeem_note },
+            { key: 'gosi', label: 'GOSI', icon: 'bi-shield-check', status: client.gosi, note: client.gosi_note },
+            { key: 'coc', label: 'Chamber', icon: 'bi-bank', status: client.chamber_commerce, note: client.chamber_commerce_note }
         ];
+        
         steps.forEach(step => {
             var status = step.status || 'Pending';
-
-            // Skip disabled steps
             if (status === 'Not Required') return;
 
-            // 1. Determine Main Card Class
             var colorClass = 'card-status-default';
             if (status === 'Approved' || status.includes('Done')) {
                 colorClass = 'card-status-approved';
@@ -231,18 +257,14 @@ function openViewModal(button) {
                 colorClass = 'card-status-process';
             }
 
-            // 2. Generate Beautiful Note HTML
             var noteHtml = '';
             if (step.note && step.note.trim() !== '') {
                 noteHtml = `<div class="wf-note"><i class="bi bi-chat-left-text"></i> <div>${step.note}</div></div>`;
             }
 
-            // 3. Create Bootstrap Column Wrapper
             var colWrapper = document.createElement('div');
-            // Mobile: full width, Tablet: half width, Large Desktop: 1/3 width
             colWrapper.className = 'col-12 col-md-6 col-xl-4';
 
-            // 4. Create Card (Added h-100 for equal height rows)
             var card = document.createElement('div');
             card.className = `workflow-card h-100 ${colorClass}`;
             card.innerHTML = `
@@ -256,16 +278,12 @@ function openViewModal(button) {
         });
     }
 
-    // 6. Show Modal
     if (viewModalElement) viewModalElement.show();
 }
-/* --- Live Search Logic --- */
-/* --- Live Search Logic (Updated for Debugging) --- */
-document.addEventListener("DOMContentLoaded", function () {
-    setupLiveSearch('desktopSearchInput', 'desktopSearchResults');
-    setupLiveSearch('mobileSearchInput', 'mobileSearchResults');
-});
 
+/* ==========================================================================
+   LIVE SEARCH LOGIC
+   ========================================================================== */
 function setupLiveSearch(inputId, resultsId) {
     const input = document.getElementById(inputId);
     const resultsBox = document.getElementById(resultsId);
@@ -283,19 +301,15 @@ function setupLiveSearch(inputId, resultsId) {
             return;
         }
 
-        // Debounce 300ms
         timeout = setTimeout(() => {
             fetch(`search_api.php?term=${encodeURIComponent(term)}`)
                 .then(async response => {
-                    const text = await response.text(); // Read raw text first
-
-                    // Try parsing JSON
+                    const text = await response.text(); 
                     try {
                         const data = JSON.parse(text);
                         if (!response.ok) throw new Error(data.message || "Server Error " + response.status);
                         return data;
                     } catch (e) {
-                        // If JSON parse fails, throw the raw text (HTML Error)
                         throw new Error("Invalid Response: " + text.substring(0, 100) + "...");
                     }
                 })
@@ -335,8 +349,6 @@ function setupLiveSearch(inputId, resultsId) {
                 })
                 .catch(err => {
                     console.error('SEARCH DEBUG ERROR:', err);
-                    // Optional: Alert the user for easier debugging
-                    // alert("Search Error: " + err.message); 
                 });
         }, 300);
     });
@@ -348,186 +360,118 @@ function setupLiveSearch(inputId, resultsId) {
     });
 }
 
-// Mobile Toggle Function
-/* --- Mobile Search Toggle (Updated) --- */
 function toggleMobileSearch() {
     var overlay = document.getElementById('mobileSearchOverlay');
     if (overlay) {
-        // Toggle the 'show' class defined in theme.css
         if (overlay.classList.contains('show')) {
             overlay.classList.remove('show');
         } else {
             overlay.classList.add('show');
-            // Auto-focus input
             var input = overlay.querySelector('input');
             if (input) setTimeout(() => input.focus(), 100);
         }
     }
 }
 
+/* ==========================================================================
+   MISC UTILITIES (LOADER, PARALLAX, TOGGLES, PAYROLL)
+   ========================================================================== */
 
-/* --- Workflow Toggle (Optional Cards) --- */
-function toggleWorkflowCard(key) {
-    const checkbox = document.getElementById('enable_' + key);
-    const card = document.getElementById('card_' + key);
-    const select = document.getElementById('select_' + key);
-    const editBtn = document.getElementById('btn_edit_' + key);
-
-    if (checkbox.checked) {
-        // Turn ON
-        card.style.opacity = '1';
-        select.disabled = false;
-        editBtn.disabled = false;
-    } else {
-        // Turn OFF (Optional)
-        card.style.opacity = '0.5';
-        select.disabled = true;
-        editBtn.disabled = true;
-    }
-}
-
-
-/* --- Toggle Login Status API --- */
 function toggleLoginStatus(type, id, checkbox) {
     const isChecked = checkbox.checked;
-
     fetch('toggle_status_api.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                type: type,
-                id: id,
-                status: isChecked
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: type, id: id, status: isChecked })
         })
         .then(response => response.json())
         .then(data => {
             if (!data.success) {
                 alert("Error: " + data.message);
-                checkbox.checked = !isChecked; // Revert switch if backend failed
+                checkbox.checked = !isChecked; 
             }
         })
         .catch(err => {
             console.error("Fetch Error:", err);
             alert("Failed to update status. Check connection.");
-            checkbox.checked = !isChecked; // Revert switch
+            checkbox.checked = !isChecked; 
         });
 }
 
-/* =========================================
-   GLOBAL PAGE LOADER LOGIC
-   ========================================= */
-
-// 1. Hide loader when page loads OR when returning via "Back" button (pageshow)
 window.addEventListener('pageshow', function (event) {
     const loader = document.getElementById('global-loader');
     if (loader) {
-        // event.persisted is true if the page is loaded from the bfcache (Back button)
-        // We hide the loader whether it's a fresh load or a back button load
         setTimeout(() => {
             loader.classList.add('hidden');
         }, 300);
     }
 });
 
-// 2. Show loader when clicking links to navigate away
 document.addEventListener('DOMContentLoaded', function () {
-    // Select all links that do NOT open in a new tab, and are NOT anchor/JS links
     const links = document.querySelectorAll('a:not([target="_blank"]):not([href^="#"]):not([href^="javascript"]):not([href=""])');
-
     links.forEach(link => {
         link.addEventListener('click', function (e) {
-            // Ignore if user is holding CTRL/CMD to open in new tab
             if (e.ctrlKey || e.shiftKey || e.metaKey || e.altKey) return;
-
             const loader = document.getElementById('global-loader');
-            if (loader) {
-                // Show loader immediately
-                loader.classList.remove('hidden');
-            }
+            if (loader) loader.classList.remove('hidden');
         });
     });
 });
 
-/* =========================================
-   404 PAGE PARALLAX EFFECT
-   ========================================= */
 document.addEventListener("DOMContentLoaded", function () {
     const errorImage = document.querySelector('.error-svg');
-
     if (errorImage) {
         document.addEventListener('mousemove', function (e) {
-            // Calculate mouse position relative to center of screen
             let xAxis = (window.innerWidth / 2 - e.pageX) / 30;
             let yAxis = (window.innerHeight / 2 - e.pageY) / 30;
-
-            // Combine the mouse parallax with the CSS floating animation
             errorImage.style.transform = `translate(${xAxis}px, ${yAxis}px)`;
         });
     }
 });
 
-/* =========================================
-   AJAX PAYROLL FILTERING (NO RELOAD)
-   ========================================= */
 function submitPayrollFilter(form) {
     const tableContainer = document.getElementById('payroll-table-container');
     const summaryContainer = document.getElementById('summary-cards-container');
 
-    // Dim the containers to show loading state
     if (tableContainer) tableContainer.style.opacity = '0.3';
     if (summaryContainer) summaryContainer.style.opacity = '0.3';
 
-    // Build the query URL
     const url = new URL(window.location.href.split('?')[0]);
     const formData = new FormData(form);
     url.search = new URLSearchParams(formData).toString();
 
-    // Fetch the updated page silently
     fetch(url)
         .then(response => response.text())
         .then(html => {
-            // Parse the returned HTML
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
-            // Replace Summary Cards
             if (summaryContainer && doc.getElementById('summary-cards-container')) {
                 summaryContainer.innerHTML = doc.getElementById('summary-cards-container').innerHTML;
                 summaryContainer.style.opacity = '1';
             }
 
-            // Replace Table
             if (tableContainer && doc.getElementById('payroll-table-container')) {
                 tableContainer.innerHTML = doc.getElementById('payroll-table-container').innerHTML;
                 tableContainer.style.opacity = '1';
             }
-
-            // Update the browser URL without reloading (so sharing links works)
             window.history.pushState({}, '', url);
         })
         .catch(err => {
             console.error("Filter error:", err);
-            // Revert opacity if it fails
             if (tableContainer) tableContainer.style.opacity = '1';
             if (summaryContainer) summaryContainer.style.opacity = '1';
         });
 }
 
-// Function for the Clear button
 function clearPayrollFilters(form) {
-    // Clear all inputs except the hidden user ID
     Array.from(form.elements).forEach(element => {
         if (element.name !== 'id' && element.name !== 'csrf_token') {
             element.value = '';
         }
     });
-    // Trigger the AJAX filter
     submitPayrollFilter(form);
 }
-
 
 /* =========================================
    GLOBAL ROOQ DATE PICKER
@@ -539,7 +483,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const prevBtn = document.getElementById('dpPrevMonth');
     const nextBtn = document.getElementById('dpNextMonth');
 
-    // New Action Buttons
     const btnToday = document.getElementById('dpBtnToday');
     const btnMonth = document.getElementById('dpBtnMonth');
     const btnYear = document.getElementById('dpBtnYear');
@@ -547,12 +490,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!datePicker) return;
 
     let activeInput = null;
-    let viewingDate = new Date(); // The month currently being viewed
+    let viewingDate = new Date(); 
 
     function closeAndSubmit() {
         datePicker.classList.remove('show');
-        
-        // ONLY auto-submit if the input has the 'auto-filter' class
         if (activeInput && activeInput.classList.contains('auto-filter')) {
             if (activeInput.form) {
                 if (typeof submitPayrollFilter === 'function' && document.getElementById('payroll-table-container')) {
@@ -568,34 +509,28 @@ document.addEventListener('DOMContentLoaded', function () {
         calendarDays.innerHTML = '';
         const year = dateToView.getFullYear();
         const month = dateToView.getMonth();
-
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         monthYear.innerText = `${monthNames[month]} ${year}`;
 
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-
         const today = new Date();
         const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
 
-        // Empty slots
         for (let i = 0; i < firstDay; i++) {
             const emptyDiv = document.createElement('div');
             emptyDiv.className = 'calendar-date empty';
             calendarDays.appendChild(emptyDiv);
         }
 
-        // Real Days
         for (let i = 1; i <= daysInMonth; i++) {
             const dayDiv = document.createElement('div');
             dayDiv.className = 'calendar-date';
             dayDiv.innerText = i;
-
             if (isCurrentMonth && i === today.getDate()) {
                 dayDiv.classList.add('today');
             }
 
-            // Click Event to select Exact Date
             dayDiv.addEventListener('click', function (e) {
                 e.stopPropagation();
                 if (activeInput) {
@@ -603,12 +538,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     closeAndSubmit();
                 }
             });
-
             calendarDays.appendChild(dayDiv);
         }
     }
 
-    // Previous/Next Month Logic
     prevBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         viewingDate.setMonth(viewingDate.getMonth() - 1);
@@ -621,7 +554,6 @@ document.addEventListener('DOMContentLoaded', function () {
         renderCalendar(viewingDate);
     });
 
-    // --- Action Button Logic ---
     if (btnToday) {
         btnToday.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -653,9 +585,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Attach to all inputs with class 'rooq-date'
     const dateInputs = document.querySelectorAll('.rooq-date');
-    const actionButtonsContainer = document.getElementById('dpActionButtons'); // NEW
+    const actionButtonsContainer = document.getElementById('dpActionButtons'); 
 
     dateInputs.forEach(input => {
         input.setAttribute('readonly', true);
@@ -665,7 +596,6 @@ document.addEventListener('DOMContentLoaded', function () {
             e.stopPropagation();
             activeInput = this;
 
-            // NEW: Hide or Show the bottom action buttons based on the input's attribute
             if (actionButtonsContainer) {
                 if (this.getAttribute('data-hide-buttons') === 'true') {
                     actionButtonsContainer.classList.remove('d-flex');
@@ -677,7 +607,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (this.value && this.value.length >= 4) {
-                // Try to open calendar to the currently inputted year/month
                 const parts = this.value.split('-');
                 let y = parseInt(parts[0]);
                 let m = parts.length > 1 ? parseInt(parts[1]) - 1 : 0;
@@ -688,11 +617,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             renderCalendar(viewingDate);
 
-            // Position popup
             const rect = this.getBoundingClientRect();
             datePicker.style.top = (rect.bottom + window.scrollY) + 'px';
             datePicker.style.left = rect.left + 'px';
-
             datePicker.classList.add('show');
         });
     });
@@ -704,37 +631,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function validatePaymentDate() {
-    var paymentDate = document.getElementById('modalPaymentDate').value;
-    var joinDate = '<?php echo $exact_join_date; ?>';
-    
-    if (new Date(paymentDate) < new Date(joinDate)) {
-        alert("Payment Date cannot be before the user's Joining Date (" + joinDate + ").");
-        return false; // Stops form from submitting
-    }
-    return true; // Allows form submission
-}
-
 /* =========================================
    CHAT APPLICATION LOGIC
    ========================================= */
 let lastChatHTML = "INITIAL_LOAD"; 
 
-// --- SPA CHAT SWITCHER (NO PAGE RELOAD) ---
 function switchChat(e, id, name, element) {
     e.preventDefault();
-    
-    // 1. ALWAYS trigger Mobile Slide-Over effect
     if (window.innerWidth < 768) {
         document.getElementById('chatSidebarList').classList.remove('d-block');
         document.getElementById('chatSidebarList').classList.add('d-none');
         document.getElementById('chatMainBox').classList.remove('d-none');
         document.getElementById('chatMainBox').classList.add('d-flex');
-        
         const box = document.getElementById('chatBox');
         if(box) box.scrollTop = box.scrollHeight;
     }
-
     if(window.currentChatClientId === id) return;
     
     window.currentChatClientId = id;
@@ -764,14 +675,12 @@ function closeMobileChat(e) {
     document.getElementById('chatSidebarList').classList.add('d-block');
 }
 
-// --- STANDARD CHAT FUNCTIONS ---
 function loadChats() {
     if (!window.currentChatClientId || window.currentChatClientId === 0) {
         const box = document.getElementById('chatBox');
         if(box && box.innerHTML === "") box.innerHTML = "<div class='text-center text-white-50 mt-5'>No active projects found.</div>";
         return;
     }
-    
     fetch(`../app/Api/fetch_chats.php?client_id=${window.currentChatClientId}`)
     .then(r => {
         if (!r.ok) throw new Error("Server returned " + r.status);
@@ -779,9 +688,7 @@ function loadChats() {
     })
     .then(html => {
         let content = html.trim();
-        if (content === "") {
-            content = "<div class='text-center text-white-50 mt-5'>No messages yet. Start the conversation!</div>";
-        }
+        if (content === "") content = "<div class='text-center text-white-50 mt-5'>No messages yet. Start the conversation!</div>";
         
         if (content !== lastChatHTML) {
             const box = document.getElementById('chatBox');
@@ -793,8 +700,6 @@ function loadChats() {
         }
     }).catch(err => {
         console.error("Error loading chat:", err);
-        const box = document.getElementById('chatBox');
-        if(box) box.innerHTML = "<div class='text-danger text-center mt-5'><b>Error loading chats.</b></div>";
     });
 }
 
@@ -830,7 +735,6 @@ function sendMessage() {
     }).then(r => loadChats());
 }
 
-// Initialize chat ONLY if we are on a chat page!
 document.addEventListener("DOMContentLoaded", () => {
     const chatBox = document.getElementById('chatBox');
     if (chatBox) { 
@@ -853,18 +757,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-
-
 /* =========================================
    EXPENSE MANAGEMENT LOGIC
    ========================================= */
 function viewExpense(title, amount, date, category, desc, user) {
     const titleEl = document.getElementById('viewTitle');
-    
-    // Safety check: If we are not on the expenses page, do nothing!
     if (!titleEl) return; 
 
-    // Fill the modal fields with the exact row data
     titleEl.innerText = title;
     document.getElementById('viewAmount').innerText = amount;
     document.getElementById('viewDate').innerText = date;
@@ -872,18 +771,14 @@ function viewExpense(title, amount, date, category, desc, user) {
     document.getElementById('viewDesc').innerText = desc;
     document.getElementById('viewUser').innerText = user;
 
-    // Show the modal using Bootstrap's JS API
     const expenseModal = new bootstrap.Modal(document.getElementById('viewExpenseModal'));
     expenseModal.show();
 }
 
-
 /* ==========================================================================
-   FINANCE PAGE: PAYMENT FORM UNLOCK & TOOLTIPS
+   FINANCE PAGE: PAYMENT FORM UNLOCK 
    ========================================================================== */
 document.addEventListener("DOMContentLoaded", function() {
-    
-    // 1. Payment Form Unlock Toggle
     const toggleSwitch = document.getElementById('unlockPaymentForm');
     if(toggleSwitch) {
         const form = document.getElementById('paymentForm');
@@ -892,51 +787,10 @@ document.addEventListener("DOMContentLoaded", function() {
         toggleSwitch.addEventListener('change', function() {
             const isEnabled = this.checked;
             inputs.forEach(input => {
-                // Only toggle inputs that are NOT hidden fields
                 if (input.type !== 'hidden') {
                     input.disabled = !isEnabled;
                 }
             });
         });
     }
-
-    // 2. Global Bootstrap Tooltip Initialization
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
 });
-/* ==========================================================================
-   GLOBAL CUSTOM CONFIRM ALERT (BULLETPROOF METHOD)
-   ========================================================================== */
-
-   // 1. FOR FORMS (Used on Users page)
-function triggerFormModal(formId, customMessage) {
-    document.getElementById('rooqConfirmMessage').innerText = customMessage;
-    let oldBtn = document.getElementById('rooqConfirmActionBtn');
-    let newBtn = oldBtn.cloneNode(true);
-    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-    
-    newBtn.addEventListener('click', function() {
-        document.getElementById(formId).submit();
-    });
-    
-    var myModal = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
-    myModal.show();
-}
-
-// 2. FOR LINKS/URLS (Used on Expenses page)
-function triggerLinkModal(url, customMessage) {
-    document.getElementById('rooqConfirmMessage').innerText = customMessage;
-    let oldBtn = document.getElementById('rooqConfirmActionBtn');
-    let newBtn = oldBtn.cloneNode(true);
-    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-    
-    newBtn.addEventListener('click', function() {
-        window.location.href = url;
-    });
-    
-    var myModal = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
-    myModal.show();
-}

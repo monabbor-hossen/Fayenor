@@ -190,7 +190,31 @@
     </div>
 </div>
 
-
+<div class="modal fade" id="workflowModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-modal rounded-4 border border-gold shadow-lg">
+            <div class="modal-header border-bottom border-light border-opacity-10">
+                <h5 class="modal-title text-white fw-bold" id="modalTitle">Update Status</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="current_field_key">
+                <div class="mb-4">
+                    <label class="form-label text-gold small fw-bold">Status</label>
+                    <select id="modal_status_select" class="form-select glass-input"></select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-gold small fw-bold">Note / Remark</label>
+                    <textarea id="modal_note_text" class="form-control glass-input" rows="3" placeholder="Add specific details or dates here..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-light border-opacity-10">
+                <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-rooq-primary rounded-pill px-4" onclick="saveModalChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="<?php echo BASE_URL; ?>assets/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/all.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>

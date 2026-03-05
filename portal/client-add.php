@@ -3,17 +3,40 @@
 require_once 'includes/header.php';
 require_once __DIR__ . '/../app/Config/Database.php';
 
+// --- 1. SECURITY: STRICT ACCESS CONTROL ---
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
+    echo "<script>window.location.href='../public/login.php';</script>";
+    exit();
+}
+
+// --- 2. GRAB SESSION MESSAGES (PRG PATTERN) ---
 $message = "";
+if (isset($_SESSION['success_msg'])) {
+    $message = "<div class='alert bg-success bg-opacity-25 text-success border border-success border-opacity-25 alert-dismissible fade show rounded-3 mb-4'>
+                    <i class='bi bi-check-circle-fill me-2'></i>" . $_SESSION['success_msg'] . "
+                    <button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert'></button>
+                </div>";
+    unset($_SESSION['success_msg']);
+}
+if (isset($_SESSION['error_msg'])) {
+    $message = "<div class='alert bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 alert-dismissible fade show rounded-3 mb-4'>
+                    <i class='bi bi-exclamation-triangle-fill me-2'></i>" . $_SESSION['error_msg'] . "
+                    <button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert'></button>
+                </div>";
+    unset($_SESSION['error_msg']);
+}
+
 $db = (new Database())->getConnection();
 
 // Fetch existing accounts for the dropdown
 $stmt_accs = $db->query("SELECT a.account_id, a.username, c.client_name FROM client_accounts a LEFT JOIN clients c ON a.client_id = c.client_id GROUP BY a.account_id");
 $existing_accounts = $stmt_accs->fetchAll(PDO::FETCH_ASSOC);
 
+// --- 3. HANDLE FORM SUBMISSION (WITH PRG REDIRECT) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Security::checkCSRF($_POST['csrf_token']);
 
-    // 1. Sanitize Basic Info (The License/Project Details)
+    // Sanitize Basic Info
     $company = Security::clean($_POST['company_name']);
     $client  = Security::clean($_POST['client_name']);
     $phone   = Security::clean($_POST['phone_number']);
@@ -24,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $db->beginTransaction();
 
-        // A. Insert Client Profile (This acts as the License Application)
+        // A. Insert Client Profile
         $sql = "INSERT INTO clients (company_name, client_name, phone_number, email, trade_name_application, contract_value) 
                 VALUES (:company, :client, :phone, :email, :trade_app, :val)";
         $stmt = $db->prepare($sql);
@@ -77,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sql_wf = "INSERT INTO workflow_tracking 
                    (client_id, license_scope_status, license_scope_note, hire_foreign_company, hire_foreign_company_note,
-                    misa_application, misa_application_note, sbc_application, sbc_application_note, article_association, article_association_note,
-                    gosi, gosi_note, qiwa, qiwa_note, muqeem, muqeem_note, chamber_commerce, chamber_commerce_note, update_date_at) 
+                   misa_application, misa_application_note, sbc_application, sbc_application_note, article_association, article_association_note,
+                   gosi, gosi_note, qiwa, qiwa_note, muqeem, muqeem_note, chamber_commerce, chamber_commerce_note, update_date_at) 
                    VALUES 
                    (:cid, :scope_st, :scope_nt, :hire_st, :hire_nt, :misa_st, :misa_nt, :sbc_st, :sbc_nt, :art_st, :art_nt, 
                     :gosi_st, :gosi_nt, :qiwa_st, :qiwa_nt, :muqeem_st, :muqeem_nt, :coc_st, :coc_nt, :update_at)";
@@ -86,17 +109,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_wf = $db->prepare($sql_wf);
         $stmt_wf->execute($statuses);
         $db->commit();
-        // NEW: Log the exact action
+        
         Security::logActivity("Created new client license for: " . $company);
-        $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'>Client License created and linked successfully!</div>";
+        
+        // REDIRECT ON SUCCESS
+        $_SESSION['success_msg'] = "Client License created and linked successfully!";
+        echo "<script>window.location.href='clients.php';</script>"; // Redirecting back to the clients list is best UX here!
+        exit();
 
     } catch (PDOException $e) {
         $db->rollBack();
         if(strpos($e->getMessage(), 'Duplicate entry') !== false) {
-             $message = "<div class='alert alert-danger'>Error: Username already taken.</div>";
+             $_SESSION['error_msg'] = "Error: Username already taken.";
         } else {
-             $message = "<div class='alert alert-danger'>Database Error: " . $e->getMessage() . "</div>";
+             $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
         }
+        // REDIRECT ON ERROR
+        echo "<script>window.location.href='client-add.php';</script>";
+        exit();
     }
 }
 
@@ -113,7 +143,7 @@ $workflow_steps = [
 ];
 ?>
 
-<div class="container-fluid">
+<div class="container-fluid py-4">
     <a href="clients.php" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
         <i class="bi bi-arrow-left me-2"></i> Back to Clients
     </a>
@@ -122,6 +152,7 @@ $workflow_steps = [
         <div class="col-lg-10">
             <div class="card-box">
                 <h4 class="text-white fw-bold mb-4 border-bottom border-light border-opacity-10 pb-3">Add New License / Client</h4>
+                
                 <?php echo $message; ?>
 
                 <form method="POST">
@@ -220,10 +251,10 @@ $workflow_steps = [
                                                 style="width: 2.2em; height: 1.1em;"
                                                 <?php echo $is_required ? 'disabled' : ''; ?>>
                                         </div>
-                                    <button type="button" class="btn btn-sm btn-link text-gold p-0" onclick="openEditModal('<?php echo $key; ?>', '<?php echo $label; ?>')"><i class="bi bi-pencil-square fs-6"></i></button>
+                                    <button type="button" class="btn btn-sm btn-link text-gold p-0" onclick="openEditModal('<?php echo $key; ?>', '<?php echo htmlspecialchars($label, ENT_QUOTES); ?>')"><i class="bi bi-pencil-square fs-6"></i></button>
                                     </div>
                                 </div>
-                                <select name="status_<?php echo $key; ?>" id="select_<?php echo $key; ?>" class="form-select glass-select-sm">
+                                <select name="status_<?php echo $key; ?>" id="select_<?php echo $key; ?>" class="form-select glass-input glass-select-sm">
                                     <?php if ($key === 'scope'): ?>
                                     <option value="Trading License Processing">Trading License Processing</option>
                                     <option value="Service License Processing">Service License Processing</option>
@@ -250,38 +281,5 @@ $workflow_steps = [
         </div>
     </div>
 </div>
-</main>
-
-<script>
-function toggleAccountFields() {
-    if(document.getElementById('acc_new').checked) {
-        document.getElementById('new_account_fields').classList.remove('d-none');
-        document.getElementById('existing_account_fields').classList.add('d-none');
-    } else {
-        document.getElementById('new_account_fields').classList.add('d-none');
-        document.getElementById('existing_account_fields').classList.remove('d-none');
-    }
-}
-</script>
 
 <?php require_once 'includes/footer.php'; ?>
-
-<div class="modal fade" id="workflowModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-modal">
-            <div class="modal-header border-bottom border-white border-opacity-10">
-                <h5 class="modal-title text-white fw-bold" id="modalTitle">Update Status</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="current_field_key">
-                <div class="mb-3"><label class="form-label text-gold small fw-bold">Status</label><select id="modal_status_select" class="form-select glass-input"></select></div>
-                <div class="mb-3"><label class="form-label text-gold small fw-bold">Note / Remark</label><textarea id="modal_note_text" class="form-control glass-input" rows="3"></textarea></div>
-            </div>
-            <div class="modal-footer border-top border-white border-opacity-10">
-                <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-rooq-primary btn-sm px-4" onclick="saveModalChanges()">Save Changes</button>
-            </div>
-        </div>
-    </div>
-</div>

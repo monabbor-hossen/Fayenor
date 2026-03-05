@@ -907,3 +907,50 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 });
+/* ==========================================================================
+   GLOBAL CUSTOM CONFIRM ALERT (WORKS FOR BOTH LINKS & FORMS)
+   ========================================================================== */
+let confirmModalInstance = null; 
+
+function showConfirmModal(message, onConfirmCallback) {
+    // 1. Set the message
+    document.getElementById('rooqConfirmMessage').innerText = message;
+    
+    // 2. Grab the "Yes, Proceed" button
+    let oldBtn = document.getElementById('rooqConfirmActionBtn');
+    
+    // 3. CLONE the button to perfectly wipe out any old, stuck clicks!
+    let newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+    
+    // 4. Attach the new action to the fresh button
+    newBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Hide modal instantly so it feels snappy, then execute the action
+        confirmModalInstance.hide(); 
+        onConfirmCallback();
+    });
+
+    // 5. Initialize and show the modal
+    if (!confirmModalInstance) {
+        confirmModalInstance = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
+    }
+    confirmModalInstance.show();
+}
+
+// FOR STANDARD LINKS (<a> tags)
+function confirmAction(event, url, message = "Are you sure you want to proceed?") {
+    event.preventDefault();
+    showConfirmModal(message, function() {
+        window.location.href = url; // Redirect the page
+    });
+}
+
+// FOR SECURE FORMS (<form> tags)
+function confirmFormSubmit(event, formElement, message = "Are you sure you want to proceed?") {
+    event.preventDefault();
+    showConfirmModal(message, function() {
+        formElement.submit(); // Submit the secure POST form
+    });
+}

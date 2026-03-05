@@ -171,17 +171,16 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="rooqConfirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content glass-modal rounded-4 shadow-lg text-center" style="border: 1px solid rgba(220, 53, 69, 0.4);">
+        <div class="modal-content glass-modal rounded-4 shadow-lg text-center" style="border: 1px solid rgba(220, 53, 69, 0.4); background: rgba(20, 5, 10, 0.98); backdrop-filter: blur(20px);">
             <div class="modal-body p-4">
                 <div class="icon-box bg-danger bg-opacity-25 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto shadow" style="width: 65px; height: 65px;">
                     <i class="bi bi-exclamation-triangle fs-2"></i>
                 </div>
-                
                 <h5 class="text-white fw-bold mb-2">Are you sure?</h5>
                 <p class="text-white-50 small mb-4" id="rooqConfirmMessage">You won't be able to revert this action!</p>
-                
                 <div class="d-flex justify-content-center gap-2">
                     <button type="button" class="btn btn-outline-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="rooqConfirmActionBtn" class="btn btn-danger rounded-pill px-4 fw-bold shadow-lg">Yes, Proceed</button>
@@ -190,6 +189,8 @@
         </div>
     </div>
 </div>
+
+
 <script src="<?php echo BASE_URL; ?>assets/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/all.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>

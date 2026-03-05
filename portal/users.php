@@ -112,10 +112,8 @@ function getRoleName($roleId) {
                                             <input type="hidden" name="delete_id" value="<?php echo $user['id']; ?>">
                                             
                                             <?php if ($_SESSION['role'] == '2'): ?>
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-outline-danger border-0 opacity-50 hover-opacity-100" 
-                                                        title="Delete User"
-                                                        onclick="triggerDeleteModal('deleteForm_<?php echo $user['id']; ?>')">
+                                                <button type="button" class="btn btn-sm btn-outline-danger border-0 opacity-50 hover-opacity-100" title="Delete User"
+                                                        onclick="triggerFormModal('deleteForm_<?php echo $user['id']; ?>', 'Are you sure you want to completely delete this user? This action cannot be undone.')">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             <?php endif;?>

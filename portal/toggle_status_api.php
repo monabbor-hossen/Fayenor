@@ -28,37 +28,45 @@ try {
     $db = (new Database())->getConnection();
     
     $target_name = "ID #" . $id; // Default fallback
+    $action_text = $status ? "Activated" : "Deactivated"; // Default log text
     
     if ($type === 'user') {
-        // Prevent disabling yourself
         if ($id == $_SESSION['user_id']) {
             echo json_encode(['success' => false, 'message' => 'You cannot deactivate your own account.']);
             exit;
         }
         $sql = "UPDATE users SET is_active = :status WHERE id = :id";
-        
-        // Fetch User's Name for the log
         $stmtName = $db->prepare("SELECT username FROM users WHERE id = ?");
         $stmtName->execute([$id]);
         $target_name = $stmtName->fetchColumn() ?: $target_name;
+        $log_message = $action_text . " login access for user: " . $target_name;
         
     } elseif ($type === 'client') {
-        // Disables the entire Master Account
         $sql = "UPDATE client_accounts SET is_active = :status WHERE account_id = :id";
-        
-        // Fetch Master Account Username for the log
         $stmtName = $db->prepare("SELECT username FROM client_accounts WHERE account_id = ?");
         $stmtName->execute([$id]);
         $target_name = $stmtName->fetchColumn() ?: $target_name;
+        $log_message = $action_text . " login access for client: " . $target_name;
         
     } elseif ($type === 'license') {
-        // Disables ONLY the specific license/application
         $sql = "UPDATE clients SET is_active = :status WHERE client_id = :id";
-        
-        // Fetch Company Name for the log
         $stmtName = $db->prepare("SELECT company_name FROM clients WHERE client_id = ?");
         $stmtName->execute([$id]);
         $target_name = $stmtName->fetchColumn() ?: $target_name;
+        $log_message = $action_text . " login access for license: " . $target_name;
+        
+    // ==========================================
+    // NEW LOGIC FOR EXPENSE TOGGLE
+    // ==========================================
+    } elseif ($type === 'expense') {
+        $sql = "UPDATE clients SET show_expenses = :status WHERE client_id = :id";
+        
+        $stmtName = $db->prepare("SELECT company_name FROM clients WHERE client_id = ?");
+        $stmtName->execute([$id]);
+        $target_name = $stmtName->fetchColumn() ?: $target_name;
+        
+        $action_text = $status ? "Granted" : "Revoked";
+        $log_message = $action_text . " expense access for client: " . $target_name;
         
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid type']);
@@ -69,14 +77,14 @@ try {
     $stmt = $db->prepare($sql);
     $stmt->execute([':status' => $status, ':id' => $id]);
 
-    // NEW: Log the status change using the actual NAME
-    $action_text = $status ? "Activated" : "Deactivated";
-    Security::logActivity($action_text . " login access for " . $type . ": " . $target_name);
+    // Log the activity
+    Security::logActivity($log_message);
 
     echo json_encode(['success' => true]);
 
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error']);
+    // Let's send the exact SQL error so we know if the column is missing!
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'System error']);
 }

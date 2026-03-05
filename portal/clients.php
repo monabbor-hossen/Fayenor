@@ -183,7 +183,7 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                         <td class="text-center">
     <div class="form-check form-switch m-0 d-flex justify-content-center" title="Allow client to see Expenses">
         <input class="form-check-input form-check-input-gold cursor-pointer" type="checkbox" 
-               onchange="toggleClientExpense(<?php echo $client['client_id']; ?>, this)" 
+               onchange="toggleLoginStatus('expense', <?php echo $client['client_id']; ?>, this)"
                <?php echo (isset($client['show_expenses']) && $client['show_expenses'] == 1) ? 'checked' : ''; ?>>
     </div>
 </td>

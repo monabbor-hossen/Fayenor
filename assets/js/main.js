@@ -859,30 +859,70 @@ function checkLiveNotifications() {
 // Check for new messages every 10 seconds silently in the background
 setInterval(checkLiveNotifications, 10000);
 
-
-
+/* ==========================================================================
+   TOGGLE CLIENT EXPENSE ACCESS
+   ========================================================================== */
 function toggleClientExpense(clientId, checkbox) {
     const isChecked = checkbox.checked ? 1 : 0;
-    const metaTag = document.getElementById('base_url_meta');
-    const baseUrl = metaTag ? metaTag.getAttribute('content') : '../';
-
     checkbox.style.opacity = '0.5';
-fetch('/app/Api/toggle_expense_api.php', {
+
+    // Fetch directly from the same folder!
+    fetch('toggle_expense_api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(response => response.text()) // Grab raw text first to prevent silent crashes
+    .then(text => {
         checkbox.style.opacity = '1';
-        if (!data.success) {
-            alert("Error: " + data.message);
-            checkbox.checked = !isChecked;
+        try {
+            const data = JSON.parse(text);
+            if (!data.success) {
+                alert("Error: " + data.message);
+                checkbox.checked = !isChecked; // Revert switch
+            }
+        } catch (e) {
+            console.error("Server Error Response:", text);
+            alert("Failed to save. The database column might be missing. Check the Console (F12) for details.");
+            checkbox.checked = !isChecked; // Revert switch
         }
     })
     .catch(err => {
-        console.error("Fetch Error:", err);
+        console.error("Network Error:", err);
         checkbox.style.opacity = '1';
         checkbox.checked = !isChecked;
+    });
+}/* ==========================================================================
+   TOGGLE CLIENT EXPENSE ACCESS
+   ========================================================================== */
+function toggleClientExpense(clientId, checkbox) {
+    const isChecked = checkbox.checked ? 1 : 0;
+    
+    // Dim the switch while saving
+    checkbox.style.opacity = '0.5';
+
+    // Pointing exactly to where the file is located!
+    fetch('../app/Api/toggle_expense_api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })
+    })
+    .then(async response => {
+        // If it hits a 404 page, throw an error immediately instead of reading HTML
+        if (!response.ok) throw new Error("API File Not Found (404)");
+        return response.json(); 
+    })
+    .then(data => {
+        checkbox.style.opacity = '1';
+        if (!data.success) {
+            alert("Database Error: " + data.message);
+            checkbox.checked = !isChecked; // Revert switch
+        }
+    })
+    .catch(err => {
+        console.error("Network Error:", err);
+        checkbox.style.opacity = '1';
+        alert("Failed to save. Make sure app/Api/toggle_expense_api.php exists!");
+        checkbox.checked = !isChecked; // Revert switch
     });
 }

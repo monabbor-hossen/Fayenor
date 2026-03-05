@@ -203,11 +203,11 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                                                 <i class="bi bi-eye"></i>
                                             </button>
 
-                                            <a href="expenses.php?delete_id=<?php echo $exp['id']; ?>" 
-                                               class="btn btn-sm btn-outline-danger rounded-circle border-0 shadow-none" 
-                                               title="Delete Expense"
-                                               onclick="return confirm('Are you sure you want to completely delete this expense? This action cannot be undone.');">
-                                                <i class="bi bi-trash"></i>
+                                            <a href="javascript:void(0);" 
+                                                class="btn btn-sm btn-outline-danger rounded-circle border-0 shadow-none" 
+                                                title="Delete Expense"
+                                                onclick="triggerLinkModal('expenses.php?delete_id=<?php echo $exp['id']; ?>', 'Are you sure you want to completely delete this expense? This action cannot be undone.')">
+                                                    <i class="bi bi-trash"></i>
                                             </a>
                                         </td>
                                     </tr>

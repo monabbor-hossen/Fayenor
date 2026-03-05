@@ -907,3 +907,28 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 });
+/* ==========================================================================
+   GLOBAL CUSTOM CONFIRM ALERT (BULLETPROOF METHOD)
+   ========================================================================== */
+
+function triggerLinkModal(deleteUrl, customMessage) {
+    // 1. Set the dynamic custom warning text
+    document.getElementById('rooqConfirmMessage').innerText = customMessage;
+    
+    // 2. Grab the original Yes button
+    let oldBtn = document.getElementById('rooqConfirmActionBtn');
+    
+    // 3. Clone it to wipe its memory clean (prevents bugs!)
+    let newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+    
+    // 4. Tell the fresh button to redirect to the URL when clicked
+    newBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = deleteUrl;
+    });
+    
+    // 5. Show the beautiful Glassmorphism Modal!
+    var myModal = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
+    myModal.show();
+}

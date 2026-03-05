@@ -251,29 +251,6 @@ function checkLiveNotifications() {
 // Check for new messages every 10 seconds silently in the background
 setInterval(checkLiveNotifications, 10000);
 </script>
-<script>
-function triggerDeleteModal(formId) {
-    // 1. Set the custom warning text
-    document.getElementById('rooqConfirmMessage').innerText = "Are you sure you want to completely delete this user? This action cannot be undone.";
-    
-    // 2. Grab the original Yes button
-    let oldBtn = document.getElementById('rooqConfirmActionBtn');
-    
-    // 3. Clone it to wipe its memory clean (this prevents double-clicking bugs!)
-    let newBtn = oldBtn.cloneNode(true);
-    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-    
-    // 4. Tell the fresh button to submit the correct form
-    newBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById(formId).submit();
-    });
-    
-    // 5. Show the beautiful Glassmorphism Modal!
-    var myModal = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
-    myModal.show();
-}
-</script>
 </body>
 
 </html>

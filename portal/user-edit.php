@@ -3,9 +3,7 @@
 require_once 'includes/header.php';
 require_once __DIR__ . '/../app/Config/Database.php';
 
-$message = "";
-$user_id = $_GET['id'] ?? null;
-
+$user_id = isset($_GET['id']) ? intval($_GET['id']) : null;
 if (!$user_id) {
     echo "<script>window.location.href='users.php';</script>";
     exit();
@@ -13,8 +11,24 @@ if (!$user_id) {
 
 $db = (new Database())->getConnection();
 
-// --- 1. FETCH CURRENT USER DATA SECURELY FIRST ---
-// (We do this BEFORE the POST so we know their original role)
+// --- 1. GRAB SESSION MESSAGES (PRG PATTERN) ---
+$message = "";
+if (isset($_SESSION['success_msg'])) {
+    $message = "<div class='alert bg-success bg-opacity-25 text-success border border-success border-opacity-25 alert-dismissible fade show rounded-3 mb-4'>
+                    <i class='bi bi-check-circle-fill me-2'></i>" . $_SESSION['success_msg'] . "
+                    <button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert'></button>
+                </div>";
+    unset($_SESSION['success_msg']);
+}
+if (isset($_SESSION['error_msg'])) {
+    $message = "<div class='alert bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 alert-dismissible fade show rounded-3 mb-4'>
+                    <i class='bi bi-exclamation-triangle-fill me-2'></i>" . $_SESSION['error_msg'] . "
+                    <button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert'></button>
+                </div>";
+    unset($_SESSION['error_msg']);
+}
+
+// --- 2. FETCH CURRENT USER DATA SECURELY FIRST ---
 try {
     $stmt = $db->prepare("SELECT id, username, role, full_name, email, phone, job_title, basic_salary, joining_date, resigning_date FROM users WHERE id = :id LIMIT 1");
     $stmt->execute([':id' => $user_id]);
@@ -31,12 +45,12 @@ try {
     exit();
 }
 
-// --- 2. HANDLE UPDATE ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// --- 3. HANDLE UPDATE FORM SUBMISSION ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     Security::checkCSRF($_POST['csrf_token']);
 
-    $username  = Security::clean($_POST['username']);
-    $password  = $_POST['password']; 
+    $username   = Security::clean($_POST['username']);
+    $password   = $_POST['password']; 
     
     $full_name = Security::clean($_POST['full_name']);
     $email     = Security::clean($_POST['email']);
@@ -48,11 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resigning_date = !empty($_POST['resigning_date']) ? Security::clean($_POST['resigning_date']) : null;
 
     // --- STRICT ROLE SECURITY CHECK ---
-    // Only logged-in Admins (Role 2) are allowed to change roles.
     if ($_SESSION['role'] == '2') {
         $role = Security::clean($_POST['role']);
     } else {
-        // If they are Staff, forcefully keep the target user's role exactly as it was in the database
         $role = $user['role']; 
     }
 
@@ -66,21 +78,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 resigning_date = :resigning_date";
         
         $params = [
-            ':user'      => $username,
-            ':role'      => $role,
-            ':full_name' => $full_name,
-            ':email'     => $email,
-            ':phone'     => $phone,
-            ':job_title' => $job_title,
+            ':user'       => $username,
+            ':role'       => $role,
+            ':full_name'  => $full_name,
+            ':email'      => $email,
+            ':phone'      => $phone,
+            ':job_title'  => $job_title,
             ':basic_salary' => $basic_salary,
             ':joining_date' => $joining_date,
             ':resigning_date' => $resigning_date,
-            ':id'        => $user_id
+            ':id'         => $user_id
         ];
 
+        // Handle Optional Password Update
         if (!empty($password)) {
             if (strlen($password) < 6) {
-                $message = "<div class='alert alert-danger bg-danger bg-opacity-25 text-white border-danger'>Password must be at least 6 characters.</div>";
+                $_SESSION['error_msg'] = "Password must be at least 6 characters.";
+                echo "<script>window.location.href='user-edit.php?id=" . $user_id . "';</script>";
+                exit();
             } else {
                 $sql .= ", password = :pass";
                 $params[':pass'] = password_hash($password, PASSWORD_DEFAULT);
@@ -89,37 +104,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $sql .= " WHERE id = :id";
 
-        if (empty($message)) {
-            $stmt = $db->prepare($sql);
-            if ($stmt->execute($params)) {
-                $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'>User profile updated successfully!</div>";
-                Security::logActivity("Updated user profile: " . $username);
-                
-                // Update local array so the page instantly reflects changes
-                $user['username'] = $username;
-                $user['full_name'] = $full_name;
-                $user['email'] = $email;
-                $user['phone'] = $phone;
-                $user['job_title'] = $job_title;
-                $user['basic_salary'] = $basic_salary;
-                $user['joining_date'] = $joining_date;
-                $user['resigning_date'] = $resigning_date;
-                $user['role'] = $role;
-            }
+        // EXECUTE FIRST, THEN REDIRECT
+        $stmtUpdate = $db->prepare($sql);
+        if ($stmtUpdate->execute($params)) {
+            Security::logActivity("Updated user profile: " . $username);
+            
+            $_SESSION['success_msg'] = "User profile updated successfully!";
+            echo "<script>window.location.href='user-edit.php?id=" . $user_id . "';</script>";
+            exit();
         }
+
     } catch (PDOException $e) {
-        $message = "<div class='alert alert-danger bg-danger bg-opacity-25 text-white border-danger'>Database Error: " . $e->getMessage() . "</div>";
+        $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
+        echo "<script>window.location.href='user-edit.php?id=" . $user_id . "';</script>";
+        exit();
     }
 }
 ?>
 
-<div class="container-fluid">
+<div class="container-fluid py-4">
     <a href="users.php" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
         <i class="bi bi-arrow-left me-2"></i> Back to Users
     </a>
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
+            
+            <?php echo $message; ?>
+
             <div class="card-box">
                 <div class="d-flex align-items-center mb-4 border-bottom border-light border-opacity-10 pb-3">
                     <div class="avatar-icon me-3" style="width: 50px; height: 50px; font-size: 1.5rem;">
@@ -130,8 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="text-white-50 small mb-0">ID: #<?php echo htmlspecialchars($user['id']); ?></p>
                     </div>
                 </div>
-
-                <?php echo $message; ?>
 
                 <form method="POST" action="user-edit.php?id=<?php echo $user_id; ?>">
                     <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
@@ -155,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="tel" name="phone" class="form-control glass-input" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>">
                         </div>
                         
-                        <div class="col-md-12 border-top border-secondary border-opacity-25 pt-3 mt-3">
+                        <div class="col-md-12 border-top border-light border-opacity-10 pt-3 mt-3">
                             <label class="form-label text-gold small fw-bold"><i class="bi bi-cash-stack me-2"></i>Basic Salary (Monthly)</label>
                             <div class="input-group">
                                 <span class="input-group-text glass-input border-end-0 text-white-50">SAR</span>
@@ -205,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-rooq-primary w-100 py-3 fw-bold mt-2">Update User Profile</button>
+                    <button type="submit" name="update_user" class="btn btn-rooq-primary w-100 py-3 fw-bold mt-2">Update User Profile</button>
                 </form>
             </div>
         </div>

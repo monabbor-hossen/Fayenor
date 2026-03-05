@@ -858,3 +858,32 @@ function checkLiveNotifications() {
 
 // Check for new messages every 10 seconds silently in the background
 setInterval(checkLiveNotifications, 10000);
+
+
+
+function toggleClientExpense(clientId, checkbox) {
+    const isChecked = checkbox.checked ? 1 : 0;
+    const metaTag = document.getElementById('base_url_meta');
+    const baseUrl = metaTag ? metaTag.getAttribute('content') : '../';
+
+    checkbox.style.opacity = '0.5';
+
+    fetch(baseUrl + 'app/Api/toggle_expense_api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })
+    })
+    .then(response => response.json())
+    .then(data => {
+        checkbox.style.opacity = '1';
+        if (!data.success) {
+            alert("Error: " + data.message);
+            checkbox.checked = !isChecked;
+        }
+    })
+    .catch(err => {
+        console.error("Fetch Error:", err);
+        checkbox.style.opacity = '1';
+        checkbox.checked = !isChecked;
+    });
+}

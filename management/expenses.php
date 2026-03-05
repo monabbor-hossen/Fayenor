@@ -8,6 +8,16 @@ if ($_SESSION['role'] !== 'client') {
     echo "<script>window.location.href='../portal/dashboard.php';</script>";
     exit();
 }
+if ($_SESSION['role'] === 'client') {
+    $account_id = $_SESSION['account_id'] ?? $_SESSION['user_id'];
+    $stmtCheck = $db->prepare("SELECT show_expenses FROM clients WHERE account_id = ? LIMIT 1");
+    $stmtCheck->execute([$account_id]);
+    $perm = $stmtCheck->fetch();
+    if (!$perm || $perm['show_expenses'] == 0) {
+        header("Location: dashboard.php");
+        exit();
+    }
+}
 
 $db = (new Database())->getConnection();
 $user_id = $_SESSION['user_id']; 

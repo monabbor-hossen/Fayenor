@@ -107,12 +107,15 @@ function getRoleName($roleId) {
                                     </a>
 
                                     <?php if($_SESSION['user_id'] != $user['id']): ?>
-                                        <form action="user-delete.php" method="POST" onsubmit="confirmFormSubmit(event, this, 'Are you sure you want to completely delete this user? This action cannot be undone.');" style="display:inline;">
+                                        <form id="deleteForm_<?php echo $user['id']; ?>" action="user-delete.php" method="POST" style="display:inline;">
                                             <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
                                             <input type="hidden" name="delete_id" value="<?php echo $user['id']; ?>">
                                             
                                             <?php if ($_SESSION['role'] == '2'): ?>
-                                                <button type="submit" class="btn btn-sm btn-outline-danger border-0 opacity-50 hover-opacity-100" title="Delete User">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-outline-danger border-0 opacity-50 hover-opacity-100" 
+                                                        title="Delete User"
+                                                        onclick="triggerDeleteModal('deleteForm_<?php echo $user['id']; ?>')">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             <?php endif;?>

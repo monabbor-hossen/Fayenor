@@ -114,7 +114,6 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                         <th class="py-3"><?php echo sortLink('progress', 'Progress', $sort, $next_dir); ?></th>
                         <th class="py-3 text-gold text-uppercase small">Contact Details</th>
                         <th class="py-3 text-center text-gold text-uppercase small">Login Access</th>
-                        <th class="text-center text-gold text-uppercase small py-3">Expense Access</th>
                         <th class="py-3"><?php echo sortLink('payment', 'Payment', $sort, $next_dir); ?></th>
                         <th class="py-3 text-center pe-4 text-gold text-uppercase small">Actions</th>
                     </tr>
@@ -180,13 +179,7 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                                 <span class="badge bg-secondary small" style="font-size: 0.7rem;">No Account</span>
                             <?php endif; ?>
                         </td>
-<td class="text-center">
-    <div class="form-check form-switch m-0 d-flex justify-content-center" title="Allow client to see Expenses">
-        <input class="form-check-input form-check-input-gold cursor-pointer" type="checkbox" 
-               onchange="toggleClientExpense(<?php echo $client['client_id']; ?>, this)" 
-               <?php echo (isset($client['show_expenses']) && $client['show_expenses'] == 1) ? 'checked' : ''; ?>>
-    </div>
-</td>
+
                         <td>
                             <?php echo $status_badge; ?>
                             <div class="small text-white-50 mt-1">Due: <?php echo number_format(max(0, $due)); ?> SAR</div>

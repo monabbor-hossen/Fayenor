@@ -6,6 +6,8 @@ $iqamaNo = "2497876264";
 $serviceProvider = "Flyburj Travels and Tourism Company";
 $serviceFee = "15,000";
 $timelineDays = "40";
+$companyLocation = "BURAYDAH, AL QASSIM-SAUDI ARABIA";
+$year = "2026";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,8 +23,7 @@ $timelineDays = "40";
             --rooq-dark: #2D2D2D;
             --text-color: #333333;
         }
-        
-        body {
+         body {
             background-color: #e9ecef;
             color: var(--text-color);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -35,10 +36,14 @@ $timelineDays = "40";
         }
 
         /* A4 Document Container */
+        .document-page:first-child {
+            background-image: none;
+        }
         .document-page {
             width: 210mm;
             min-height: 297mm;
-            background-image: url('pad.webp'); 
+            height: 297mm;
+            background-image: url('rooq.webp'); 
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-color: white;
@@ -54,41 +59,71 @@ $timelineDays = "40";
             z-index: 1;
             line-height: 1.6;
             font-size: 11pt;
+            border-top: 3px solid var(--rooq-burgundy);
+            margin-top: 15px;
+        }
+
+        /* Cover Page Specific Styling */
+        .cover-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            min-height: 200mm;
+            padding-top: 50mm;
+        }
+
+        .cover-logo {
+            width: 250px;
+            margin-bottom: 40px;
+            /* Invert or adjust if the logo has a dark background like the uploaded JPG */
+            mix-blend-mode: multiply; 
         }
 
         .doc-title {
-            text-align: center;
+            text-align: left;
             color: var(--rooq-burgundy);
-            font-size: 22px;
+            font-size: 14px;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             font-weight: bold;
+        }
+
+        .cover-title {
+            font-size: 28px;
+            margin-bottom: 50px;
         }
 
         .doc-subtitle {
             text-align: center;
             font-size: 14px;
-            margin-bottom: 30px;
+            margin-bottom: 0px;
+            font-weight: bold;
             color: var(--rooq-dark);
         }
-
+        p{
+            margin-top:10px;
+            margin-bottom: 5px;
+        }
         h2 {
             color: var(--rooq-burgundy);
             font-size: 13pt;
             border-bottom: 1px dashed var(--rooq-gold);
             padding-bottom: 5px;
-            margin-top: 25px;
+            margin-top: 5px;
             text-transform: uppercase;
         }
 
         .parties-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 5px;
             background: rgba(255, 255, 255, 0.7);
-            padding: 15px;
-            border-left: 4px solid var(--rooq-gold);
-            margin-bottom: 20px;
+            /* padding: 15px; */
+            /* border-left: 4px solid var(--rooq-gold); */
+            margin-bottom: 5px;
         }
 
         ul {
@@ -117,8 +152,8 @@ $timelineDays = "40";
 
         .signature-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            grid-template-columns: 1fr;
+            gap: 20px;
             margin-top: 40px;
             padding-top: 20px;
         }
@@ -147,7 +182,7 @@ $timelineDays = "40";
                 width: 100%;
                 min-height: 297mm;
                 padding: 45mm 20mm 35mm 20mm;
-                page-break-after: always; /* Forces printer to start a new page */
+                page-break-after: always;
                 margin: 0;
             }
         }
@@ -156,14 +191,26 @@ $timelineDays = "40";
 <body>
 
 <div class="document-page">
+    <div class="content cover-content">
+        <img src="New Project (1).svg" alt="Flyburj Logo" class="cover-logo">
+        
+        <div class="doc-title cover-title">SERVICE LICENSE AGREEMENT</div>
+        
+        <div style="font-size: 18px; color: var(--rooq-dark); margin-bottom: 10px;">Prepared For</div>
+        <div style="font-size: 22px; font-weight: bold; color: var(--rooq-burgundy); margin-bottom: 10px;">Client Name: <?php echo $clientName; ?></div>
+        <div style="font-size: 18px; color: var(--rooq-dark); margin-bottom: 80px;">Date: <?php echo $date; ?></div>
+        
+        <div style="font-size: 20px; font-weight: bold; color: var(--rooq-burgundy);"><?php echo strtoupper(explode(" ", $serviceProvider)[0]); ?> COMPANY</div>
+        <div style="font-size: 16px; color: var(--rooq-dark);"><?php echo $companyLocation; ?></div>
+        <div style="font-size: 16px; color: var(--rooq-dark);"><?php echo $year; ?></div>
+    </div>
+</div>
+
+<div class="document-page">
     <div class="content">
         
         <div class="doc-title">SERVICE LICENSE AGREEMENT</div>
         <div class="doc-subtitle">(MISA Service License Facilitation)</div>
-        
-        <div style="text-align: right; margin-bottom: 15px;">
-            <strong>Date:</strong> <?php echo $date; ?>
-        </div>
 
         <p>This Service Agreement ("Agreement") is made between:</p>
         
@@ -245,15 +292,6 @@ $timelineDays = "40";
             </tr>
         </table>
 
-        <h2>7. CLIENT OBLIGATIONS</h2>
-        <p>The Client agrees to:</p>
-        <ul>
-            <li>Provide required documents promptly</li>
-            <li>Pay government fees on time</li>
-            <li>Cooperate fully during the application process</li>
-            <li>Comply with all Saudi laws, regulations, and MISA requirements</li>
-        </ul>
-        <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the Service Provider.</p>
     </div>
 </div>
 

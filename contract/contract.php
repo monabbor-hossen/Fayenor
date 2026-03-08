@@ -127,7 +127,7 @@ $year = "2026";
             font-size: 13pt;
             border-bottom: 1px dashed var(--rooq-gold);
             padding-bottom: 5px;
-            margin-top: 25px;
+            margin-top: 0px;
             text-transform: uppercase;
         }
         p { margin-top: 10px; margin-bottom: 5px; }
@@ -318,7 +318,7 @@ $year = "2026";
             p.style.marginBottom = '0px'; 
             p.style.boxShadow = 'none';
             // Cut precisely at 296.5mm so no extra pages are accidentally generated
-            p.style.height = '296.5mm'; 
+            p.style.height = '296.9mm'; 
         });
 
         const clientName = "<?php echo str_replace(' ', '_', $clientName); ?>";
@@ -332,7 +332,7 @@ $year = "2026";
                 scale: 2, 
                 useCORS: true, 
                 scrollY: 0,
-                windowWidth: 1024 
+                windowWidth: 1522
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
@@ -340,7 +340,7 @@ $year = "2026";
         // 2. Generate and then return normal web view styling
         html2pdf().set(opt).from(element).save().then(() => {
             pages.forEach(p => {
-                p.style.marginBottom = '40px';
+                p.style.marginBottom = '0px';
                 p.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
                 p.style.height = '297mm';
             });

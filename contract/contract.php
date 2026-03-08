@@ -192,7 +192,7 @@ $year = "2026";
 
 <div class="document-page">
     <div class="content cover-content">
-        <img src="New Project (1).svg" alt="Flyburj Logo" class="cover-logo">
+        <img src="../assets/img/logo.png" alt="Flyburj Logo" class="cover-logo">
         
         <div class="doc-title cover-title">SERVICE LICENSE AGREEMENT</div>
         

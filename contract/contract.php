@@ -130,7 +130,7 @@ $year = "2026";
             margin-top: 0px;
             text-transform: uppercase;
         }
-        p { margin-top: 10px; margin-bottom: 5px; }
+        p { margin: 0px; }
         ul, ol { padding-left: 20px; }
 
         /* FIXED LAYOUTS (PDF Safe) */
@@ -145,10 +145,7 @@ $year = "2026";
             vertical-align: top;
             padding: 10px;
         }
-        .bg-gray {
-            background: rgba(0, 0, 0, 0.03);
-        }
-
+        
         .bank-table {
             width: 100%;
             border-collapse: collapse;
@@ -183,7 +180,7 @@ $year = "2026";
 
     <div class="document-page">
         <div class="cover-content">
-            <img src="New Project (1).svg" alt="Flyburj Logo" class="cover-logo">
+            <img src="../assets/img/logo.png" alt="Rooq Logo" class="cover-logo">
             <div class="cover-title">SERVICE LICENSE AGREEMENT</div>
             <div style="font-size: 18px; color: var(--rooq-dark); margin-bottom: 10px;">Prepared For</div>
             <div style="font-size: 22px; font-weight: bold; color: var(--rooq-burgundy); margin-bottom: 10px;">Client Name: <?php echo $clientName; ?></div>
@@ -202,16 +199,12 @@ $year = "2026";
             <p>This Service Agreement ("Agreement") is made between:</p>
             
             <div class="layout-table bg-gray">
-                <div class="layout-cell">
-                    <strong>Service Provider:</strong><br>
-                    <?php echo $serviceProvider; ?><br>
-                    Email: info@flyburjco.com
-                </div>
-                <div class="layout-cell">
-                    <strong>Client Name:</strong><br>
-                    <?php echo $clientName; ?><br>
-                    Iqama No: <?php echo $iqamaNo; ?>
-                </div>
+                <strong>Service Provider:</strong><br>
+                <p><?php echo $serviceProvider; ?></p>
+                <p>Email: info@flyburjco.com </p>
+                
+                <p><strong>Client Name: </strong> <?php echo $clientName; ?></p>
+                <p> Iqama No: <?php echo $iqamaNo; ?></p>
             </div>
 
             <h2>1. OBJECTIVE OF THE AGREEMENT</h2>

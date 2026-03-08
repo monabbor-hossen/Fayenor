@@ -281,19 +281,14 @@ $year = "2026";
             <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
 
             <div class="layout-table" style="margin-top: 20px;">
-                <div class="layout-cell" style="padding-left: 0;">
-                    <strong>For Flyburj Travels And Tourism Company</strong><br>
-                    Name: Saifullah
-                    <div class="signature-line"></div>
-                    Signature
-                </div>
-                <div class="layout-cell">
-                    <strong>For the Client</strong><br>
-                    Name: <?php echo $clientName; ?>
-                    <div class="signature-line"></div>
-                    Signature<br><br>
-                    <strong>Date:</strong> _____________________
-                </div>
+                <strong>For Flyburj Travels And Tourism Company</strong><br>
+                <p>Name: <strong>Saifullah</strong></p> 
+                
+                <p>Signature: <div class="signature-line"></div></p> 
+                <strong>For the Client</strong>
+                <p>Name: <?php echo $clientName; ?></p> 
+                <p>Signature: <div class="signature-line"></div></p> 
+                <p><strong>Date:</strong> _____________________</p> 
             </div>
 
         </div>

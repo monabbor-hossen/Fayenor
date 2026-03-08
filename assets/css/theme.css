@@ -610,11 +610,12 @@ a:hover .avatar-circle-refined,
     bottom: 0;
     width: 5px;
     background: var(--wf-line);
-    transition: width 0.3s ease;
+    transition: width 0.3s, background 0.3s ease;
 }
 
 .workflow-card:hover::before {
     width: 8px;
+    background: var(--gold-90);
 }
 
 .card-status-approved::before {

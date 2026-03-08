@@ -384,57 +384,76 @@ $year = "2026";
 
 </div> 
 
+
 <script>
     function generatePDF() {
         const element = document.getElementById('contract-content');
         const pages = document.querySelectorAll('.document-page');
 
-        // 1. TEMPORARILY REMOVE GAPS AND PADDING FOR PERFECT SLICING
-        // Save the original styles so we can restore them later
+        // 1. SAVE ORIGINAL STYLES (So the web view doesn't break after downloading)
+        const originalDisplay = element.style.display;
         const originalGap = element.style.gap;
         const originalPadding = document.body.style.padding;
         const originalBg = document.body.style.backgroundColor;
 
-        // Apply "Print Mode" styles
+        // 2. APPLY "PRINT MODE" STYLES
+        // Change from Flex to Block so html2canvas doesn't create massive empty spaces
+        element.style.display = 'block'; 
         element.style.gap = '0px';
         document.body.style.padding = '0px';
         document.body.style.backgroundColor = 'white';
-        pages.forEach(p => {
-            p.style.boxShadow = 'none'; // Remove shadows
-            p.style.marginBottom = '0px'; // Prevent margin spillage
-            // Hack to prevent sub-pixel rounding errors creating blank pages
-            p.style.height = '296.5mm'; 
+        
+        pages.forEach((p, index) => {
+            p.style.boxShadow = 'none'; 
+            p.style.margin = '0px'; 
+            
+            // 296mm prevents pixel-rounding errors that trigger cascading blank pages
+            p.style.height = '297mm'; 
+            p.style.overflow = 'hidden'; 
+            
+            // Remove the page break on the very last page to prevent a trailing blank page
+            if (index === pages.length - 1) {
+                p.style.pageBreakAfter = 'avoid';
+            } else {
+                p.style.pageBreakAfter = 'always';
+            }
         });
 
-        // 2. CONFIGURE PDF
+        // 3. CONFIGURE PDF
         const clientName = "<?php echo str_replace(' ', '_', $clientName); ?>";
         const filename = `Service_License_Agreement_${clientName}.pdf`;
 
         const opt = {
             margin:       0, 
             filename:     filename,
-            image:        { type: 'jpeg', quality: 1 }, // Max quality
+            image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
                 scale: 2, 
                 useCORS: true,
-                scrollY: 0 // Prevents layout shifting if the user scrolled down
+                scrollY: 0 
             },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak:    { mode: 'css' }
         };
 
-        // 3. GENERATE AND RESTORE
+        // 4. GENERATE AND RESTORE STYLES
         html2pdf().set(opt).from(element).save().then(() => {
-            // Restore everything so the web view looks beautiful again
+            // Put all the beautiful web styles back instantly
+            element.style.display = originalDisplay || 'flex';
             element.style.gap = originalGap || '40px';
-            document.body.style.padding = originalPadding || '40px 20px';
+            document.body.style.padding = originalPadding || '40px 40px';
             document.body.style.backgroundColor = originalBg || '#e9ecef';
+            
             pages.forEach(p => {
                 p.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
                 p.style.height = '297mm';
+                p.style.pageBreakAfter = 'always';
+                p.style.overflow = 'visible';
             });
         });
     }
 </script>
+
 
 </body>
 </html>

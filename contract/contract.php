@@ -79,7 +79,8 @@ $year = "2026";
             width: 250px;
             margin-bottom: 40px;
             /* Invert or adjust if the logo has a dark background like the uploaded JPG */
-            mix-blend-mode: multiply; 
+            /* mix-blend-mode: multiply;  */
+            filter: brightness(0) invert(1)
         }
 
         .doc-title {

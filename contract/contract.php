@@ -228,14 +228,16 @@ $year = "2026";
         </div>
 
         <h2>1. OBJECTIVE OF THE AGREEMENT</h2>
-        <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>
-
+        <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the
+Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of
+Investment of Saudi Arabia (MISA).</p>
         <h2>2. PERMITTED ACTIVITIES UNDER SERVICE LICENSE</h2>
-        <p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory services, and other non-trading activities as approved by MISA.</p>
-
+        <p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory
+services, and other non-trading activities as approved by MISA
+</p>
         <h2>3. SCOPE OF SERVICES</h2>
         <p>The Service Provider shall be responsible for completing the following services for the Client:</p>
-        <ul>
+        <ol>
             <li>Arrangement of a Foreign Company (as required by MISA)</li>
             <li>Application and approval of MISA Service License</li>
             <li>Preparation of Articles of Association</li>
@@ -246,7 +248,7 @@ $year = "2026";
             <li>Saudi Post (National Address) Registration</li>
             <li>Zakat & VAT Registration</li>
             <li>Chamber of Commerce Registration</li>
-        </ul>
+        </ol>
     </div>
 </div>
 
@@ -262,17 +264,23 @@ $year = "2026";
 
         <h2>5. SERVICE CHARGES</h2>
         <p>The Total professional service fee for this Agreement is <strong>SAR <?php echo $serviceFee; ?> (Saudi Riyals Fifteen Thousand only)</strong>.</p>
-        <p><em>Note: All kind of Government Payments are to be borne by the Client.</em></p>
+        <p><em style="color:red;">Note:  All kind of Service provide by Flyburj Travels & Tourism Co. & All kind of Govt. Payments are to be borne by
+the Client. </em></p>
 
         <h2>6. PAYMENT TERMS</h2>
         <ul>
-            <li>The Client shall pay 25% of the total service fees upon signing this Agreement.</li>
-            <li>25% upon issuance of the Investment License in Saudi Arabia.</li>
-            <li>The remaining 50% upon issuance of the Commercial Register.</li>
-        </ul>
-        <p>If the client fails to fulfill the payment obligations, the company reserves the right to retain the official documents and papers until the full payment is settled and the final settlement is completed.</p>
-        <p>Should there be any changes to the government license fee, the agreement amount will be revised accordingly. The contractual relationship with our company ends once the commercial register and investment license have been obtained and the agreed-upon services have been completed.</p>
+            
+            <li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon issuance of the Investment
+License in Saudi Arabia, and the remaining 50% upon issuance of the Commercial Register.</li>
+            <li>If the client fails to fulfill the payment obligations, the company reserves the right to retain the official documents and
+papers until the full payment is settled and the final settlement is completed.</li>            
+<li>Should there be any changes to the government license fee, the agreement amount will be revised accordingly.</li>
+<li>The contractual relationship with our company ends once the commercial register
+and investment license have been obtained and the agreed-upon services have been completed.</li>
 
+
+        </ul>
+        
         <table class="bank-table">
             <tr>
                 <th>NAME OF BANK</th>

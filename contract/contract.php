@@ -20,12 +20,15 @@ $year = "2026";
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+
         /* Core Theme Variables */
         :root {
             --rooq-burgundy: #800020;
             --rooq-gold: #D4AF37;
             --rooq-dark: #2D2D2D;
             --text-color: #333333;
+            --doc-gray-text: #777777;
         }
 
         body {
@@ -64,7 +67,6 @@ $year = "2026";
         .document-page {
             width: 210mm;
             height: 297mm;
-            /* Strict A4 Height */
             background-image: url('rooq.webp');
             background-size: 100% 100%;
             background-repeat: no-repeat;
@@ -77,11 +79,156 @@ $year = "2026";
             overflow: hidden;
         }
 
-        .document-page:first-child {
+        /* --------------------------------------
+           NEW COVER PAGE STYLES 
+           -------------------------------------- */
+        .document-page.cover-page {
+            padding: 0;
+            /* Remove padding for edge-to-edge design */
             background-image: none;
         }
 
-        /* Content Formatting */
+        /* --- FIX 1: Make the Background Curve PDF-Safe --- */
+        .doc-bg-container {
+            position: relative;
+            width: 100%;
+            height: 75%;
+            /* Use a Base64 Background Image instead of an inline SVG */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L100,0 L100,88 Q50,103 0,88 Z' fill='%23D4AF37'/%3E%3Cpath d='M0,0 L100,0 L100,85 Q50,98 0,85 Z' fill='%23800020'/%3E%3C/svg%3E");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-color: transparent;
+        }
+
+        .doc-svg-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .doc-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            padding: 50px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .doc-tab {
+            position: absolute;
+            top: 0;
+            right: 40px;
+            width: 60px;
+            height: 100px;
+            background-color: var(--rooq-gold);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 15px;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+            box-shadow: -2px 5px 10px rgba(0, 0, 0, 0.15);
+            z-index: 20;
+        }
+
+        .doc-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .doc-logo-text {
+            font-family: 'Arial', sans-serif;
+            font-style: italic;
+            font-weight: 800;
+            font-size: 32px;
+            margin-top: -5px;
+            letter-spacing: -1px;
+        }
+
+        .cover-main-title {
+            font-size: 36px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin-top: 10px;
+            max-width: 85%;
+            line-height: 1.2;
+            color: white;
+        }
+
+        .doc-prepared-for {
+            position: absolute;
+            bottom: 120px;
+            left: 50px;
+            width: calc(100% - 100px);
+        }
+
+        .doc-prepared-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        /* --- FIX 2: Make the Text Lines PDF-Safe --- */
+        .doc-field-row {
+            display: block;
+            /* Removed flexbox */
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .doc-field-label {
+            display: inline-block;
+            /* Forces stable rendering */
+            margin-right: 8px;
+            width: 90px;
+        }
+
+        .doc-field-value {
+            display: inline-block;
+            /* Forces stable rendering */
+            border-bottom: 1px solid #ffffff;
+            /* Use solid hex instead of rgba */
+            padding-bottom: 2px;
+            min-width: 280px;
+            font-weight: 600;
+        }
+
+        .doc-footer {
+            position: absolute;
+            bottom: 45px;
+            left: 45px;
+            z-index: 10;
+        }
+
+        .doc-footer-company {
+            color: var(--rooq-dark);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .doc-footer-address {
+            color: var(--doc-gray-text);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --------------------------------------
+           CONTRACT PAGES STYLES 
+           -------------------------------------- */
         .content {
             line-height: 1.6;
             font-size: 11pt;
@@ -90,28 +237,6 @@ $year = "2026";
             padding-top: 15px;
         }
 
-        /* COVER PAGE */
-        .cover-content {
-            text-align: center;
-            border-top: none;
-            padding-top: 70mm;
-        }
-
-        .cover-logo {
-            width: 250px;
-            margin: 0 auto 40px auto;
-            display: block;
-            mix-blend-mode: multiply;
-        }
-
-        .cover-title {
-            font-size: 28px;
-            margin-bottom: 50px;
-            color: var(--rooq-burgundy);
-            font-weight: bold;
-        }
-
-        /* Titles & Headings */
         .doc-title {
             color: var(--rooq-burgundy);
             font-size: 14px;
@@ -147,18 +272,10 @@ $year = "2026";
             margin: 0px;
         }
 
-        /* FIXED LAYOUTS (PDF Safe) */
         .layout-table {
             display: table;
             width: 100%;
             margin-bottom: 5px;
-        }
-
-        .layout-cell {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-            padding: 10px;
         }
 
         .bank-table {
@@ -197,22 +314,44 @@ $year = "2026";
 
     <div id="contract-content">
 
-        <div class="document-page">
-            <div class="cover-content">
-                <img src="../assets/img/logo.png" alt="Rooq Logo" class="cover-logo">
-                <div class="cover-title">SERVICE LICENSE AGREEMENT</div>
-                <div style="font-size: 18px; color: var(--rooq-dark); margin-bottom: 10px;">Prepared For</div>
-                <div style="font-size: 22px; font-weight: bold; color: var(--rooq-burgundy); margin-bottom: 10px;">
-                    Client Name: <?php echo $clientName; ?></div>
-                <div style="font-size: 18px; color: var(--rooq-dark); margin-bottom: 80px;">Date: <?php echo $date; ?>
+        <div class="document-page cover-page">
+            <div class="doc-bg-container">
+                <div class="doc-tab"><?php echo $year; ?></div>
+
+                <div class="doc-content">
+                    <div class="doc-logo">
+                        <svg width="55" height="55" viewBox="0 0 100 100" fill="white">
+                            <path d="M30,75 C35,65 50,55 75,25 C60,40 50,55 50,85 C40,80 35,78 30,75 Z" />
+                            <path d="M25,65 C30,55 45,45 65,20 C50,35 45,50 40,75 C35,70 30,68 25,65 Z" opacity="0.6" />
+                            <path d="M20,55 C25,45 40,35 55,15 C40,30 35,45 30,65 C25,60 22,58 20,55 Z" opacity="0.3" />
+                        </svg>
+                        <span class="doc-logo-text"><?php echo strtoupper(explode(" ", $serviceProvider)[0]); ?></span>
+                    </div>
+
+                    <h1 class="cover-main-title">SERVICE LICENSE AGREEMENT</h1>
+
+                    <div class="doc-prepared-for">
+                        <div class="doc-prepared-title">Prepared For</div>
+
+                        <div class="doc-field-row">
+                            <span class="doc-field-label">Client Name:</span>
+                            <span class="doc-field-value"><?php echo $clientName; ?></span>
+                        </div>
+
+                        <div class="doc-field-row">
+                            <span class="doc-field-label">Date:</span>
+                            <span class="doc-field-value"><?php echo $date; ?></span>
+                        </div>
+                    </div>
                 </div>
-                <div style="font-size: 20px; font-weight: bold; color: var(--rooq-burgundy);">
-                    <?php echo strtoupper(explode(" ", $serviceProvider)[0]); ?> COMPANY</div>
-                <div style="font-size: 16px; color: var(--rooq-dark);"><?php echo $companyLocation; ?></div>
-                <div style="font-size: 16px; color: var(--rooq-dark);"><?php echo $year; ?></div>
+            </div>
+
+            <div class="doc-footer">
+                <div class="doc-footer-company"><?php echo strtoupper(explode(" ", $serviceProvider)[0]); ?> COMPANY
+                </div>
+                <div class="doc-footer-address"><?php echo strtoupper($companyLocation); ?></div>
             </div>
         </div>
-
         <div class="document-page">
             <div class="content">
                 <div class="doc-title">SERVICE LICENSE AGREEMENT</div>
@@ -231,15 +370,12 @@ $year = "2026";
 
                 <h2>1. OBJECTIVE OF THE AGREEMENT</h2>
                 <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and
-                    consultant to assist the
-                    Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the
-                    regulations of the Ministry of
-                    Investment of Saudi Arabia (MISA).</p>
+                    consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia,
+                    in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>
 
                 <h2>2. PERMITTED ACTIVITIES UNDER SERVICE LICENSE</h2>
                 <p>Service-based activities including consultancy, IT services, management support, marketing, training,
-                    professional advisory
-                    services, and other non-trading activities as approved by MISA</p>
+                    professional advisory services, and other non-trading activities as approved by MISA</p>
 
                 <h2>3. SCOPE OF SERVICES</h2>
                 <p>The Service Provider shall be responsible for completing the following services for the Client:</p>
@@ -319,9 +455,13 @@ $year = "2026";
                     <li>Cooperate fully during the application process</li>
                     <li>Comply with all Saudi laws, regulations, and MISA requirements</li>
                 </ul>
-                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the Service Provider.</p>
+                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the
+                    Service Provider.</p>
+
                 <h2>8. TIMELINE & DELAYS</h2>
-                <p>The estimated timeline to complete the MISA Service License and related registrations is approximately forty <strong><?php echo $timelineDays; ?> working days</strong>, subject to timely submission of documents and payments by the Client.</p>
+                <p>The estimated timeline to complete the MISA Service License and related registrations is
+                    approximately forty <strong><?php echo $timelineDays; ?> working days</strong>, subject to timely
+                    submission of documents and payments by the Client.</p>
 
                 <p>The Service Provider shall not be held responsible for any delay caused by:</p>
                 <ul>
@@ -358,11 +498,10 @@ $year = "2026";
             const element = document.getElementById('contract-content');
             const pages = document.querySelectorAll('.document-page');
 
-            // 1. Prepare for PDF (Remove spacing so they stack perfectly into exactly 4 A4 pages)
+            // 1. Prepare for PDF
             pages.forEach(p => {
                 p.style.marginBottom = '0px';
                 p.style.boxShadow = 'none';
-                // Cut precisely at 296.5mm so no extra pages are accidentally generated
                 p.style.height = '296.9mm';
             });
 
@@ -392,7 +531,7 @@ $year = "2026";
             // 2. Generate and then return normal web view styling
             html2pdf().set(opt).from(element).save().then(() => {
                 pages.forEach(p => {
-                    p.style.marginBottom = '0px';
+                    p.style.marginBottom = '40px';
                     p.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
                     p.style.height = '297mm';
                 });

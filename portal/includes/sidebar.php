@@ -62,14 +62,14 @@ if ($_SESSION['role'] === 'client') {
 
         <ul class="nav flex-column gap-1">
             <li class="nav-item">
-                <a class="nav-link <?php echo ($current_page == 'dashboard.php') ? 'active-glass' : ''; ?>"
+                <a class="nav-link <?php echo ($current_page == 'dashboard.php') ? 'active-glass' : ''; ?> rounded"
                     href="dashboard.php">
                     <i class="bi bi-grid-fill me-3"></i> Dashboard
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link <?php echo (in_array($current_page, ['clients.php', 'client-add.php', 'client-edit.php'])) ? 'active-glass' : ''; ?>"
+                <a class="nav-link <?php echo (in_array($current_page, ['clients.php', 'client-add.php', 'client-edit.php'])) ? 'active-glass' : ''; ?> rounded"
                     href="clients.php">
                     <i class="bi bi-people-fill me-3"></i> Clients
                 </a>
@@ -121,7 +121,7 @@ if ($_SESSION['role'] === 'client') {
                 <div class="text-uppercase text-white-50 small fw-bold px-3 mb-2"
                     style="font-size: 0.7rem; letter-spacing: 1px;">Security</div>
                 <a href="activity-logs.php"
-                    class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'activity-logs.php') ? 'active-glass' : ''; ?>"
+                    class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'activity-logs.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-activity me-3"></i>
                     <span class="fw-bold">Activity Logs</span>
@@ -129,7 +129,7 @@ if ($_SESSION['role'] === 'client') {
             </li>
             <li class="nav-item mb-2">
                 <a href="audit-finance.php"
-                    class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'audit-finance.php') ? 'active-glass' : ''; ?>"
+                    class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'audit-finance.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-bank me-3"></i>
                     <span class="fw-bold">Financial Audit</span>

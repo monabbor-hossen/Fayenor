@@ -88,16 +88,14 @@ $year = "2026";
             background-image: none;
         }
 
-        /* --- FIX 1: Make the Background Curve PDF-Safe --- */
+        /* --- BULLETPROOF PDF CURVE --- */
         .doc-bg-container {
             position: relative;
             width: 100%;
             height: 75%;
-            /* Use a Base64 Background Image instead of an inline SVG */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L100,0 L100,88 Q50,103 0,88 Z' fill='%23D4AF37'/%3E%3Cpath d='M0,0 L100,0 L100,85 Q50,98 0,85 Z' fill='%23800020'/%3E%3C/svg%3E");
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-color: transparent;
+            overflow: hidden;
+            /* This clips the giant circles to look like a bottom curve */
+            background-color: white;
         }
 
         .doc-svg-bg {
@@ -179,29 +177,69 @@ $year = "2026";
             margin-bottom: 25px;
         }
 
-        /* --- FIX 2: Make the Text Lines PDF-Safe --- */
+        /* Background Gold Curve */
+        .curve-gold {
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 140%;
+            height: 142%;
+            background-color: #D4AF37;
+            /* Gold */
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Foreground Burgundy Curve */
+        .curve-burgundy {
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 140%;
+            height: 139%;
+            /* Slightly shorter to show the gold underneath */
+            background-color: #800020;
+            /* Burgundy */
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        /* --- BULLETPROOF PDF LINES --- */
         .doc-field-row {
-            display: block;
-            /* Removed flexbox */
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-size: 14px;
+            color: white;
+            position: relative;
+            z-index: 10;
         }
 
-        .doc-field-label {
+        .field-label {
             display: inline-block;
-            /* Forces stable rendering */
-            margin-right: 8px;
-            width: 90px;
+            width: 85px;
+            font-weight: normal;
         }
 
-        .doc-field-value {
+        /* Wrapper to hold text and the physical line */
+        .field-wrapper {
             display: inline-block;
-            /* Forces stable rendering */
-            border-bottom: 1px solid #ffffff;
-            /* Use solid hex instead of rgba */
-            padding-bottom: 2px;
+            position: relative;
             min-width: 280px;
+        }
+
+        .field-text {
             font-weight: 600;
+            padding-bottom: 5px;
+            display: block;
+        }
+
+        /* A physical 1px box instead of a CSS border */
+        .field-line {
+            width: 100%;
+            height: 1px;
+            background-color: white;
+            position: absolute;
+            bottom: 0;
+            left: 0;
         }
 
         .doc-footer {
@@ -316,9 +354,13 @@ $year = "2026";
 
         <div class="document-page cover-page">
             <div class="doc-bg-container">
+                <div class="curve-gold"></div>
+                <div class="curve-burgundy"></div>
+
                 <div class="doc-tab"><?php echo $year; ?></div>
 
                 <div class="doc-content">
+
                     <div class="doc-logo">
                         <svg width="55" height="55" viewBox="0 0 100 100" fill="white">
                             <path d="M30,75 C35,65 50,55 75,25 C60,40 50,55 50,85 C40,80 35,78 30,75 Z" />
@@ -334,13 +376,19 @@ $year = "2026";
                         <div class="doc-prepared-title">Prepared For</div>
 
                         <div class="doc-field-row">
-                            <span class="doc-field-label">Client Name:</span>
-                            <span class="doc-field-value"><?php echo $clientName; ?></span>
+                            <span class="field-label">Client Name:</span>
+                            <div class="field-wrapper">
+                                <span class="field-text"><?php echo $clientName; ?></span>
+                                <div class="field-line"></div>
+                            </div>
                         </div>
 
                         <div class="doc-field-row">
-                            <span class="doc-field-label">Date:</span>
-                            <span class="doc-field-value"><?php echo $date; ?></span>
+                            <span class="field-label">Date:</span>
+                            <div class="field-wrapper">
+                                <span class="field-text"><?php echo $date; ?></span>
+                                <div class="field-line"></div>
+                            </div>
                         </div>
                     </div>
                 </div>

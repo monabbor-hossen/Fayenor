@@ -39,42 +39,41 @@ $timelineDays    = "40";
 $companyLocation = "BURAYDAH, AL QASSIM-SAUDI ARABIA";
 $year            = date('Y'); 
 
-// 3. GENERATE DYNAMIC SCOPE OF SERVICES
+// 3. GENERATE DYNAMIC SCOPE OF SERVICES (FROM WORKFLOW TABLE ONLY)
 $scopeList = [];
 
-// Check the Workflow Switches! If it is NOT "Not Required", it means the switch is ON.
-if (isset($client['hire_foreign_company']) && $client['hire_foreign_company'] !== 'Not Required') {
+// We only check columns that exist in the workflow_tracking table.
+// If the status is NOT "Not Required", it gets added to the contract!
+
+if (!empty($client['hire_foreign_company']) && $client['hire_foreign_company'] !== 'Not Required') {
     $scopeList[] = "Arrangement of a Foreign Company (as required by MISA)";
 }
-if (isset($client['misa_application']) && $client['misa_application'] !== 'Not Required') {
+
+if (!empty($client['misa_application']) && $client['misa_application'] !== 'Not Required') {
     $scopeList[] = "Application and approval of MISA Service License";
 }
-if (isset($client['sbc_application']) && $client['sbc_application'] !== 'Not Required') {
+
+if (!empty($client['sbc_application']) && $client['sbc_application'] !== 'Not Required') {
     $scopeList[] = "SBC Application & Registration";
 }
-if (isset($client['article_association']) && $client['article_association'] !== 'Not Required') {
+
+if (!empty($client['article_association']) && $client['article_association'] !== 'Not Required') {
     $scopeList[] = "Preparation of Articles of Association";
 }
 
-// Standard included services
-$scopeList[] = "Trade Name Reservation";
-$scopeList[] = "Issuance of Commercial Registration (CR)";
-
-if (isset($client['muqeem']) && $client['muqeem'] !== 'Not Required') {
-    $scopeList[] = "Muqeem Registration";
-}
-if (isset($client['qiwa']) && $client['qiwa'] !== 'Not Required') {
+if (!empty($client['qiwa']) && $client['qiwa'] !== 'Not Required') {
     $scopeList[] = "Qiwa Registration";
 }
-if (isset($client['gosi']) && $client['gosi'] !== 'Not Required') {
+
+if (!empty($client['muqeem']) && $client['muqeem'] !== 'Not Required') {
+    $scopeList[] = "Muqeem Registration";
+}
+
+if (!empty($client['gosi']) && $client['gosi'] !== 'Not Required') {
     $scopeList[] = "GOSI Registration";
 }
 
-// Standard included services
-$scopeList[] = "Saudi Post (National Address) Registration";
-$scopeList[] = "Zakat & VAT Registration";
-
-if (isset($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not Required') {
+if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not Required') {
     $scopeList[] = "Chamber of Commerce Registration";
 }
 ?>

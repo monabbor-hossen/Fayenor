@@ -122,6 +122,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             margin-bottom: 40px;
             overflow: hidden;
         }
+
         .document-page:first-child {
             background-image: none;
         }
@@ -143,6 +144,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             opacity: 0.03;
             pointer-events: none;
             z-index: 2;
+            filter: brightness(0) invert(1) drop-shadow(2px 0 0 black) drop-shadow(-2px 0 0 black) drop-shadow(0 2px 0 black) drop-shadow(0 -2px 0 black)
         }
 
         .cover-content-layer {
@@ -158,7 +160,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             position: absolute;
             top: 50px;
             left: 50px;
-            width: 150px;
+            width: 30%;
             filter: brightness(0) invert(1);
         }
 
@@ -211,6 +213,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             align-items: flex-start;
             margin-bottom: 15px;
             /* Replaces gap so PDF generator understands */
+            width: 90%;
         }
 
         .data-icon {
@@ -277,7 +280,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             line-height: 1.6;
             font-size: 11pt;
             border-top: 3px solid var(--theme-primary);
-            padding-top: 15px;
+            margin-top: 10px;
             color: var(--text-dark);
         }
 
@@ -302,12 +305,13 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             font-size: 13pt;
             border-bottom: 1px dashed var(--theme-accent);
             padding-bottom: 5px;
-            margin-top: 15px;
+            margin-top: 7px;
+            margin-bottom: 7px;
             text-transform: uppercase;
         }
 
         p {
-            margin: 10px 0;
+            margin: 2px 0;
         }
 
         ul,
@@ -353,7 +357,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             border-bottom: 1px solid var(--text-dark);
             margin-top: 20px;
             margin-bottom: 10px;
-            width: 60%;
+            width: 40%;
         }
     </style>
 </head>
@@ -397,7 +401,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                             <svg class="data-icon" viewBox="0 0 24 24">
                                 <path
                                     d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
-                                </svg>
+                            </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Company Name</span>
                                 <span
@@ -409,7 +413,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                             <svg class="data-icon" viewBox="0 0 24 24">
                                 <path
                                     d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
-                                </svg>
+                            </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Trade Name</span>
                                 <span
@@ -421,7 +425,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                             <svg class="data-icon" viewBox="0 0 24 24">
                                 <path
                                     d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                                </svg>
+                            </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Client Representative</span>
                                 <span class="data-value"><?php echo htmlspecialchars($clientName); ?></span>
@@ -432,7 +436,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                             <svg class="data-icon" viewBox="0 0 24 24">
                                 <path
                                     d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
-                                </svg>
+                            </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Date Issued</span>
                                 <span class="data-value"><?php echo $date; ?></span>
@@ -564,22 +568,16 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 <h2>9. ACCEPTANCE & SIGNATURES</h2>
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
 
-                <div class="layout-table" style="margin-top: 30px;">
-                    <div style="display: table-cell; width: 50%;">
-                        <strong>For Flyburj Travels And Tourism Company</strong><br>
-                        <p style="margin-top: 10px;">Name: <strong>Saifullah</strong></p>
-                        <p style="margin-top: 20px;">Signature:</p>
-                        <div class="signature-line"></div>
+                <div class="layout-table">
+                    <strong>For Flyburj Travels And Tourism Company</strong>
+                    <p>Name: <strong>Saifullah</strong></p>
+                    <div style="display:flex;">Signature: <div class="signature-line"></div>
                     </div>
-
-                    <div style="display: table-cell; width: 50%;">
-                        <strong>For the Client</strong><br>
-                        <p style="margin-top: 10px;">Name: <strong><?php echo htmlspecialchars($clientName); ?></strong>
-                        </p>
-                        <p style="margin-top: 20px;">Signature:</p>
-                        <div class="signature-line"></div>
-                        <p style="margin-top: 10px;"><strong>Date:</strong> _____________________</p>
+                    <strong>For the Client</strong>
+                    <p>Name: <strong><?php echo htmlspecialchars($clientName); ?></strong></p>
+                    <div style="display:flex;">Signature: <div class="signature-line"></div>
                     </div>
+                    <p><strong>Date:</strong> _____________________</p>
                 </div>
             </div>
         </div>

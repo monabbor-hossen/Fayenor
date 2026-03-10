@@ -144,7 +144,8 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             opacity: 0.03;
             pointer-events: none;
             z-index: 2;
-            filter: brightness(0) invert(1) drop-shadow(2px 0 0 black) drop-shadow(-2px 0 0 black) drop-shadow(0 2px 0 black) drop-shadow(0 -2px 0 black)
+            /* Your custom filter here: */
+            filter: brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1);
         }
 
         .cover-content-layer {
@@ -368,9 +369,9 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
     <div id="contract-content">
 
         <div class="document-page cover-page">
-
             <svg width="794" height="1123" viewBox="0 0 794 1123" style="position:absolute; top:0; left:0; z-index:1;"
                 xmlns="http://www.w3.org/2000/svg">
+                
                 <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="none" stroke="#D4AF37" stroke-width="4"
                     transform="translate(8, 8)" opacity="0.8" />
                 <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="#800020" />
@@ -379,11 +380,10 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     transform="translate(-8, 0)" opacity="0.8" />
                 <path d="M 794,250 C 650,400 650,600 794,750 Z" fill="#800020" />
 
-                <path d="M 0,850 C 300,1000 500,800 794,880 L 794,1123 L 0,1123 Z" fill="none" stroke="#D4AF37"
-                    stroke-width="4" transform="translate(0, -8)" opacity="0.8" />
-                <path d="M 0,850 C 300,1000 500,800 794,880 L 794,1123 L 0,1123 Z" fill="#800020" />
+                
+                <path d="M 0,450 C 100,1050 550,800 794,880" fill="none" stroke="#D4AF37" stroke-width="4" transform="translate(0, -8)" opacity="0.8"></path>
+                <path d="M 0,450 C 100,1050 550,800 794,880 L 794,1025 C 500,960 200,1123 0,1123 Z" fill="#800020"></path>
             </svg>
-
             <img src="../assets/img/logo_transparent.png" class="watermark" alt="">
 
             <div class="cover-content-layer">
@@ -397,10 +397,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
 
                     <div class="doc-data-box">
                         <div class="data-row">
-                            <svg class="data-icon" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
-                            </svg>
+                            <img class="data-icon" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='18' height='18' fill='%23800020'%3E%3Cpath d='M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z'/%3E%3C/svg%3E" alt="Icon">
                             <div class="data-text-block">
                                 <span class="data-label">Company Name</span>
                                 <span
@@ -409,11 +406,8 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" viewBox="0 0 24 24">
-                                <path
-                                    d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
-                            </svg>
-                            <div class="data-text-block">
+                        <img class="data-icon" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='18' height='18' fill='%23800020'%3E%3Cpath d='M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z'/%3E%3C/svg%3E" alt="Icon">    
+                        <div class="data-text-block">
                                 <span class="data-label">Trade Name</span>
                                 <span
                                     class="data-value"><?php echo htmlspecialchars($client['trade_name'] ?? 'ALSAMA SKR'); ?></span>
@@ -421,22 +415,17 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                            </svg>
-                            <div class="data-text-block">
+                            
+                        <img class="data-icon" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='18' height='18' fill='%23800020'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Icon">
+                        <div class="data-text-block">
                                 <span class="data-label">Client Representative</span>
                                 <span class="data-value"><?php echo htmlspecialchars($clientName); ?></span>
                             </div>
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" viewBox="0 0 24 24">
-                                <path
-                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
-                            </svg>
-                            <div class="data-text-block">
+                        <img class="data-icon" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='18' height='18' fill='%23800020'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'/%3E%3C/svg%3E" alt="Icon">    
+                        <div class="data-text-block">
                                 <span class="data-label">Date Issued</span>
                                 <span class="data-value"><?php echo $date; ?></span>
                             </div>
@@ -606,7 +595,27 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             // Swap the logo's source to this new white image data
             const originalSrc = logoImg.src; 
             logoImg.src = canvas.toDataURL('image/png');
+// --- 1. BAKE THE FILTER INTO THE WATERMARK ---
+            const watermarkImg = document.querySelector('.watermark');
+            const originalWatermarkSrc = watermarkImg.src;
 
+            // Only run if the image has successfully loaded
+            if (watermarkImg.naturalWidth > 0) {
+                canvas.width = watermarkImg.naturalWidth;
+                canvas.height = watermarkImg.naturalHeight;
+
+                // Apply the exact same CSS filter directly to the Canvas!
+                ctx.filter = 'brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1)';
+                
+                // Draw the image onto the canvas with the filter permanently baked in
+                ctx.drawImage(watermarkImg, 0, 0, canvas.width, canvas.height);
+
+                // Swap the watermark's source to this new perfectly filtered image
+                watermarkImg.src = canvas.toDataURL('image/png');
+                
+                // Temporarily disable the CSS filter so it doesn't double-apply
+                watermarkImg.style.filter = 'none'; 
+            }
 
             // 1. Prepare for PDF
             pages.forEach(p => {
@@ -648,7 +657,9 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 });
                 element.style.overflow = 'visible';
                 // Put the original image back so the website looks normal!
-                logoImg.src = originalSrc;
+                logoImg.src = originalSrc;// Restore the original watermark image and CSS filter for the web view
+                watermarkImg.src = originalWatermarkSrc;
+                watermarkImg.style.filter = '';
             });
         }
     </script>

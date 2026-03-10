@@ -128,7 +128,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         .document-page {
             width: 210mm;
             height: 297mm;
-            background-image: url('rooq.webp');
+            background-image: url('fullPage.jpg');
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-color: white;
@@ -583,12 +583,15 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             const opt = {
                 margin: 0,
                 filename: filename,
-                image: { type: 'jpeg', quality: 1 },
+                image: {
+                    type: 'jpeg',
+                    quality: 1
+                },
                 html2canvas: {
                     scale: 2,
                     useCORS: true,
                     scrollY: 0,
-                    windowWidth: 1522
+                    windowWidth: 1384
                 },
                 jsPDF: {
                     unit: 'mm',

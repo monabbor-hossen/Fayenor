@@ -191,7 +191,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         }
 
         .brand-icon-wrapper img {
-            width: 120px; /* Sized for standard logos */
+            width: 30%; /* Sized for standard logos */
             filter: brightness(0) invert(1); /* Removes if logo is white, adjust if needed */
         }
 

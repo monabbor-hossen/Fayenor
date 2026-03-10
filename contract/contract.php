@@ -586,14 +586,38 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         function generatePDF() {
             const element = document.getElementById('contract-content');
             const pages = document.querySelectorAll('.document-page');
+            const logoImg = document.querySelector('.brand-logo');
+
+            // --- STEP 1: CONVERT LOGO TO WHITE USING CANVAS ---
+            // Create an invisible canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Match the canvas size to the original image
+            canvas.width = logoImg.naturalWidth;
+            canvas.height = logoImg.naturalHeight;
+            
+            // Draw the original image onto the canvas
+            ctx.drawImage(logoImg, 0, 0);
+            
+            // Paint over the non-transparent pixels with pure white
+            ctx.globalCompositeOperation = 'source-in';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Swap the logo's source to this new white image data
+            const originalSrc = logoImg.src; 
+            logoImg.src = canvas.toDataURL('image/png');
+
 
             // 1. Prepare for PDF
             pages.forEach(p => {
                 p.style.marginBottom = '0px';
                 p.style.boxShadow = 'none';
                 p.style.height = '296.9mm';
+                p.style.overflow = 'hidden';
             });
-
+            element.style.overflow = 'hidden';
             const clientName = "<?php echo str_replace(' ', '_', $clientName); ?>";
             const filename = `Service_License_Agreement_${clientName}.pdf`;
 
@@ -624,6 +648,9 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     p.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
                     p.style.height = '297mm';
                 });
+                element.style.overflow = 'visible';
+                // Put the original image back so the website looks normal!
+                logoImg.src = originalSrc;
             });
         }
     </script>

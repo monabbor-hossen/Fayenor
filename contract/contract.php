@@ -92,19 +92,10 @@ $year = "2026";
         .doc-bg-container {
             position: relative;
             width: 100%;
-            height: 75%;
+            height: 80%;
             overflow: hidden;
             /* This clips the giant circles to look like a bottom curve */
             background-color: white;
-        }
-
-        .doc-svg-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
         }
 
         .doc-content {
@@ -112,7 +103,7 @@ $year = "2026";
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 85%;
             z-index: 10;
             padding: 50px;
             color: white;
@@ -137,21 +128,13 @@ $year = "2026";
             z-index: 20;
         }
 
-        .doc-logo {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+        .doc-logo img{
+            width: 30%;
             margin-bottom: 30px;
+            filter: brightness(0) invert(1);
         }
 
-        .doc-logo-text {
-            font-family: 'Arial', sans-serif;
-            font-style: italic;
-            font-weight: 800;
-            font-size: 32px;
-            margin-top: -5px;
-            letter-spacing: -1px;
-        }
+        
 
         .cover-main-title {
             font-size: 36px;
@@ -181,9 +164,9 @@ $year = "2026";
         .curve-gold {
             position: absolute;
             top: -50%;
-            left: -20%;
+            left: -25%;
             width: 140%;
-            height: 142%;
+            height: 140%;
             background-color: #D4AF37;
             /* Gold */
             border-radius: 50%;
@@ -194,9 +177,9 @@ $year = "2026";
         .curve-burgundy {
             position: absolute;
             top: -50%;
-            left: -20%;
+            left: -30%;
             width: 140%;
-            height: 139%;
+            height: 135%;
             /* Slightly shorter to show the gold underneath */
             background-color: #800020;
             /* Burgundy */
@@ -362,12 +345,7 @@ $year = "2026";
                 <div class="doc-content">
 
                     <div class="doc-logo">
-                        <svg width="55" height="55" viewBox="0 0 100 100" fill="white">
-                            <path d="M30,75 C35,65 50,55 75,25 C60,40 50,55 50,85 C40,80 35,78 30,75 Z" />
-                            <path d="M25,65 C30,55 45,45 65,20 C50,35 45,50 40,75 C35,70 30,68 25,65 Z" opacity="0.6" />
-                            <path d="M20,55 C25,45 40,35 55,15 C40,30 35,45 30,65 C25,60 22,58 20,55 Z" opacity="0.3" />
-                        </svg>
-                        <span class="doc-logo-text"><?php echo strtoupper(explode(" ", $serviceProvider)[0]); ?></span>
+                        <img src="../assets/img/logo.png" alt="">
                     </div>
 
                     <h1 class="cover-main-title">SERVICE LICENSE AGREEMENT</h1>

@@ -1,13 +1,37 @@
 <?php
-// Contract Variables (Map these to your Basmat-Rooq database)
-$clientName = "Mr. Bablu Ahmed";
-$date = "February 18, 2026";
-$iqamaNo = "2497876264";
+session_start();
+require_once __DIR__ . '/../app/Config/Database.php';
+
+// 1. Check if a Client ID was passed in the URL
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    die("<div style='text-align:center; margin-top:50px; font-family:sans-serif;'><h2>Error: No Client Selected.</h2><p>Please select a client from the portal to view their contract.</p></div>");
+}
+
+$client_id = intval($_GET['id']);
+
+// 2. Fetch the client data from the database
+try {
+    $db = (new Database())->getConnection();
+    $stmt = $db->prepare("SELECT * FROM clients WHERE client_id = ? LIMIT 1");
+    $stmt->execute([$client_id]);
+    $client = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$client) {
+        die("<div style='text-align:center; margin-top:50px; font-family:sans-serif;'><h2>Error: Client Not Found.</h2></div>");
+    }
+} catch (Exception $e) {
+    die("Database Error: " . $e->getMessage());
+}
+
+// 3. Map Database fields to the Contract Variables
+$clientName      = $client['client_name'] ?? $client['company_name'];
+$date            = date('F j, Y'); // Sets today's date automatically
+$iqamaNo         = "To Be Provided"; // Update this if you have an iqama column in your DB!
 $serviceProvider = "Flyburj Travels and Tourism Company";
-$serviceFee = "15,000";
-$timelineDays = "40";
+$serviceFee      = number_format($client['contract_value'] ?? 0, 2); // Formats the money nicely
+$timelineDays    = "40"; 
 $companyLocation = "BURAYDAH, AL QASSIM-SAUDI ARABIA";
-$year = "2026";
+$year            = date('Y'); // Gets current year automatically
 ?>
 <!DOCTYPE html>
 <html lang="en">

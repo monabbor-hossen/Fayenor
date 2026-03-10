@@ -31,11 +31,21 @@ try {
 $clientName      = $client['client_name'] ?? $client['company_name'];
 $date            = date('F j, Y'); 
 $iqamaNo         = "To Be Provided"; // Change this if you have an Iqama column
-$serviceProvider = "Flyburj Travels and Tourism Company";
+$serviceProvider = "Basmat Rooq Company Limited";
 $serviceFee      = number_format($client['contract_value'] ?? 0, 2); 
 $timelineDays    = "40"; 
 $companyLocation = "BURAYDAH, AL QASSIM-SAUDI ARABIA";
 $year            = date('Y'); 
+
+// --- CALCULATE DYNAMIC HIJRI YEAR (Kuwaiti Algorithm) ---
+$y = (int)date('Y'); $m = (int)date('n'); $d = (int)date('j');
+$jd = (int)((1461*($y+4800+(int)(($m-14)/12)))/4) + (int)((367*($m-2-12*((int)(($m-14)/12))))/12) - (int)((3*((int)(($y+4900+(int)(($m-14)/12))/100)))/4) + $d - 32075;
+$l = $jd - 1948440 + 10632;
+$n = (int)(($l - 1) / 10631);
+$l = $l - 10631 * $n + 354;
+$j = ((int)((10985 - $l) / 5316)) * ((int)(50 * $l / 17719)) + ((int)($l / 5670)) * ((int)(43 * $l / 15238));
+$hijriYear = 30 * $n + $j - 30;
+// --------------------------------------------------------
 
 // 3. GENERATE DYNAMIC SCOPE OF SERVICES (FROM WORKFLOW TABLE ONLY)
 $scopeList = [];
@@ -355,9 +365,9 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
 
         .signature-line {
             border-bottom: 1px solid var(--text-dark);
-            margin-top: 20px;
+            margin-top: 40px;
             margin-bottom: 10px;
-            width: 40%;
+            width: 25%;
         }
     </style>
 </head>
@@ -429,7 +439,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
 
                 <div class="doc-year">
                     <span class="year-main"><?php echo $year; ?></span>
-                    <span class="year-sub">1447 HIJRI</span>
+                    <span class="year-sub"><?php echo $hijriYear; ?> HIJRI</span>
                 </div>
             </div>
         </div>
@@ -513,7 +523,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     </tr>
                     <tr>
                         <th>AC NAME</th>
-                        <td>Flyburj Travel and Tourism Company</td>
+                        <td><?php echo htmlspecialchars($serviceProvider); ?></td>
                     </tr>
                 </table>
             </div>
@@ -550,13 +560,13 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
 
                 <div class="layout-table">
-                    <strong>For Flyburj Travels And Tourism Company</strong>
+                    <strong>For <?php echo htmlspecialchars($serviceProvider); ?></strong>
                     <p>Name: <strong>Saifullah</strong></p>
-                    <div style="display:flex;">Signature: <div class="signature-line"></div>
+                    <div style="display:flex; align-items: baseline;">Signature: <div class="signature-line"></div>
                     </div>
                     <strong>For the Client</strong>
                     <p>Name: <strong><?php echo htmlspecialchars($clientName); ?></strong></p>
-                    <div style="display:flex;">Signature: <div class="signature-line"></div>
+                    <div style="display:flex; align-items: baseline;">Signature: <div class="signature-line"></div>
                     </div>
                     <p><strong>Date:</strong> _____________________</p>
                 </div>

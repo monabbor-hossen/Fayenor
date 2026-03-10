@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require_once __DIR__ . '/../app/Config/Config.php';
@@ -42,74 +41,64 @@ $year            = date('Y');
 // 3. GENERATE DYNAMIC SCOPE OF SERVICES (FROM WORKFLOW TABLE ONLY)
 $scopeList = [];
 
-// We only check columns that exist in the workflow_tracking table.
-// If the status is NOT "Not Required", it gets added to the contract!
-
 if (!empty($client['hire_foreign_company']) && $client['hire_foreign_company'] !== 'Not Required') {
     $scopeList[] = "Arrangement of a Foreign Company (as required by MISA)";
 }
-
 if (!empty($client['misa_application']) && $client['misa_application'] !== 'Not Required') {
     $scopeList[] = "Application and approval of MISA Service License";
 }
-
 if (!empty($client['sbc_application']) && $client['sbc_application'] !== 'Not Required') {
     $scopeList[] = "SBC Application & Registration";
 }
-
 if (!empty($client['article_association']) && $client['article_association'] !== 'Not Required') {
     $scopeList[] = "Preparation of Articles of Association";
 }
-
 if (!empty($client['qiwa']) && $client['qiwa'] !== 'Not Required') {
     $scopeList[] = "Qiwa Registration";
 }
-
 if (!empty($client['muqeem']) && $client['muqeem'] !== 'Not Required') {
     $scopeList[] = "Muqeem Registration";
 }
-
 if (!empty($client['gosi']) && $client['gosi'] !== 'Not Required') {
     $scopeList[] = "GOSI Registration";
 }
-
 if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not Required') {
     $scopeList[] = "Chamber of Commerce Registration";
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service License Agreement - <?php echo $clientName; ?></title>
+    <title>Service License Agreement - <?php echo htmlspecialchars($clientName); ?></title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
 
         /* Core Theme Variables */
         :root {
-            --rooq-burgundy: #800020;
-            --rooq-gold: #D4AF37;
-            --rooq-dark: #2D2D2D;
-            --text-color: #333333;
+            /* Shared Colors */
+            --theme-primary: #800020; /* Corporate Burgundy */
+            --theme-accent: #D4AF37;  /* Corporate Gold */
+            --text-dark: #111111;
+            --text-muted: #555555;
+            --bg-offwhite: #fdfdfd;
             --doc-gray-text: #777777;
         }
 
         body {
             background-color: #e9ecef;
-            color: var(--text-color);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 40px 0;
         }
 
-        /* Container wrapper */
         #contract-content {
             display: block;
             width: 210mm;
@@ -121,9 +110,9 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: var(--rooq-burgundy);
+            background-color: var(--theme-primary);
             color: white;
-            border: 2px solid var(--rooq-gold);
+            border: 2px solid var(--theme-accent);
             padding: 10px 20px;
             font-size: 16px;
             font-weight: bold;
@@ -133,7 +122,9 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             z-index: 1000;
         }
 
-        /* EXACT A4 Document Pages */
+        /* --------------------------------------
+           COMMON PAGE STYLES 
+           -------------------------------------- */
         .document-page {
             width: 210mm;
             height: 297mm;
@@ -150,223 +141,214 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         }
 
         /* --------------------------------------
-           NEW COVER PAGE STYLES 
+           NEW EXECUTIVE COVER PAGE STYLES 
            -------------------------------------- */
         .document-page.cover-page {
             padding: 0;
-            /* Remove padding for edge-to-edge design */
             background-image: none;
+            background-color: var(--bg-offwhite);
+            font-family: 'Montserrat', sans-serif;
         }
 
-        /* --- BULLETPROOF PDF CURVE --- */
-        .doc-bg-container {
-            position: relative;
-            width: 100%;
-            height: 80%;
-            overflow: hidden;
-            /* This clips the giant circles to look like a bottom curve */
-            background-color: white;
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 2;
+            filter: brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1);
         }
 
-        .doc-content {
+        .wave-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 85%;
-            z-index: 10;
-            padding: 50px;
-            color: white;
-            box-sizing: border-box;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
         }
 
-        .doc-tab {
+        .content-layer {
             position: absolute;
             top: 0;
-            right: 40px;
-            width: 60px;
-            height: 100px;
-            background-color: var(--rooq-gold);
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .brand-container {
+            position: absolute;
+            top: 80px;
+            left: 80px;
             display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 15px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .brand-icon-wrapper img {
+            width: 120px; /* Sized for standard logos */
+            filter: brightness(0) invert(1); /* Removes if logo is white, adjust if needed */
+        }
+
+        .title-wrapper {
+            position: absolute;
+            top: 340px;
+            left: 80px;
+        }
+
+        .doc-arabic {
+            font-family: 'Cairo', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--theme-accent);
+            margin-bottom: -5px;
+            margin-left: 5px;
+        }
+
+        .cover-sub-title {
+            font-size: 18px;
             font-weight: 700;
-            font-size: 16px;
-            color: white;
-            box-shadow: -2px 5px 10px rgba(0, 0, 0, 0.15);
-            z-index: 20;
+            color: var(--theme-primary);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 5px;
+            margin-left: 5px;
         }
-
-        .doc-logo img{
-            width: 30%;
-            margin-bottom: 30px;
-            filter: brightness(0) invert(1);
-        }
-
-        
 
         .cover-main-title {
-            font-size: 36px;
-            font-weight: 700;
+            font-size: 80px;
+            font-weight: 900;
+            color: var(--text-dark);
             text-transform: uppercase;
-            letter-spacing: -0.5px;
-            margin-top: 10px;
-            max-width: 85%;
-            line-height: 1.2;
-            color: white;
+            line-height: 0.95;
+            letter-spacing: -3px;
+            margin: 0;
+            margin-bottom: 45px;
         }
 
-        .doc-prepared-for {
-            position: absolute;
-            bottom: 120px;
-            left: 50px;
-            width: calc(100% - 100px);
+        .doc-data-box {
+            border-left: 4px solid var(--theme-accent);
+            padding-left: 25px;
+            margin-left: 8px;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .doc-prepared-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 25px;
+        .data-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
         }
 
-        /* Background Gold Curve */
-        .curve-gold {
-            position: absolute;
-            top: -50%;
-            left: -25%;
-            width: 140%;
-            height: 140%;
-            background-color: #D4AF37;
-            /* Gold */
-            border-radius: 50%;
-            z-index: 1;
+        .data-icon {
+            width: 16px;
+            height: 16px;
+            fill: var(--theme-primary);
+            margin-top: 3px;
+            opacity: 0.8;
         }
 
-        /* Foreground Burgundy Curve */
-        .curve-burgundy {
-            position: absolute;
-            top: -50%;
-            left: -30%;
-            width: 140%;
-            height: 135%;
-            /* Slightly shorter to show the gold underneath */
-            background-color: #800020;
-            /* Burgundy */
-            border-radius: 50%;
-            z-index: 2;
-        }
-
-        /* --- BULLETPROOF PDF LINES --- */
-        .doc-field-row {
-            margin-bottom: 20px;
+        .doc-data-text {
             font-size: 14px;
-            color: white;
-            position: relative;
-            z-index: 10;
+            line-height: 1.5;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin: 0;
         }
 
-        .field-label {
-            display: inline-block;
-            width: 85px;
-            font-weight: normal;
-        }
-
-        /* Wrapper to hold text and the physical line */
-        .field-wrapper {
-            display: inline-block;
-            position: relative;
-            min-width: 280px;
-        }
-
-        .field-text {
-            font-weight: 600;
-            padding-bottom: 5px;
+        .doc-data-text strong {
+            font-weight: 800;
+            color: var(--text-dark);
             display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
         }
 
-        /* A physical 1px box instead of a CSS border */
-        .field-line {
-            width: 100%;
-            height: 1px;
-            background-color: white;
+        .doc-year {
             position: absolute;
-            bottom: 0;
-            left: 0;
-        }
-
-        .doc-footer {
-            position: absolute;
-            bottom: 45px;
-            left: 45px;
+            bottom: 180px;
+            right: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
             z-index: 10;
         }
 
-        .doc-footer-company {
-            color: var(--rooq-dark);
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            text-transform: uppercase;
+        .year-main {
+            font-size: 55px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -1px;
+            line-height: 1;
         }
 
-        .doc-footer-address {
-            color: var(--doc-gray-text);
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .year-sub {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--theme-accent);
+            letter-spacing: 2px;
+            margin-top: 2px;
         }
 
         /* --------------------------------------
-           CONTRACT PAGES STYLES 
+           CONTRACT INNER PAGES STYLES 
            -------------------------------------- */
         .content {
             line-height: 1.6;
             font-size: 11pt;
-            border-top: 3px solid var(--rooq-burgundy);
+            border-top: 3px solid var(--theme-primary);
             margin-top: 15px;
             padding-top: 15px;
+            color: var(--text-dark);
         }
 
-        .doc-title {
-            color: var(--rooq-burgundy);
+        .inner-doc-title {
+            color: var(--theme-primary);
             font-size: 14px;
             text-transform: uppercase;
             font-weight: bold;
             margin-bottom: 10px;
         }
 
-        .doc-subtitle {
+        .inner-doc-subtitle {
             text-align: center;
             font-size: 14px;
             font-weight: bold;
-            color: var(--rooq-dark);
+            color: var(--text-dark);
             margin-bottom: 20px;
         }
 
         h2 {
-            color: var(--rooq-burgundy);
+            color: var(--theme-primary);
             font-size: 13pt;
-            border-bottom: 1px dashed var(--rooq-gold);
+            border-bottom: 1px dashed var(--theme-accent);
             padding-bottom: 5px;
             margin-top: 5px;
             text-transform: uppercase;
         }
 
-        p {
-            margin: 0px;
-        }
-
-        ul,
-        ol {
-            padding-left: 20px;
-            margin: 0px;
-        }
+        p { margin: 0px; }
+        ul, ol { padding-left: 20px; margin: 0px; }
 
         .layout-table {
             display: table;
             width: 100%;
             margin-bottom: 5px;
+        }
+
+        .bg-gray {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-left: 3px solid var(--theme-accent);
         }
 
         .bank-table {
@@ -377,21 +359,20 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             background: rgba(255, 255, 255, 0.8);
         }
 
-        .bank-table th,
-        .bank-table td {
-            border: 1px solid var(--rooq-gold);
+        .bank-table th, .bank-table td {
+            border: 1px solid var(--theme-accent);
             padding: 8px 12px;
             text-align: left;
         }
 
         .bank-table th {
-            background-color: var(--rooq-burgundy);
+            background-color: var(--theme-primary);
             color: white;
             width: 40%;
         }
 
         .signature-line {
-            border-bottom: 1px solid var(--rooq-dark);
+            border-bottom: 1px solid var(--text-dark);
             margin-top: 20px;
             margin-bottom: 10px;
             width: 30%;
@@ -406,72 +387,88 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
     <div id="contract-content">
 
         <div class="document-page cover-page">
-            <div class="doc-bg-container">
-                <div class="curve-gold"></div>
-                <div class="curve-burgundy"></div>
+            <img src="../assets/img/logo_transparent.png" class="watermark" alt="">
 
-                <div class="doc-tab"><?php echo $year; ?></div>
+            <svg class="wave-bg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M 0,0 L 80,0 C 50,22 20,24 0,14 Z" fill="none" stroke="var(--theme-accent)" stroke-width="0.5" transform="translate(1, 1)" opacity="0.6" />
+                <path d="M 0,0 L 80,0 C 50,22 20,24 0,14 Z" fill="var(--theme-primary)" />
+                <path d="M 100,22 C 85,35 85,55 100,68 Z" fill="var(--theme-accent)" opacity="0.8" transform="translate(-1.5, 0)" />
+                <path d="M 100,22 C 85,35 85,55 100,68 Z" fill="var(--theme-primary)" />
+                <path d="M 0,45 C 30,90 70,72 100,78 L 100,84 C 70,78 30,98 0,100 Z" fill="none" stroke="var(--theme-accent)" stroke-width="0.5" transform="translate(0, -1.5)" opacity="0.8" />
+                <path d="M 0,45 C 30,90 70,72 100,78 L 100,84 C 70,78 30,98 0,100 Z" fill="var(--theme-primary)" />
+            </svg>
 
-                <div class="doc-content">
-
-                    <div class="doc-logo">
-                        <img src="../assets/img/logo.png" alt="">
+            <div class="content-layer">
+                <div class="brand-container">
+                    <div class="brand-icon-wrapper">
+                        <img src="../assets/img/logo.png" alt="Basmat Rooq">
                     </div>
+                </div>
 
-                    <h1 class="cover-main-title">SERVICE LICENSE AGREEMENT</h1>
+                <div class="title-wrapper">
+                    <div class="doc-arabic">ملف ترخيص وزارة الاستثمار</div>
+                    <div class="cover-sub-title">MISA INVESTOR</div>
+                    <h1 class="cover-main-title">LICENSE</h1>
 
-                    <div class="doc-prepared-for">
-                        <div class="doc-prepared-title">Prepared For</div>
-
-                        <div class="doc-field-row">
-                            <span class="field-label">Client Name:</span>
-                            <div class="field-wrapper">
-                                <span class="field-text"><?php echo $clientName; ?></span>
-                                <div class="field-line"></div>
-                            </div>
+                    <div class="doc-data-box">
+                        <div class="data-row">
+                            <svg class="data-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
+                            </svg>
+                            <p class="doc-data-text"><strong>Company Name</strong> <?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?></p>
                         </div>
 
-                        <div class="doc-field-row">
-                            <span class="field-label">Date:</span>
-                            <div class="field-wrapper">
-                                <span class="field-text"><?php echo $date; ?></span>
-                                <div class="field-line"></div>
-                            </div>
+                        <div class="data-row">
+                            <svg class="data-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
+                            </svg>
+                            <p class="doc-data-text"><strong>Trade Name</strong> <?php echo htmlspecialchars($client['trade_name'] ?? 'ALSAMA SKR'); ?></p>
+                        </div>
+
+                        <div class="data-row">
+                            <svg class="data-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                            </svg>
+                            <p class="doc-data-text"><strong>Client Representative</strong> <?php echo htmlspecialchars($clientName); ?></p>
+                        </div>
+
+                        <div class="data-row">
+                            <svg class="data-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                            </svg>
+                            <p class="doc-data-text"><strong>Date Issued</strong> <?php echo $date; ?></p>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="doc-footer">
-                <div class="doc-footer-company"><?php echo strtoupper(explode(" ", $serviceProvider)[0]); ?> COMPANY
+                <div class="doc-year">
+                    <span class="year-main"><?php echo $year; ?></span>
+                    <span class="year-sub">1447 HIJRI</span>
                 </div>
-                <div class="doc-footer-address"><?php echo strtoupper($companyLocation); ?></div>
             </div>
         </div>
+
         <div class="document-page">
             <div class="content">
-                <div class="doc-title">SERVICE LICENSE AGREEMENT</div>
-                <div class="doc-subtitle">(MISA Service License Facilitation)</div>
+                <div class="inner-doc-title">SERVICE LICENSE AGREEMENT</div>
+                <div class="inner-doc-subtitle">(MISA Service License Facilitation)</div>
 
                 <p>This Service Agreement ("Agreement") is made between:</p>
 
                 <div class="layout-table bg-gray">
                     <strong>Service Provider:</strong><br>
-                    <p><?php echo $serviceProvider; ?></p>
+                    <p><?php echo htmlspecialchars($serviceProvider); ?></p>
                     <p>Email: info@flyburjco.com </p>
-
-                    <p><strong>Client Name: </strong> <?php echo $clientName; ?></p>
-                    <p> Iqama No: <?php echo $iqamaNo; ?></p>
+                    <br>
+                    <p><strong>Client Name: </strong> <?php echo htmlspecialchars($clientName); ?></p>
+                    <p> Iqama No: <?php echo htmlspecialchars($iqamaNo); ?></p>
                 </div>
 
                 <h2>1. OBJECTIVE OF THE AGREEMENT</h2>
-                <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and
-                    consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia,
-                    in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>
+                <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>
 
                 <h2>2. PERMITTED ACTIVITIES UNDER SERVICE LICENSE</h2>
-                <p>Service-based activities including consultancy, IT services, management support, marketing, training,
-                    professional advisory services, and other non-trading activities as approved by MISA</p>
+                <p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory services, and other non-trading activities as approved by MISA</p>
 
                 <h2>3. SCOPE OF SERVICES</h2>
                 <p>The Service Provider shall be responsible for completing the following services for the Client:</p>
@@ -494,23 +491,15 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 <p><em>The Client confirms that all documents provided are valid, accurate, and genuine.</em></p>
 
                 <h2>5. SERVICE CHARGES</h2>
-                <p>The Total professional service fee for this Agreement is <strong>SAR <?php echo $serviceFee; ?>
-                        (Saudi Riyals Fifteen Thousand only)</strong>.</p>
-                <p><em style="color:red;">Note: All kind of Service provide by Flyburj Travels & Tourism Co. & All kind
-                        of Govt. Payments are to be borne by the Client. </em></p>
+                <p>The Total professional service fee for this Agreement is <strong>SAR <?php echo htmlspecialchars($serviceFee); ?> (Saudi Riyals Fifteen Thousand only)</strong>.</p>
+                <p><em style="color:red;">Note: All kind of Service provide by Flyburj Travels & Tourism Co. & All kind of Govt. Payments are to be borne by the Client. </em></p>
 
                 <h2>6. PAYMENT TERMS</h2>
                 <ul>
-                    <li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon
-                        issuance of the Investment License in Saudi Arabia, and the remaining 50% upon issuance of the
-                        Commercial Register.</li>
-                    <li>If the client fails to fulfill the payment obligations, the company reserves the right to retain
-                        the official documents and papers until the full payment is settled and the final settlement is
-                        completed.</li>
-                    <li>Should there be any changes to the government license fee, the agreement amount will be revised
-                        accordingly.</li>
-                    <li>The contractual relationship with our company ends once the commercial register and investment
-                        license have been obtained and the agreed-upon services have been completed.</li>
+                    <li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon issuance of the Investment License in Saudi Arabia, and the remaining 50% upon issuance of the Commercial Register.</li>
+                    <li>If the client fails to fulfill the payment obligations, the company reserves the right to retain the official documents and papers until the full payment is settled and the final settlement is completed.</li>
+                    <li>Should there be any changes to the government license fee, the agreement amount will be revised accordingly.</li>
+                    <li>The contractual relationship with our company ends once the commercial register and investment license have been obtained and the agreed-upon services have been completed.</li>
                 </ul>
 
                 <table class="bank-table">
@@ -544,13 +533,10 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     <li>Cooperate fully during the application process</li>
                     <li>Comply with all Saudi laws, regulations, and MISA requirements</li>
                 </ul>
-                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the
-                    Service Provider.</p>
+                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the Service Provider.</p>
 
                 <h2>8. TIMELINE & DELAYS</h2>
-                <p>The estimated timeline to complete the MISA Service License and related registrations is
-                    approximately forty <strong><?php echo $timelineDays; ?> working days</strong>, subject to timely
-                    submission of documents and payments by the Client.</p>
+                <p>The estimated timeline to complete the MISA Service License and related registrations is approximately forty <strong><?php echo htmlspecialchars($timelineDays); ?> working days</strong>, subject to timely submission of documents and payments by the Client.</p>
 
                 <p>The Service Provider shall not be held responsible for any delay caused by:</p>
                 <ul>
@@ -558,8 +544,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     <li>Portal downtime or technical errors</li>
                     <li>Scheduled or unscheduled system maintenance</li>
                 </ul>
-                <p>Any delays arising from external or governmental processes shall not be considered a breach of this
-                    Agreement and will not affect the agreed service charges.</p>
+                <p>Any delays arising from external or governmental processes shall not be considered a breach of this Agreement and will not affect the agreed service charges.</p>
 
                 <h2>9. ACCEPTANCE & SIGNATURES</h2>
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
@@ -568,15 +553,13 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     <strong>For Flyburj Travels And Tourism Company</strong><br>
                     <p>Name: <strong>Saifullah</strong></p>
 
-                    <div style="display:flex; margin-top: 10px;">Signature: <div class="signature-line"></div>
-                    </div>
+                    <div style="display:flex; margin-top: 10px;">Signature: <div class="signature-line"></div></div>
+                    <br>
                     <strong>For the Client</strong>
-                    <p>Name: <strong><?php echo $clientName; ?></strong></p>
-                    <div style="display:flex; margin-top: 20px;">Signature: <div class="signature-line"></div>
-                    </div>
+                    <p>Name: <strong><?php echo htmlspecialchars($clientName); ?></strong></p>
+                    <div style="display:flex; margin-top: 20px;">Signature: <div class="signature-line"></div></div>
                     <p><strong>Date:</strong> _____________________</p>
                 </div>
-
             </div>
         </div>
 
@@ -600,10 +583,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             const opt = {
                 margin: 0,
                 filename: filename,
-                image: {
-                    type: 'jpeg',
-                    quality: 1
-                },
+                image: { type: 'jpeg', quality: 1 },
                 html2canvas: {
                     scale: 2,
                     useCORS: true,
@@ -627,7 +607,5 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             });
         }
     </script>
-
 </body>
-
 </html>

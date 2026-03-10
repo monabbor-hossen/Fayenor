@@ -57,7 +57,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service License Agreement - <?php echo htmlspecialchars($clientName); ?></title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="<?php echo BASE_URL; ?>assets/js/html2pdf.bundle.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
@@ -582,8 +582,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             </div>
         </div>
     </div>
-
-    <script>
+  <script>
         function generatePDF() {
             const element = document.getElementById('contract-content');
             const pages = document.querySelectorAll('.document-page');
@@ -592,6 +591,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             pages.forEach(p => {
                 p.style.marginBottom = '0px';
                 p.style.boxShadow = 'none';
+                p.style.height = '296.9mm';
             });
 
             const clientName = "<?php echo str_replace(' ', '_', $clientName); ?>";
@@ -622,6 +622,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 pages.forEach(p => {
                     p.style.marginBottom = '40px';
                     p.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
+                    p.style.height = '297mm';
                 });
             });
         }

@@ -122,6 +122,9 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             margin-bottom: 40px;
             overflow: hidden;
         }
+        .document-page:first-child {
+            background-image: none;
+        }
 
         /* --------------------------------------
            YOUR ORIGINAL COVER PAGE DESIGN 

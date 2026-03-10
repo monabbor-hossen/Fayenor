@@ -581,7 +581,6 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 </div>
             </div>
         </div>
-
     </div>
 
     <script>

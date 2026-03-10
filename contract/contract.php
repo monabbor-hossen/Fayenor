@@ -327,7 +327,6 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         }
 
         .bg-gray {
-            background-color: #f5f5f5;
             padding: 15px;
             border-left: 3px solid var(--theme-accent);
         }
@@ -463,7 +462,6 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     <strong>Service Provider:</strong><br>
                     <p><?php echo htmlspecialchars($serviceProvider); ?></p>
                     <p>Email: info@flyburjco.com </p>
-                    <br>
                     <p><strong>Client Name: </strong> <?php echo htmlspecialchars($clientName); ?></p>
                     <p> Iqama No: <?php echo htmlspecialchars($iqamaNo); ?></p>
                 </div>

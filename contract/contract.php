@@ -1,15 +1,21 @@
+
 <?php
 session_start();
+
+// 1. MUST LOAD CONFIG FIRST (This holds DB_HOST, DB_USER, etc)
+require_once __DIR__ . '/../app/Config/Config.php';
+
+// 2. THEN LOAD DATABASE
 require_once __DIR__ . '/../app/Config/Database.php';
 
-// 1. Check if a Client ID was passed in the URL
+// 3. Check if a Client ID was passed in the URL
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("<div style='text-align:center; margin-top:50px; font-family:sans-serif;'><h2>Error: No Client Selected.</h2><p>Please select a client from the portal to view their contract.</p></div>");
 }
 
 $client_id = intval($_GET['id']);
 
-// 2. Fetch the client data from the database
+// 4. Fetch the client data from the database
 try {
     $db = (new Database())->getConnection();
     $stmt = $db->prepare("SELECT * FROM clients WHERE client_id = ? LIMIT 1");
@@ -23,16 +29,18 @@ try {
     die("Database Error: " . $e->getMessage());
 }
 
-// 3. Map Database fields to the Contract Variables
+// 5. Map Database fields to the Contract Variables
 $clientName      = $client['client_name'] ?? $client['company_name'];
-$date            = date('F j, Y'); // Sets today's date automatically
-$iqamaNo         = "To Be Provided"; // Update this if you have an iqama column in your DB!
+$date            = date('F j, Y'); 
+$iqamaNo         = "To Be Provided"; 
 $serviceProvider = "Flyburj Travels and Tourism Company";
-$serviceFee      = number_format($client['contract_value'] ?? 0, 2); // Formats the money nicely
+$serviceFee      = number_format($client['contract_value'] ?? 0, 2); 
 $timelineDays    = "40"; 
 $companyLocation = "BURAYDAH, AL QASSIM-SAUDI ARABIA";
-$year            = date('Y'); // Gets current year automatically
+$year            = date('Y'); 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 

@@ -73,7 +73,8 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         }
 
         body {
-            background-color: #2b2b2b; /* Dark background so the white A4 page pops */
+            background-color: #2b2b2b;
+            /* Dark background so the white A4 page pops */
             font-family: 'Montserrat', 'Segoe UI', sans-serif;
             margin: 0;
             padding: 40px 0;
@@ -81,7 +82,8 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
 
         #contract-content {
             display: block;
-            width: 794px; /* Fixed pixel width for flawless PDF generation */
+            width: 794px;
+            /* Fixed pixel width for flawless PDF generation */
             margin: 0 auto;
         }
 
@@ -103,14 +105,20 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         }
 
         /* EXACT A4 Document Pages (Using fixed pixels prevents html2canvas stretching bugs) */
+        /* --------------------------------------
+           COMMON PAGE STYLES
+           -------------------------------------- */
         .document-page {
-            width: 794px;
-            height: 1123px;
+            width: 210mm;
+            height: 297mm;
+            background-image: url('fullPage.jpg');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
             background-color: white;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
             position: relative;
             box-sizing: border-box;
-            padding: 60px 50px;
+            padding: 45mm 20mm 35mm 20mm;
             margin-bottom: 40px;
             overflow: hidden;
         }
@@ -198,7 +206,8 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         .data-row {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 15px; /* Replaces gap so PDF generator understands */
+            margin-bottom: 15px;
+            /* Replaces gap so PDF generator understands */
         }
 
         .data-icon {
@@ -207,7 +216,8 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             min-width: 18px;
             fill: var(--theme-primary);
             margin-top: 2px;
-            margin-right: 15px; /* Replaces gap */
+            margin-right: 15px;
+            /* Replaces gap */
         }
 
         .data-text-block {
@@ -293,8 +303,15 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             text-transform: uppercase;
         }
 
-        p { margin: 10px 0; }
-        ul, ol { padding-left: 20px; margin: 10px 0; }
+        p {
+            margin: 10px 0;
+        }
+
+        ul,
+        ol {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
 
         .layout-table {
             display: table;
@@ -316,7 +333,8 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             background: rgba(255, 255, 255, 0.8);
         }
 
-        .bank-table th, .bank-table td {
+        .bank-table th,
+        .bank-table td {
             border: 1px solid var(--theme-accent);
             padding: 8px 12px;
             text-align: left;
@@ -344,22 +362,26 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
     <div id="contract-content">
 
         <div class="document-page cover-page">
-            
-            <svg width="794" height="1123" viewBox="0 0 794 1123" style="position:absolute; top:0; left:0; z-index:1;" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="none" stroke="#D4AF37" stroke-width="4" transform="translate(8, 8)" opacity="0.8"/>
+
+            <svg width="794" height="1123" viewBox="0 0 794 1123" style="position:absolute; top:0; left:0; z-index:1;"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="none" stroke="#D4AF37" stroke-width="4"
+                    transform="translate(8, 8)" opacity="0.8" />
                 <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="#800020" />
 
-                <path d="M 794,250 C 650,400 650,600 794,750 Z" fill="none" stroke="#D4AF37" stroke-width="4" transform="translate(-8, 0)" opacity="0.8"/>
+                <path d="M 794,250 C 650,400 650,600 794,750 Z" fill="none" stroke="#D4AF37" stroke-width="4"
+                    transform="translate(-8, 0)" opacity="0.8" />
                 <path d="M 794,250 C 650,400 650,600 794,750 Z" fill="#800020" />
 
-                <path d="M 0,850 C 300,1000 500,800 794,880 L 794,1123 L 0,1123 Z" fill="none" stroke="#D4AF37" stroke-width="4" transform="translate(0, -8)" opacity="0.8"/>
+                <path d="M 0,850 C 300,1000 500,800 794,880 L 794,1123 L 0,1123 Z" fill="none" stroke="#D4AF37"
+                    stroke-width="4" transform="translate(0, -8)" opacity="0.8" />
                 <path d="M 0,850 C 300,1000 500,800 794,880 L 794,1123 L 0,1123 Z" fill="#800020" />
             </svg>
 
             <img src="../assets/img/logo_transparent.png" class="watermark" alt="">
 
             <div class="cover-content-layer">
-                
+
                 <img src="../assets/img/logo.png" class="brand-logo" alt="Basmat Rooq">
 
                 <div class="title-section">
@@ -369,23 +391,34 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
 
                     <div class="doc-data-box">
                         <div class="data-row">
-                            <svg class="data-icon" viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" /></svg>
+                            <svg class="data-icon" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
+                                </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Company Name</span>
-                                <span class="data-value"><?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?></span>
+                                <span
+                                    class="data-value"><?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?></span>
                             </div>
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" /></svg>
+                            <svg class="data-icon" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
+                                </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Trade Name</span>
-                                <span class="data-value"><?php echo htmlspecialchars($client['trade_name'] ?? 'ALSAMA SKR'); ?></span>
+                                <span
+                                    class="data-value"><?php echo htmlspecialchars($client['trade_name'] ?? 'ALSAMA SKR'); ?></span>
                             </div>
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
+                            <svg class="data-icon" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Client Representative</span>
                                 <span class="data-value"><?php echo htmlspecialchars($clientName); ?></span>
@@ -393,7 +426,10 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" /></svg>
+                            <svg class="data-icon" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                                </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Date Issued</span>
                                 <span class="data-value"><?php echo $date; ?></span>
@@ -426,16 +462,19 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 </div>
 
                 <h2>1. OBJECTIVE OF THE AGREEMENT</h2>
-                <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>
+                <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and
+                    consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia,
+                    in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>
 
                 <h2>2. PERMITTED ACTIVITIES UNDER SERVICE LICENSE</h2>
-                <p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory services, and other non-trading activities as approved by MISA</p>
+                <p>Service-based activities including consultancy, IT services, management support, marketing, training,
+                    professional advisory services, and other non-trading activities as approved by MISA</p>
 
                 <h2>3. SCOPE OF SERVICES</h2>
                 <p>The Service Provider shall be responsible for completing the following services for the Client:</p>
                 <ol>
                     <?php foreach ($scopeList as $item): ?>
-                        <li><?php echo htmlspecialchars($item); ?></li>
+                    <li><?php echo htmlspecialchars($item); ?></li>
                     <?php endforeach; ?>
                 </ol>
             </div>
@@ -452,15 +491,23 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 <p><em>The Client confirms that all documents provided are valid, accurate, and genuine.</em></p>
 
                 <h2>5. SERVICE CHARGES</h2>
-                <p>The Total professional service fee for this Agreement is <strong>SAR <?php echo htmlspecialchars($serviceFee); ?> (Saudi Riyals Fifteen Thousand only)</strong>.</p>
-                <p><em style="color:red;">Note: All kind of Service provide by Flyburj Travels & Tourism Co. & All kind of Govt. Payments are to be borne by the Client. </em></p>
+                <p>The Total professional service fee for this Agreement is <strong>SAR
+                        <?php echo htmlspecialchars($serviceFee); ?> (Saudi Riyals Fifteen Thousand only)</strong>.</p>
+                <p><em style="color:red;">Note: All kind of Service provide by Flyburj Travels & Tourism Co. & All kind
+                        of Govt. Payments are to be borne by the Client. </em></p>
 
                 <h2>6. PAYMENT TERMS</h2>
                 <ul>
-                    <li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon issuance of the Investment License in Saudi Arabia, and the remaining 50% upon issuance of the Commercial Register.</li>
-                    <li>If the client fails to fulfill the payment obligations, the company reserves the right to retain the official documents and papers until the full payment is settled and the final settlement is completed.</li>
-                    <li>Should there be any changes to the government license fee, the agreement amount will be revised accordingly.</li>
-                    <li>The contractual relationship with our company ends once the commercial register and investment license have been obtained and the agreed-upon services have been completed.</li>
+                    <li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon
+                        issuance of the Investment License in Saudi Arabia, and the remaining 50% upon issuance of the
+                        Commercial Register.</li>
+                    <li>If the client fails to fulfill the payment obligations, the company reserves the right to retain
+                        the official documents and papers until the full payment is settled and the final settlement is
+                        completed.</li>
+                    <li>Should there be any changes to the government license fee, the agreement amount will be revised
+                        accordingly.</li>
+                    <li>The contractual relationship with our company ends once the commercial register and investment
+                        license have been obtained and the agreed-upon services have been completed.</li>
                 </ul>
 
                 <table class="bank-table">
@@ -494,10 +541,13 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     <li>Cooperate fully during the application process</li>
                     <li>Comply with all Saudi laws, regulations, and MISA requirements</li>
                 </ul>
-                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the Service Provider.</p>
+                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the
+                    Service Provider.</p>
 
                 <h2>8. TIMELINE & DELAYS</h2>
-                <p>The estimated timeline to complete the MISA Service License and related registrations is approximately forty <strong><?php echo htmlspecialchars($timelineDays); ?> working days</strong>, subject to timely submission of documents and payments by the Client.</p>
+                <p>The estimated timeline to complete the MISA Service License and related registrations is
+                    approximately forty <strong><?php echo htmlspecialchars($timelineDays); ?> working days</strong>,
+                    subject to timely submission of documents and payments by the Client.</p>
 
                 <p>The Service Provider shall not be held responsible for any delay caused by:</p>
                 <ul>
@@ -505,7 +555,8 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     <li>Portal downtime or technical errors</li>
                     <li>Scheduled or unscheduled system maintenance</li>
                 </ul>
-                <p>Any delays arising from external or governmental processes shall not be considered a breach of this Agreement and will not affect the agreed service charges.</p>
+                <p>Any delays arising from external or governmental processes shall not be considered a breach of this
+                    Agreement and will not affect the agreed service charges.</p>
 
                 <h2>9. ACCEPTANCE & SIGNATURES</h2>
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
@@ -517,10 +568,11 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                         <p style="margin-top: 20px;">Signature:</p>
                         <div class="signature-line"></div>
                     </div>
-                    
+
                     <div style="display: table-cell; width: 50%;">
                         <strong>For the Client</strong><br>
-                        <p style="margin-top: 10px;">Name: <strong><?php echo htmlspecialchars($clientName); ?></strong></p>
+                        <p style="margin-top: 10px;">Name: <strong><?php echo htmlspecialchars($clientName); ?></strong>
+                        </p>
                         <p style="margin-top: 20px;">Signature:</p>
                         <div class="signature-line"></div>
                         <p style="margin-top: 10px;"><strong>Date:</strong> _____________________</p>
@@ -575,4 +627,5 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         }
     </script>
 </body>
+
 </html>

@@ -205,6 +205,12 @@ function sortLink($key, $label, $currentSort, $nextDir) {
    title="Generate Contract">
     <i class="bi bi-file-earmark-pdf"></i>
 </a>
+<a href="../contract/edit_contract.php?id=<?php echo $client['client_id']; ?>" 
+   class="btn btn-sm btn-outline-warning rounded-circle border-0 shadow-none" 
+   data-bs-toggle="tooltip" 
+   title="Edit Contract Terms">
+    <i class="bi bi-pencil-square"></i>
+</a>
                             </div>
                         </td>
                     </tr>

@@ -1,24 +1,24 @@
 
 <?php
 session_start();
-
-// 1. MUST LOAD CONFIG FIRST (This holds DB_HOST, DB_USER, etc)
 require_once __DIR__ . '/../app/Config/Config.php';
-
-// 2. THEN LOAD DATABASE
 require_once __DIR__ . '/../app/Config/Database.php';
 
-// 3. Check if a Client ID was passed in the URL
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    die("<div style='text-align:center; margin-top:50px; font-family:sans-serif;'><h2>Error: No Client Selected.</h2><p>Please select a client from the portal to view their contract.</p></div>");
+    die("<div style='text-align:center; margin-top:50px; font-family:sans-serif;'><h2>Error: No Client Selected.</h2></div>");
 }
 
 $client_id = intval($_GET['id']);
 
-// 4. Fetch the client data from the database
+// 1. Fetch Client AND Workflow Data
 try {
     $db = (new Database())->getConnection();
-    $stmt = $db->prepare("SELECT * FROM clients WHERE client_id = ? LIMIT 1");
+    // We join workflow_tracking so we can read the ON/OFF switches
+    $stmt = $db->prepare("
+        SELECT c.*, w.* FROM clients c 
+        LEFT JOIN workflow_tracking w ON c.client_id = w.client_id 
+        WHERE c.client_id = ? LIMIT 1
+    ");
     $stmt->execute([$client_id]);
     $client = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -29,15 +29,54 @@ try {
     die("Database Error: " . $e->getMessage());
 }
 
-// 5. Map Database fields to the Contract Variables
+// 2. Map Database fields to the Contract Variables
 $clientName      = $client['client_name'] ?? $client['company_name'];
 $date            = date('F j, Y'); 
-$iqamaNo         = "To Be Provided"; 
+$iqamaNo         = "To Be Provided"; // Change this if you have an Iqama column
 $serviceProvider = "Flyburj Travels and Tourism Company";
 $serviceFee      = number_format($client['contract_value'] ?? 0, 2); 
 $timelineDays    = "40"; 
 $companyLocation = "BURAYDAH, AL QASSIM-SAUDI ARABIA";
 $year            = date('Y'); 
+
+// 3. GENERATE DYNAMIC SCOPE OF SERVICES
+$scopeList = [];
+
+// Check the Workflow Switches! If it is NOT "Not Required", it means the switch is ON.
+if (isset($client['hire_foreign_company']) && $client['hire_foreign_company'] !== 'Not Required') {
+    $scopeList[] = "Arrangement of a Foreign Company (as required by MISA)";
+}
+if (isset($client['misa_application']) && $client['misa_application'] !== 'Not Required') {
+    $scopeList[] = "Application and approval of MISA Service License";
+}
+if (isset($client['sbc_application']) && $client['sbc_application'] !== 'Not Required') {
+    $scopeList[] = "SBC Application & Registration";
+}
+if (isset($client['article_association']) && $client['article_association'] !== 'Not Required') {
+    $scopeList[] = "Preparation of Articles of Association";
+}
+
+// Standard included services
+$scopeList[] = "Trade Name Reservation";
+$scopeList[] = "Issuance of Commercial Registration (CR)";
+
+if (isset($client['muqeem']) && $client['muqeem'] !== 'Not Required') {
+    $scopeList[] = "Muqeem Registration";
+}
+if (isset($client['qiwa']) && $client['qiwa'] !== 'Not Required') {
+    $scopeList[] = "Qiwa Registration";
+}
+if (isset($client['gosi']) && $client['gosi'] !== 'Not Required') {
+    $scopeList[] = "GOSI Registration";
+}
+
+// Standard included services
+$scopeList[] = "Saudi Post (National Address) Registration";
+$scopeList[] = "Zakat & VAT Registration";
+
+if (isset($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not Required') {
+    $scopeList[] = "Chamber of Commerce Registration";
+}
 ?>
 
 
@@ -438,16 +477,9 @@ $year            = date('Y');
                 <h2>3. SCOPE OF SERVICES</h2>
                 <p>The Service Provider shall be responsible for completing the following services for the Client:</p>
                 <ol>
-                    <li>Arrangement of a Foreign Company (as required by MISA)</li>
-                    <li>Application and approval of MISA Service License</li>
-                    <li>Preparation of Articles of Association</li>
-                    <li>Trade Name Reservation</li>
-                    <li>Issuance of Commercial Registration (CR)</li>
-                    <li>Muqeem Registration</li>
-                    <li>Qiwa Registration</li>
-                    <li>Saudi Post (National Address) Registration</li>
-                    <li>Zakat & VAT Registration</li>
-                    <li>Chamber of Commerce Registration</li>
+                    <?php foreach ($scopeList as $item): ?>
+                        <li><?php echo htmlspecialchars($item); ?></li>
+                    <?php endforeach; ?>
                 </ol>
             </div>
         </div>

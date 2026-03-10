@@ -12,7 +12,6 @@ $client_id = intval($_GET['id']);
 // 1. Fetch Client AND Workflow Data
 try {
     $db = (new Database())->getConnection();
-    // We join workflow_tracking so we can read the ON/OFF switches
     $stmt = $db->prepare("
         SELECT c.*, w.* FROM clients c 
         LEFT JOIN workflow_tracking w ON c.client_id = w.client_id 
@@ -40,31 +39,14 @@ $year            = date('Y');
 
 // 3. GENERATE DYNAMIC SCOPE OF SERVICES (FROM WORKFLOW TABLE ONLY)
 $scopeList = [];
-
-if (!empty($client['hire_foreign_company']) && $client['hire_foreign_company'] !== 'Not Required') {
-    $scopeList[] = "Arrangement of a Foreign Company (as required by MISA)";
-}
-if (!empty($client['misa_application']) && $client['misa_application'] !== 'Not Required') {
-    $scopeList[] = "Application and approval of MISA Service License";
-}
-if (!empty($client['sbc_application']) && $client['sbc_application'] !== 'Not Required') {
-    $scopeList[] = "SBC Application & Registration";
-}
-if (!empty($client['article_association']) && $client['article_association'] !== 'Not Required') {
-    $scopeList[] = "Preparation of Articles of Association";
-}
-if (!empty($client['qiwa']) && $client['qiwa'] !== 'Not Required') {
-    $scopeList[] = "Qiwa Registration";
-}
-if (!empty($client['muqeem']) && $client['muqeem'] !== 'Not Required') {
-    $scopeList[] = "Muqeem Registration";
-}
-if (!empty($client['gosi']) && $client['gosi'] !== 'Not Required') {
-    $scopeList[] = "GOSI Registration";
-}
-if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not Required') {
-    $scopeList[] = "Chamber of Commerce Registration";
-}
+if (!empty($client['hire_foreign_company']) && $client['hire_foreign_company'] !== 'Not Required') { $scopeList[] = "Arrangement of a Foreign Company (as required by MISA)"; }
+if (!empty($client['misa_application']) && $client['misa_application'] !== 'Not Required') { $scopeList[] = "Application and approval of MISA Service License"; }
+if (!empty($client['sbc_application']) && $client['sbc_application'] !== 'Not Required') { $scopeList[] = "SBC Application & Registration"; }
+if (!empty($client['article_association']) && $client['article_association'] !== 'Not Required') { $scopeList[] = "Preparation of Articles of Association"; }
+if (!empty($client['qiwa']) && $client['qiwa'] !== 'Not Required') { $scopeList[] = "Qiwa Registration"; }
+if (!empty($client['muqeem']) && $client['muqeem'] !== 'Not Required') { $scopeList[] = "Muqeem Registration"; }
+if (!empty($client['gosi']) && $client['gosi'] !== 'Not Required') { $scopeList[] = "GOSI Registration"; }
+if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not Required') { $scopeList[] = "Chamber of Commerce Registration"; }
 ?>
 
 <!DOCTYPE html>
@@ -82,29 +64,24 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
 
-        /* Core Theme Variables */
         :root {
-            /* Shared Colors */
             --theme-primary: #800020;
-            /* Corporate Burgundy */
             --theme-accent: #D4AF37;
-            /* Corporate Gold */
             --text-dark: #111111;
             --text-muted: #555555;
-            --bg-offwhite: #fdfdfd;
-            --doc-gray-text: #777777;
+            --bg-offwhite: #ffffff;
         }
 
         body {
-            background-color: #e9ecef;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #2b2b2b; /* Dark background so the white A4 page pops */
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
             margin: 0;
             padding: 40px 0;
         }
 
         #contract-content {
             display: block;
-            width: 210mm;
+            width: 794px; /* Fixed pixel width for flawless PDF generation */
             margin: 0 auto;
         }
 
@@ -125,139 +102,39 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             z-index: 1000;
         }
 
-        /* --------------------------------------
-           COMMON PAGE STYLES 
-           -------------------------------------- */
+        /* EXACT A4 Document Pages (Using fixed pixels prevents html2canvas stretching bugs) */
         .document-page {
-            width: 210mm;
-            height: 297mm;
-            background-image: url('fullPage.jpg');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
+            width: 794px;
+            height: 1123px;
             background-color: white;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
             position: relative;
             box-sizing: border-box;
-            padding: 45mm 20mm 35mm 20mm;
+            padding: 60px 50px;
             margin-bottom: 40px;
             overflow: hidden;
         }
 
         /* --------------------------------------
-           NEW EXECUTIVE COVER PAGE STYLES 
+           YOUR ORIGINAL COVER PAGE DESIGN 
            -------------------------------------- */
         .document-page.cover-page {
             padding: 0;
-            background-image: none;
             background-color: var(--bg-offwhite);
-            font-family: 'Montserrat', sans-serif;
         }
 
         .watermark {
             position: absolute;
             top: 50%;
-            left: 60%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 600px;
+            width: 650px;
             opacity: 0.03;
             pointer-events: none;
             z-index: 2;
-            filter: brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1);
         }
 
-        /* --------------------------------------
-           PDF-SAFE BACKGROUND SHAPES (NO SVGS)
-           -------------------------------------- */
-
-        /* 1. Top Left Wave */
-        .shape-top-gold {
-            position: absolute;
-            top: -15%;
-            left: -10%;
-            width: 80%;
-            height: 35%;
-            background-color: #D4AF37;
-            /* Gold */
-            border-radius: 0 0 80% 50%;
-            /* Creates a nice curve */
-            z-index: 4;
-            opacity: 0.6;
-        }
-
-        .shape-top-burgundy {
-            position: absolute;
-            top: -15%;
-            left: -10%;
-            width: 80%;
-            height: 34%;
-            background-color: #800020;
-            border-radius: 0 0 80% 50%;
-            z-index: 5;
-        }
-
-        /* 2. Right Edge Curve */
-        .shape-right-gold {
-            position: absolute;
-            top: 20%;
-            right: -5%;
-            width: 16%;
-            height: 50%;
-            background-color: #D4AF37;
-            /* Gold */
-            border-radius: 50% 0 0 50%;
-            z-index: 4;
-            opacity: 0.8;
-        }
-
-        .shape-right-burgundy {
-            position: absolute;
-            top: 20%;
-            right: -5%;
-            width: 15%;
-            height: 50%;
-            background-color: #800020;
-            /* Burgundy */
-            border-radius: 50% 0 0 50%;
-            z-index: 5;
-        }
-
-        /* 3. Bottom Massive Wave */
-        .shape-bottom-gold {
-            position: absolute;
-            bottom: -15%;
-            left: -10%;
-            width: 120%;
-            height: 46%;
-            background-color: #D4AF37;
-            /* Gold */
-            border-radius: 50% 50% 0 0;
-            /* Creates a massive arch */
-            z-index: 4;
-            opacity: 0.8;
-        }
-
-        .shape-bottom-burgundy {
-            position: absolute;
-            bottom: -15%;
-            left: -10%;
-            width: 120%;
-            height: 45%;
-            background-color: #800020;
-            /* Burgundy */
-            border-radius: 50% 50% 0 0;
-            z-index: 5;
-        }
-
-        .data-icon {
-            width: 16px;
-            height: 16px;
-            fill: #800020;
-            /* Fixed Hex Color for PDF safety */
-            margin-top: 3px;
-            opacity: 0.8;
-        }
-
-        .content-layer {
+        .cover-content-layer {
             position: absolute;
             top: 0;
             left: 0;
@@ -266,26 +143,18 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             z-index: 10;
         }
 
-        .brand-container {
+        .brand-logo {
             position: absolute;
-            top: 80px;
-            left: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .brand-icon-wrapper img {
-            width: 30%;
-            /* Sized for standard logos */
+            top: 50px;
+            left: 50px;
+            width: 150px;
             filter: brightness(0) invert(1);
-            /* Removes if logo is white, adjust if needed */
         }
 
-        .title-wrapper {
+        .title-section {
             position: absolute;
-            top: 340px;
-            left: 80px;
+            top: 310px;
+            left: 100px;
         }
 
         .doc-arabic {
@@ -297,65 +166,74 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             margin-left: 5px;
         }
 
-        .cover-sub-title {
-            font-size: 18px;
+        .doc-subtitle {
+            font-size: 20px;
             font-weight: 700;
             color: var(--theme-primary);
             text-transform: uppercase;
             letter-spacing: 5px;
-            margin-bottom: 5px;
+            margin-bottom: 0px;
             margin-left: 5px;
         }
 
         .cover-main-title {
-            font-size: 80px;
+            font-size: 85px;
             font-weight: 900;
             color: var(--text-dark);
             text-transform: uppercase;
-            line-height: 0.95;
+            line-height: 1;
             letter-spacing: -3px;
             margin: 0;
-            margin-bottom: 45px;
+            margin-bottom: 40px;
         }
 
+        /* Data Box - Rebuilt for html2canvas compatibility */
         .doc-data-box {
             border-left: 4px solid var(--theme-accent);
-            padding-left: 25px;
-            margin-left: 8px;
-            max-width: 450px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            padding-left: 20px;
+            margin-left: 10px;
+            display: block;
         }
 
         .data-row {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            margin-bottom: 15px; /* Replaces gap so PDF generator understands */
         }
 
-        .doc-data-text {
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin: 0;
+        .data-icon {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            fill: var(--theme-primary);
+            margin-top: 2px;
+            margin-right: 15px; /* Replaces gap */
         }
 
-        .doc-data-text strong {
+        .data-text-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-label {
+            font-size: 11px;
             font-weight: 800;
             color: var(--text-dark);
-            display: block;
-            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             margin-bottom: 2px;
+        }
+
+        .data-value {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         .doc-year {
             position: absolute;
-            bottom: 180px;
-            right: 120px;
+            bottom: 120px;
+            right: 100px;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
@@ -363,7 +241,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         }
 
         .year-main {
-            font-size: 55px;
+            font-size: 60px;
             font-weight: 900;
             color: white;
             letter-spacing: -1px;
@@ -371,21 +249,21 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         }
 
         .year-sub {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 700;
             color: var(--theme-accent);
-            letter-spacing: 2px;
-            margin-top: 2px;
+            letter-spacing: 2.5px;
+            margin-top: 5px;
         }
 
         /* --------------------------------------
            CONTRACT INNER PAGES STYLES 
            -------------------------------------- */
         .content {
+            font-family: 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             font-size: 11pt;
             border-top: 3px solid var(--theme-primary);
-            margin-top: 15px;
             padding-top: 15px;
             color: var(--text-dark);
         }
@@ -411,19 +289,12 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             font-size: 13pt;
             border-bottom: 1px dashed var(--theme-accent);
             padding-bottom: 5px;
-            margin-top: 5px;
+            margin-top: 15px;
             text-transform: uppercase;
         }
 
-        p {
-            margin: 0px;
-        }
-
-        ul,
-        ol {
-            padding-left: 20px;
-            margin: 0px;
-        }
+        p { margin: 10px 0; }
+        ul, ol { padding-left: 20px; margin: 10px 0; }
 
         .layout-table {
             display: table;
@@ -445,8 +316,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             background: rgba(255, 255, 255, 0.8);
         }
 
-        .bank-table th,
-        .bank-table td {
+        .bank-table th, .bank-table td {
             border: 1px solid var(--theme-accent);
             padding: 8px 12px;
             text-align: left;
@@ -462,7 +332,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             border-bottom: 1px solid var(--text-dark);
             margin-top: 20px;
             margin-bottom: 10px;
-            width: 30%;
+            width: 60%;
         }
     </style>
 </head>
@@ -474,64 +344,60 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
     <div id="contract-content">
 
         <div class="document-page cover-page">
+            
+            <svg width="794" height="1123" viewBox="0 0 794 1123" style="position:absolute; top:0; left:0; z-index:1;" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="none" stroke="#D4AF37" stroke-width="4" transform="translate(8, 8)" opacity="0.8"/>
+                <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="#800020" />
+
+                <path d="M 794,250 C 650,400 650,600 794,750 Z" fill="none" stroke="#D4AF37" stroke-width="4" transform="translate(-8, 0)" opacity="0.8"/>
+                <path d="M 794,250 C 650,400 650,600 794,750 Z" fill="#800020" />
+
+                <path d="M 0,850 C 300,1000 500,800 794,880 L 794,1123 L 0,1123 Z" fill="none" stroke="#D4AF37" stroke-width="4" transform="translate(0, -8)" opacity="0.8"/>
+                <path d="M 0,850 C 300,1000 500,800 794,880 L 794,1123 L 0,1123 Z" fill="#800020" />
+            </svg>
+
             <img src="../assets/img/logo_transparent.png" class="watermark" alt="">
 
-            <div class="shape-top-gold"></div>
-            <div class="shape-top-burgundy"></div>
+            <div class="cover-content-layer">
+                
+                <img src="../assets/img/logo.png" class="brand-logo" alt="Basmat Rooq">
 
-            <div class="shape-right-gold"></div>
-            <div class="shape-right-burgundy"></div>
-
-            <div class="shape-bottom-gold"></div>
-            <div class="shape-bottom-burgundy"></div>
-
-            <div class="content-layer">
-                <div class="brand-container">
-                    <div class="brand-icon-wrapper">
-                        <img src="../assets/img/logo.png" alt="Basmat Rooq">
-                    </div>
-                </div>
-
-                <div class="title-wrapper">
+                <div class="title-section">
                     <div class="doc-arabic">ملف ترخيص وزارة الاستثمار</div>
-                    <div class="cover-sub-title">MISA INVESTOR</div>
+                    <div class="doc-subtitle">MISA INVESTOR</div>
                     <h1 class="cover-main-title">LICENSE</h1>
 
                     <div class="doc-data-box">
                         <div class="data-row">
-                            <svg class="data-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
-                            </svg>
-                            <p class="doc-data-text"><strong>Company Name</strong>
-                                <?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?>
-                            </p>
+                            <svg class="data-icon" viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" /></svg>
+                            <div class="data-text-block">
+                                <span class="data-label">Company Name</span>
+                                <span class="data-value"><?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?></span>
+                            </div>
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path
-                                    d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
-                            </svg>
-                            <p class="doc-data-text"><strong>Trade Name</strong>
-                                <?php echo htmlspecialchars($client['trade_name'] ?? 'ALSAMA SKR'); ?></p>
+                            <svg class="data-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" /></svg>
+                            <div class="data-text-block">
+                                <span class="data-label">Trade Name</span>
+                                <span class="data-value"><?php echo htmlspecialchars($client['trade_name'] ?? 'ALSAMA SKR'); ?></span>
+                            </div>
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                            </svg>
-                            <p class="doc-data-text"><strong>Client Representative</strong>
-                                <?php echo htmlspecialchars($clientName); ?></p>
+                            <svg class="data-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
+                            <div class="data-text-block">
+                                <span class="data-label">Client Representative</span>
+                                <span class="data-value"><?php echo htmlspecialchars($clientName); ?></span>
+                            </div>
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path
-                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
-                            </svg>
-                            <p class="doc-data-text"><strong>Date Issued</strong> <?php echo $date; ?></p>
+                            <svg class="data-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" /></svg>
+                            <div class="data-text-block">
+                                <span class="data-label">Date Issued</span>
+                                <span class="data-value"><?php echo $date; ?></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -542,6 +408,7 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 </div>
             </div>
         </div>
+
         <div class="document-page">
             <div class="content">
                 <div class="inner-doc-title">SERVICE LICENSE AGREEMENT</div>
@@ -559,19 +426,16 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 </div>
 
                 <h2>1. OBJECTIVE OF THE AGREEMENT</h2>
-                <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and
-                    consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia,
-                    in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>
+                <p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>
 
                 <h2>2. PERMITTED ACTIVITIES UNDER SERVICE LICENSE</h2>
-                <p>Service-based activities including consultancy, IT services, management support, marketing, training,
-                    professional advisory services, and other non-trading activities as approved by MISA</p>
+                <p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory services, and other non-trading activities as approved by MISA</p>
 
                 <h2>3. SCOPE OF SERVICES</h2>
                 <p>The Service Provider shall be responsible for completing the following services for the Client:</p>
                 <ol>
                     <?php foreach ($scopeList as $item): ?>
-                    <li><?php echo htmlspecialchars($item); ?></li>
+                        <li><?php echo htmlspecialchars($item); ?></li>
                     <?php endforeach; ?>
                 </ol>
             </div>
@@ -588,23 +452,15 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 <p><em>The Client confirms that all documents provided are valid, accurate, and genuine.</em></p>
 
                 <h2>5. SERVICE CHARGES</h2>
-                <p>The Total professional service fee for this Agreement is <strong>SAR
-                        <?php echo htmlspecialchars($serviceFee); ?> (Saudi Riyals Fifteen Thousand only)</strong>.</p>
-                <p><em style="color:red;">Note: All kind of Service provide by Flyburj Travels & Tourism Co. & All kind
-                        of Govt. Payments are to be borne by the Client. </em></p>
+                <p>The Total professional service fee for this Agreement is <strong>SAR <?php echo htmlspecialchars($serviceFee); ?> (Saudi Riyals Fifteen Thousand only)</strong>.</p>
+                <p><em style="color:red;">Note: All kind of Service provide by Flyburj Travels & Tourism Co. & All kind of Govt. Payments are to be borne by the Client. </em></p>
 
                 <h2>6. PAYMENT TERMS</h2>
                 <ul>
-                    <li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon
-                        issuance of the Investment License in Saudi Arabia, and the remaining 50% upon issuance of the
-                        Commercial Register.</li>
-                    <li>If the client fails to fulfill the payment obligations, the company reserves the right to retain
-                        the official documents and papers until the full payment is settled and the final settlement is
-                        completed.</li>
-                    <li>Should there be any changes to the government license fee, the agreement amount will be revised
-                        accordingly.</li>
-                    <li>The contractual relationship with our company ends once the commercial register and investment
-                        license have been obtained and the agreed-upon services have been completed.</li>
+                    <li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon issuance of the Investment License in Saudi Arabia, and the remaining 50% upon issuance of the Commercial Register.</li>
+                    <li>If the client fails to fulfill the payment obligations, the company reserves the right to retain the official documents and papers until the full payment is settled and the final settlement is completed.</li>
+                    <li>Should there be any changes to the government license fee, the agreement amount will be revised accordingly.</li>
+                    <li>The contractual relationship with our company ends once the commercial register and investment license have been obtained and the agreed-upon services have been completed.</li>
                 </ul>
 
                 <table class="bank-table">
@@ -638,13 +494,10 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     <li>Cooperate fully during the application process</li>
                     <li>Comply with all Saudi laws, regulations, and MISA requirements</li>
                 </ul>
-                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the
-                    Service Provider.</p>
+                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the Service Provider.</p>
 
                 <h2>8. TIMELINE & DELAYS</h2>
-                <p>The estimated timeline to complete the MISA Service License and related registrations is
-                    approximately forty <strong><?php echo htmlspecialchars($timelineDays); ?> working days</strong>,
-                    subject to timely submission of documents and payments by the Client.</p>
+                <p>The estimated timeline to complete the MISA Service License and related registrations is approximately forty <strong><?php echo htmlspecialchars($timelineDays); ?> working days</strong>, subject to timely submission of documents and payments by the Client.</p>
 
                 <p>The Service Provider shall not be held responsible for any delay caused by:</p>
                 <ul>
@@ -652,24 +505,26 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                     <li>Portal downtime or technical errors</li>
                     <li>Scheduled or unscheduled system maintenance</li>
                 </ul>
-                <p>Any delays arising from external or governmental processes shall not be considered a breach of this
-                    Agreement and will not affect the agreed service charges.</p>
+                <p>Any delays arising from external or governmental processes shall not be considered a breach of this Agreement and will not affect the agreed service charges.</p>
 
                 <h2>9. ACCEPTANCE & SIGNATURES</h2>
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
 
-                <div class="layout-table">
-                    <strong>For Flyburj Travels And Tourism Company</strong><br>
-                    <p>Name: <strong>Saifullah</strong></p>
-
-                    <div style="display:flex; margin-top: 10px;">Signature: <div class="signature-line"></div>
+                <div class="layout-table" style="margin-top: 30px;">
+                    <div style="display: table-cell; width: 50%;">
+                        <strong>For Flyburj Travels And Tourism Company</strong><br>
+                        <p style="margin-top: 10px;">Name: <strong>Saifullah</strong></p>
+                        <p style="margin-top: 20px;">Signature:</p>
+                        <div class="signature-line"></div>
                     </div>
-                    <br>
-                    <strong>For the Client</strong>
-                    <p>Name: <strong><?php echo htmlspecialchars($clientName); ?></strong></p>
-                    <div style="display:flex; margin-top: 20px;">Signature: <div class="signature-line"></div>
+                    
+                    <div style="display: table-cell; width: 50%;">
+                        <strong>For the Client</strong><br>
+                        <p style="margin-top: 10px;">Name: <strong><?php echo htmlspecialchars($clientName); ?></strong></p>
+                        <p style="margin-top: 20px;">Signature:</p>
+                        <div class="signature-line"></div>
+                        <p style="margin-top: 10px;"><strong>Date:</strong> _____________________</p>
                     </div>
-                    <p><strong>Date:</strong> _____________________</p>
                 </div>
             </div>
         </div>
@@ -685,7 +540,6 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             pages.forEach(p => {
                 p.style.marginBottom = '0px';
                 p.style.boxShadow = 'none';
-                p.style.height = '296.9mm';
             });
 
             const clientName = "<?php echo str_replace(' ', '_', $clientName); ?>";
@@ -716,11 +570,9 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 pages.forEach(p => {
                     p.style.marginBottom = '40px';
                     p.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
-                    p.style.height = '297mm';
                 });
             });
         }
     </script>
 </body>
-
 </html>

@@ -162,14 +162,85 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             filter: brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1);
         }
 
-        .wave-bg {
+        /* --------------------------------------
+           PDF-SAFE BACKGROUND SHAPES (NO SVGS)
+           -------------------------------------- */
+        
+        /* 1. Top Left Wave */
+        .shape-top-gold {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: -15%;
+            left: -10%;
+            width: 70%;
+            height: 35%;
+            background-color: #D4AF37; /* Gold */
+            border-radius: 0 0 50% 50%; /* Creates a nice curve */
+            z-index: 4;
+            opacity: 0.6;
+        }
+        .shape-top-burgundy {
+            position: absolute;
+            top: -15%;
+            left: -10%;
+            width: 69%;
+            height: 34%;
+            background-color: #800020; /* Burgundy */
+            border-radius: 0 0 50% 50%;
             z-index: 5;
-            pointer-events: none;
+        }
+
+        /* 2. Right Edge Curve */
+        .shape-right-gold {
+            position: absolute;
+            top: 20%;
+            right: -5%;
+            width: 16%;
+            height: 50%;
+            background-color: #D4AF37; /* Gold */
+            border-radius: 50% 0 0 50%;
+            z-index: 4;
+            opacity: 0.8;
+        }
+        .shape-right-burgundy {
+            position: absolute;
+            top: 20%;
+            right: -5%;
+            width: 15%;
+            height: 50%;
+            background-color: #800020; /* Burgundy */
+            border-radius: 50% 0 0 50%;
+            z-index: 5;
+        }
+
+        /* 3. Bottom Massive Wave */
+        .shape-bottom-gold {
+            position: absolute;
+            bottom: -15%;
+            left: -10%;
+            width: 120%;
+            height: 46%;
+            background-color: #D4AF37; /* Gold */
+            border-radius: 50% 50% 0 0; /* Creates a massive arch */
+            z-index: 4;
+            opacity: 0.8;
+        }
+        .shape-bottom-burgundy {
+            position: absolute;
+            bottom: -15%;
+            left: -10%;
+            width: 120%;
+            height: 45%;
+            background-color: #800020; /* Burgundy */
+            border-radius: 50% 50% 0 0;
+            z-index: 5;
+        }
+
+        .data-icon {
+            width: 16px;
+            height: 16px;
+            fill: #800020; /* Fixed Hex Color for PDF safety */
+            margin-top: 3px;
+            opacity: 0.8;
         }
 
         .content-layer {
@@ -245,14 +316,6 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
             display: flex;
             align-items: flex-start;
             gap: 12px;
-        }
-
-        .data-icon {
-            width: 16px;
-            height: 16px;
-            fill: var(--theme-primary);
-            margin-top: 3px;
-            opacity: 0.8;
         }
 
         .doc-data-text {
@@ -389,14 +452,14 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
         <div class="document-page cover-page">
             <img src="../assets/img/logo_transparent.png" class="watermark" alt="">
 
-            <svg class="wave-bg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <path d="M 0,0 L 80,0 C 50,22 20,24 0,14 Z" fill="none" stroke="var(--theme-accent)" stroke-width="0.5" transform="translate(1, 1)" opacity="0.6" />
-                <path d="M 0,0 L 80,0 C 50,22 20,24 0,14 Z" fill="var(--theme-primary)" />
-                <path d="M 100,22 C 85,35 85,55 100,68 Z" fill="var(--theme-accent)" opacity="0.8" transform="translate(-1.5, 0)" />
-                <path d="M 100,22 C 85,35 85,55 100,68 Z" fill="var(--theme-primary)" />
-                <path d="M 0,45 C 30,90 70,72 100,78 L 100,84 C 70,78 30,98 0,100 Z" fill="none" stroke="var(--theme-accent)" stroke-width="0.5" transform="translate(0, -1.5)" opacity="0.8" />
-                <path d="M 0,45 C 30,90 70,72 100,78 L 100,84 C 70,78 30,98 0,100 Z" fill="var(--theme-primary)" />
-            </svg>
+            <div class="shape-top-gold"></div>
+            <div class="shape-top-burgundy"></div>
+            
+            <div class="shape-right-gold"></div>
+            <div class="shape-right-burgundy"></div>
+            
+            <div class="shape-bottom-gold"></div>
+            <div class="shape-bottom-burgundy"></div>
 
             <div class="content-layer">
                 <div class="brand-container">
@@ -447,7 +510,6 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
                 </div>
             </div>
         </div>
-
         <div class="document-page">
             <div class="content">
                 <div class="inner-doc-title">SERVICE LICENSE AGREEMENT</div>

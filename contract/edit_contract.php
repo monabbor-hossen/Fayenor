@@ -94,6 +94,25 @@ $v_acn = $custom['account_name'] ?? $defaults['account_name'];
         .btn-gold:hover { background-color: #b8962e; color: black; }
         .form-control { background-color: rgba(255,255,255,0.1); color: white; border: 1px solid #555; }
         .form-control:focus { background-color: rgba(255,255,255,0.15); color: white; border-color: #D4AF37; box-shadow: none; }
+        /* Floating Save Button Styles */
+        .floating-save-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 1050;
+            border-radius: 50px;
+            padding: 15px 35px;
+            font-size: 18px;
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .floating-save-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.6);
+        }
     </style>
 </head>
 <body>
@@ -110,7 +129,7 @@ $v_acn = $custom['account_name'] ?? $defaults['account_name'];
             <div class="alert alert-success fw-bold"><?php echo $success_msg; ?></div>
         <?php endif; ?>
 
-        <form method="POST" class="glass-panel">
+        <form method="POST" id="editContractForm" class="glass-panel">
             <h5 class="text-gold mb-3 border-bottom border-secondary pb-2">1. Objective of the Agreement</h5>
             <div class="mb-4"><textarea name="objective" class="rich-editor"><?php echo htmlspecialchars($v_obj); ?></textarea></div>
 
@@ -155,6 +174,12 @@ $v_acn = $custom['account_name'] ?? $defaults['account_name'];
             <div class="mb-4"><textarea name="timeline_text" class="rich-editor"><?php echo htmlspecialchars($v_ttx); ?></textarea></div>
 
             <button type="submit" class="btn btn-gold btn-lg w-100 mt-3 shadow-lg">Save Contract Terms</button>
+            <button type="submit" form="editContractForm" class="btn btn-gold floating-save-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4.207a1 1 0 0 0-.293-.707l-2.5-2.5A1 1 0 0 0 10.5 1H2zm13 3.207V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h8.5l3.5 3.5zM4 3h5v3H4V3z"/>
+        </svg>
+        Save Changes
+    </button>
         </form>
     </div>
 

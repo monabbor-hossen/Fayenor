@@ -77,23 +77,67 @@ $v_acn = $custom['account_name'] ?? $defaults['account_name'];
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Edit Contract - <?php echo htmlspecialchars($clientName); ?></title>
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    
+
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <style>
-        body { background-color: #1a1a1a; color: white; padding: 40px 0; font-family: 'Segoe UI', sans-serif; }
-        .glass-panel { background: rgba(30, 10, 15, 0.95); border: 1px solid #D4AF37; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .note-editor { background: white; color: black; border-radius: 8px; overflow: hidden; }
-        .text-gold { color: #D4AF37 !important; }
-        .btn-gold { background-color: #D4AF37; color: #1a1a1a; font-weight: bold; border: none; }
-        .btn-gold:hover { background-color: #b8962e; color: black; }
-        .form-control { background-color: rgba(255,255,255,0.1); color: white; border: 1px solid #555; }
-        .form-control:focus { background-color: rgba(255,255,255,0.15); color: white; border-color: #D4AF37; box-shadow: none; }
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 40px 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(30, 10, 15, 0.95);
+            border: 1px solid #D4AF37;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .note-editor {
+            background: white;
+            color: black;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .text-gold {
+            color: #D4AF37 !important;
+        }
+
+        .btn-gold {
+            background-color: #D4AF37;
+            color: #1a1a1a;
+            font-weight: bold;
+            border: none;
+        }
+
+        .btn-gold:hover {
+            background-color: #b8962e;
+            color: black;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid #555;
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-color: #D4AF37;
+            box-shadow: none;
+        }
+
         /* Floating Save Button Styles */
         .floating-save-btn {
             position: fixed;
@@ -109,92 +153,108 @@ $v_acn = $custom['account_name'] ?? $defaults['account_name'];
             align-items: center;
             gap: 10px;
         }
+
         .floating-save-btn:hover {
             transform: translateY(-5px) scale(1.05);
             box-shadow: 0 15px 35px rgba(212, 175, 55, 0.6);
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Editing Contract: <span class="text-gold"><?php echo htmlspecialchars($clientName); ?></span></h2>
             <div>
                 <a href="../portal/clients.php" class="btn btn-outline-light me-2">Back to Portal</a>
-                <a href="contract.php?id=<?php echo $client_id; ?>" target="_blank" class="btn btn-info fw-bold">View PDF</a>
+                <a href="contract.php?id=<?php echo $client_id; ?>" target="_blank" class="btn btn-info fw-bold">View
+                    PDF</a>
             </div>
         </div>
 
         <?php if(isset($success_msg)): ?>
-            <div class="alert alert-success fw-bold"><?php echo $success_msg; ?></div>
+        <div class="alert alert-success fw-bold"><?php echo $success_msg; ?></div>
         <?php endif; ?>
 
         <form method="POST" id="editContractForm" class="glass-panel">
             <h5 class="text-gold mb-3 border-bottom border-secondary pb-2">1. Objective of the Agreement</h5>
-            <div class="mb-4"><textarea name="objective" class="rich-editor"><?php echo htmlspecialchars($v_obj); ?></textarea></div>
+            <div class="mb-4"><textarea name="objective"
+                    class="rich-editor"><?php echo htmlspecialchars($v_obj); ?></textarea></div>
 
             <h5 class="text-gold mb-3 border-bottom border-secondary pb-2">2. Permitted Activities</h5>
-            <div class="mb-4"><textarea name="permitted" class="rich-editor"><?php echo htmlspecialchars($v_per); ?></textarea></div>
+            <div class="mb-4"><textarea name="permitted"
+                    class="rich-editor"><?php echo htmlspecialchars($v_per); ?></textarea></div>
 
             <h5 class="text-gold mb-3 border-bottom border-secondary pb-2">4. Client Documentation Requirements</h5>
-            <div class="mb-4"><textarea name="docs" class="rich-editor"><?php echo htmlspecialchars($v_doc); ?></textarea></div>
+            <div class="mb-4"><textarea name="docs"
+                    class="rich-editor"><?php echo htmlspecialchars($v_doc); ?></textarea></div>
 
             <h5 class="text-gold mb-3 border-bottom border-secondary pb-2">6. Payment Terms & Bank Details</h5>
-            <div class="mb-2"><textarea name="payment" class="rich-editor"><?php echo htmlspecialchars($v_pay); ?></textarea></div>
-            
+            <div class="mb-2"><textarea name="payment"
+                    class="rich-editor"><?php echo htmlspecialchars($v_pay); ?></textarea></div>
+
             <div class="row mb-4 p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px dashed #D4AF37;">
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-white-50 small text-uppercase fw-bold">Bank Name</label>
-                    <input type="text" name="bank_name" class="form-control" value="<?php echo htmlspecialchars($v_bnk); ?>">
+                    <input type="text" name="bank_name" class="form-control"
+                        value="<?php echo htmlspecialchars($v_bnk); ?>">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-white-50 small text-uppercase fw-bold">Account Number</label>
-                    <input type="text" name="account_number" class="form-control" value="<?php echo htmlspecialchars($v_acc); ?>">
+                    <input type="text" name="account_number" class="form-control"
+                        value="<?php echo htmlspecialchars($v_acc); ?>">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-white-50 small text-uppercase fw-bold">IBAN Number</label>
-                    <input type="text" name="iban_number" class="form-control" value="<?php echo htmlspecialchars($v_ibn); ?>">
+                    <input type="text" name="iban_number" class="form-control"
+                        value="<?php echo htmlspecialchars($v_ibn); ?>">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-white-50 small text-uppercase fw-bold">Account Name</label>
-                    <input type="text" name="account_name" class="form-control" value="<?php echo htmlspecialchars($v_acn); ?>">
+                    <input type="text" name="account_name" class="form-control"
+                        value="<?php echo htmlspecialchars($v_acn); ?>">
                 </div>
             </div>
 
             <h5 class="text-gold mb-3 border-bottom border-secondary pb-2">7. Client Obligations</h5>
-            <div class="mb-4"><textarea name="obligations" class="rich-editor"><?php echo htmlspecialchars($v_obl); ?></textarea></div>
+            <div class="mb-4"><textarea name="obligations"
+                    class="rich-editor"><?php echo htmlspecialchars($v_obl); ?></textarea></div>
 
             <h5 class="text-gold mb-3 border-bottom border-secondary pb-2">8. Timeline & Delays</h5>
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label class="form-label text-white-50 small text-uppercase fw-bold">Timeline (Days)</label>
-                    <input type="number" name="timeline_days" class="form-control" value="<?php echo htmlspecialchars($v_tdy); ?>">
+                    <input type="number" name="timeline_days" class="form-control"
+                        value="<?php echo htmlspecialchars($v_tdy); ?>">
                 </div>
             </div>
-            <div class="mb-4"><textarea name="timeline_text" class="rich-editor"><?php echo htmlspecialchars($v_ttx); ?></textarea></div>
+            <div class="mb-4"><textarea name="timeline_text"
+                    class="rich-editor"><?php echo htmlspecialchars($v_ttx); ?></textarea></div>
 
             <button type="submit" class="btn btn-gold btn-lg w-100 mt-3 shadow-lg">Save Contract Terms</button>
             <button type="submit" form="editContractForm" class="btn btn-gold floating-save-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4.207a1 1 0 0 0-.293-.707l-2.5-2.5A1 1 0 0 0 10.5 1H2zm13 3.207V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h8.5l3.5 3.5zM4 3h5v3H4V3z"/>
-        </svg>
-        Save Changes
-    </button>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4.207a1 1 0 0 0-.293-.707l-2.5-2.5A1 1 0 0 0 10.5 1H2zm13 3.207V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h8.5l3.5 3.5zM4 3h5v3H4V3z" />
+                </svg>
+                Save Changes
+            </button>
         </form>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
-      $('.rich-editor').summernote({
-        tabsize: 2,
-        height: 150,
-        toolbar: [
-          ['style', ['bold', 'italic', 'underline', 'clear']],
-          ['font', ['strikethrough', 'superscript', 'subscript']],
-          ['para', ['ul', 'ol', 'paragraph']],
-        ]
-      });
+        $('.rich-editor').summernote({
+            tabsize: 2,
+            height: 150,
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['para', ['ul', 'ol', 'paragraph']],
+            ]
+        });
     </script>
 </body>
+
 </html>

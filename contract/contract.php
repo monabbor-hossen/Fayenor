@@ -31,11 +31,14 @@ try {
 $clientName      = $client['client_name'] ?? $client['company_name'];
 $date            = date('F j, Y'); 
 $iqamaNo         = "To Be Provided"; // Change this if you have an Iqama column
-$serviceProvider = "Basmat Rooq Company Limited";
+$serviceProvider = $globalDefaults['service_provider'] ?? 'Basmat Rooq Company Limited';
 $serviceFee      = number_format($client['contract_value'] ?? 0, 2); 
 $timelineDays    = "40"; 
 $companyLocation = "BURAYDAH, AL QASSIM-SAUDI ARABIA";
 $year            = date('Y'); 
+// 6. APPLY DATA (Use Individual Edit -> Or Global Default)
+$providerEmail   = $globalDefaults['provider_email'] ?? 'info@flyburjco.com';
+$signatoryName   = $globalDefaults['signatory_name'] ?? 'Saifullah';
 
 // --- CALCULATE DYNAMIC HIJRI YEAR (Kuwaiti Algorithm) ---
 $y = (int)date('Y'); $m = (int)date('n'); $d = (int)date('j');
@@ -200,7 +203,7 @@ require_once 'header.php';
                 <div class="layout-table bg-gray">
                     <strong>Service Provider:</strong><br>
                     <p><?php echo htmlspecialchars($serviceProvider); ?></p>
-                    <p>Email: info@flyburjco.com </p>
+                    <p>Email: <?php echo htmlspecialchars($providerEmail); ?> </p>
                     <p><strong>Client Name: </strong> <?php echo htmlspecialchars($clientName); ?></p>
                     <p> Iqama No: <?php echo htmlspecialchars($iqamaNo); ?></p>
                 </div>
@@ -265,10 +268,9 @@ require_once 'header.php';
                 <div><?php echo $txt_timeline_text; ?></div>
                 <h2>9. ACCEPTANCE & SIGNATURES</h2>
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
-
                 <div class="layout-table">
                     <strong>For <?php echo htmlspecialchars($serviceProvider); ?></strong>
-                    <p>Name: <strong>Saifullah</strong></p>
+                    <p>Name: <strong><?php echo htmlspecialchars($signatoryName); ?></strong></p>
                     <div style="display:flex; align-items: baseline;">Signature: <div class="signature-line"></div>
                     </div>
                     <strong>For the Client</strong>
@@ -277,6 +279,7 @@ require_once 'header.php';
                     </div>
                     <p><strong>Date:</strong> _____________________</p>
                 </div>
+                
             </div>
         </div>
     </div>

@@ -23,24 +23,23 @@ if (!$client) die("Client not found.");
 $clientName = $client['client_name'] ?? $client['company_name'];
 // Handle Form Submit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sql = "INSERT INTO client_contracts (client_id, objective, permitted_activities, documentation, payment_terms, obligations, timeline_days, timeline_text, bank_name, account_number, iban_number, account_name) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+    $sql = "INSERT INTO client_contracts (client_id, objective, permitted_activities, documentation, payment_terms, obligations, timeline_days, timeline_text, bank_name, account_number, iban_number, account_name, additional_scope) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
             ON DUPLICATE KEY UPDATE 
             objective=VALUES(objective), permitted_activities=VALUES(permitted_activities), documentation=VALUES(documentation), 
             payment_terms=VALUES(payment_terms), obligations=VALUES(obligations), timeline_days=VALUES(timeline_days), timeline_text=VALUES(timeline_text),
-            bank_name=VALUES(bank_name), account_number=VALUES(account_number), iban_number=VALUES(iban_number), account_name=VALUES(account_name)";
+            bank_name=VALUES(bank_name), account_number=VALUES(account_number), iban_number=VALUES(iban_number), account_name=VALUES(account_name), additional_scope=VALUES(additional_scope)";
     
     $stmtUpdate = $db->prepare($sql);
     $stmtUpdate->execute([
         $client_id, $_POST['objective'], $_POST['permitted'], $_POST['docs'], 
         $_POST['payment'], $_POST['obligations'], intval($_POST['timeline_days']), $_POST['timeline_text'],
-        $_POST['bank_name'], $_POST['account_number'], $_POST['iban_number'], $_POST['account_name']
+        $_POST['bank_name'], $_POST['account_number'], $_POST['iban_number'], $_POST['account_name'], $_POST['additional_scope']
     ]);
     
-    // --- THE FIX: Save message to session and REDIRECT ---
     $_SESSION['contract_success'] = "Contract Terms Saved Successfully!";
     header("Location: edit_contract.php?id=" . $client_id);
-    exit(); // Stop the script here so the redirect happens instantly
+    exit();
 }
 
 // Check if there is a success message in the session from a recent save
@@ -82,6 +81,22 @@ $v_bnk = $custom['bank_name'] ?? $defaults['bank_name'];
 $v_acc = $custom['account_number'] ?? $defaults['account_number'];
 $v_ibn = $custom['iban_number'] ?? $defaults['iban_number'];
 $v_acn = $custom['account_name'] ?? $defaults['account_name'];
+
+$v_add_scope = $custom['additional_scope'] ?? '';
+
+// --- FETCH WORKFLOW TO SHOW AS READ-ONLY ---
+$stmtWf = $db->prepare("SELECT * FROM workflow_tracking WHERE client_id = ? LIMIT 1");
+$stmtWf->execute([$client_id]);
+$clientWf = $stmtWf->fetch(PDO::FETCH_ASSOC);
+$wfList = [];
+if (!empty($clientWf['hire_foreign_company']) && $clientWf['hire_foreign_company'] !== 'Not Required') { $wfList[] = "Arrangement of a Foreign Company (as required by MISA)"; }
+if (!empty($clientWf['misa_application']) && $clientWf['misa_application'] !== 'Not Required') { $wfList[] = "Application and approval of MISA Service License"; }
+if (!empty($clientWf['sbc_application']) && $clientWf['sbc_application'] !== 'Not Required') { $wfList[] = "SBC Application & Registration"; }
+if (!empty($clientWf['article_association']) && $clientWf['article_association'] !== 'Not Required') { $wfList[] = "Preparation of Articles of Association"; }
+if (!empty($clientWf['qiwa']) && $clientWf['qiwa'] !== 'Not Required') { $wfList[] = "Qiwa Registration"; }
+if (!empty($clientWf['muqeem']) && $clientWf['muqeem'] !== 'Not Required') { $wfList[] = "Muqeem Registration"; }
+if (!empty($clientWf['gosi']) && $clientWf['gosi'] !== 'Not Required') { $wfList[] = "GOSI Registration"; }
+if (!empty($clientWf['chamber_commerce']) && $clientWf['chamber_commerce'] !== 'Not Required') { $wfList[] = "Chamber of Commerce Registration"; }
 ?>
 
 <!DOCTYPE html>
@@ -256,6 +271,20 @@ $v_acn = $custom['account_name'] ?? $defaults['account_name'];
 
             <h2 class="contract-heading">2. Permitted Activities</h2>
             <textarea name="permitted" class="rich-editor"><?php echo htmlspecialchars($v_per); ?></textarea>
+
+            <h2 class="contract-heading">3. Scope of Services</h2>
+            <div class="mb-3 p-3" style="background: #f8f9fa; border: 1px solid #ced4da; border-radius: 4px;">
+                <p style="color: var(--theme-primary); font-weight: bold; font-size: 12px; text-transform: uppercase; margin-bottom: 8px;">Included from Workflow (Read-Only)</p>
+                <ol style="margin-bottom: 0; color: var(--text-dark); font-size: 14px;">
+                    <?php foreach($wfList as $item): ?>
+                        <li><?php echo htmlspecialchars($item); ?></li>
+                    <?php endforeach; ?>
+                </ol>
+            </div>
+            <div class="mb-4">
+                <label style="color: var(--theme-primary); font-weight: bold; font-size: 12px; text-transform: uppercase;">Additional Services (Type ONE per line)</label>
+                <textarea name="additional_scope" class="form-control" rows="4" placeholder="Example:&#10;Translation of company documents&#10;Opening local bank account" style="border: 1px solid #ced4da; border-radius: 0; font-size: 14px;"><?php echo htmlspecialchars($v_add_scope); ?></textarea>
+            </div>
 
             <h2 class="contract-heading">4. Client Documentation Requirements</h2>
             <textarea name="docs" class="rich-editor"><?php echo htmlspecialchars($v_doc); ?></textarea>

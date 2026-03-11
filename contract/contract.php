@@ -63,6 +63,19 @@ $stmtText = $db->prepare("SELECT * FROM client_contracts WHERE client_id = ?");
 $stmtText->execute([$client_id]);
 $customText = $stmtText->fetch(PDO::FETCH_ASSOC);
 
+// --- NEW: MERGE ADDITIONAL SCOPE ---
+if (!empty($customText['additional_scope'])) {
+    // Split the text box by new lines
+    $extraLines = explode("\n", $customText['additional_scope']);
+    foreach ($extraLines as $line) {
+        $cleanLine = trim($line);
+        if ($cleanLine !== '') {
+            $scopeList[] = $cleanLine; // Add to the bottom of the main list
+        }
+    }
+}
+// -----------------------------------
+
 $txt_objective = $customText['objective'] ?? '<p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>';
 $txt_permitted = $customText['permitted_activities'] ?? '<p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory services, and other non-trading activities as approved by MISA</p>';
 $txt_docs = $customText['documentation'] ?? "<ul><li>Original Passport Copy</li><li>Passport Size Photograph</li></ul><p><em>The Client confirms that all documents provided are valid, accurate, and genuine.</em></p>";
@@ -74,7 +87,7 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
 $txt_bank_name = $customText['bank_name'] ?? 'SAUDI NATIONAL BANK';
 $txt_account_number = $customText['account_number'] ?? '38300000264001';
 $txt_iban_number = $customText['iban_number'] ?? 'SA5010000038300000264001';
-$txt_account_name = $customText['account_name'] ?? 'Flyburj Travel and Tourism Company';
+$txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited';
 
 
 

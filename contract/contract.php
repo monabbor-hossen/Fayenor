@@ -590,30 +590,14 @@ $txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited'
         <div class="document-page">
             <div class="content">
                 <h2>7. CLIENT OBLIGATIONS</h2>
-                <p>The Client agrees to:</p>
-                <ul>
-                    <li>Provide required documents promptly</li>
-                    <li>Pay government fees on time</li>
-                    <li>Cooperate fully during the application process</li>
-                    <li>Comply with all Saudi laws, regulations, and MISA requirements</li>
-                </ul>
-                <p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the
-                    Service Provider.</p>
-
+                <div><?php echo $txt_obligations;?></div>
+                
                 <h2>8. TIMELINE & DELAYS</h2>
                 <p>The estimated timeline to complete the MISA Service License and related registrations is
-                    approximately forty <strong><?php echo htmlspecialchars($timelineDays); ?> working days</strong>,
+                    approximately <strong><?php echo htmlspecialchars($txt_timeline_days); ?> working days</strong>,
                     subject to timely submission of documents and payments by the Client.</p>
-
-                <p>The Service Provider shall not be held responsible for any delay caused by:</p>
-                <ul>
-                    <li>Government system or server issues</li>
-                    <li>Portal downtime or technical errors</li>
-                    <li>Scheduled or unscheduled system maintenance</li>
-                </ul>
-                <p>Any delays arising from external or governmental processes shall not be considered a breach of this
-                    Agreement and will not affect the agreed service charges.</p>
-
+                    
+                <div><?php echo $txt_timeline_text; ?></div>
                 <h2>9. ACCEPTANCE & SIGNATURES</h2>
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
 

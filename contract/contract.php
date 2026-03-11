@@ -63,18 +63,16 @@ $stmtText = $db->prepare("SELECT * FROM client_contracts WHERE client_id = ?");
 $stmtText->execute([$client_id]);
 $customText = $stmtText->fetch(PDO::FETCH_ASSOC);
 
-// --- NEW: MERGE ADDITIONAL SCOPE ---
+// --- MERGE ADDITIONAL SCOPE ---
 if (!empty($customText['additional_scope'])) {
-    // Split the text box by new lines
     $extraLines = explode("\n", $customText['additional_scope']);
     foreach ($extraLines as $line) {
         $cleanLine = trim($line);
         if ($cleanLine !== '') {
-            $scopeList[] = $cleanLine; // Add to the bottom of the main list
+            $scopeList[] = $cleanLine; 
         }
     }
 }
-// -----------------------------------
 
 $txt_objective = $customText['objective'] ?? '<p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>';
 $txt_permitted = $customText['permitted_activities'] ?? '<p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory services, and other non-trading activities as approved by MISA</p>';
@@ -89,13 +87,12 @@ $txt_account_number = $customText['account_number'] ?? '38300000264001';
 $txt_iban_number = $customText['iban_number'] ?? 'SA5010000038300000264001';
 $txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited';
 
-
-
+// Create a safe string for the PDF filename
+$pdfClientName = htmlspecialchars(str_replace(' ', '_', $clientName));
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,340 +100,16 @@ $txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited'
     <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <title>Service License Agreement - <?php echo htmlspecialchars($clientName); ?></title>
 
+    <link rel="stylesheet" href="contract.css">
+
     <script src="<?php echo BASE_URL; ?>assets/js/html2pdf.bundle.min.js"></script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
-
-        :root {
-            --theme-primary: #800020;
-            --theme-accent: #D4AF37;
-            --text-dark: #111111;
-            --text-muted: #555555;
-            --bg-offwhite: #ffffff;
-        }
-
-        body {
-            background-color: #2b2b2b;
-            /* Dark background so the white A4 page pops */
-            font-family: 'Montserrat', 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 40px 0;
-        }
-
-        #contract-content {
-            display: block;
-            width: 794px;
-            /* Fixed pixel width for flawless PDF generation */
-            margin: 0 auto;
-        }
-
-        /* Floating Download Button */
-        .download-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--theme-primary);
-            color: white;
-            border: 2px solid var(--theme-accent);
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        .edit-btn {
-            position: fixed;
-            top: 20px;
-            right: 210px; /* Positions it nicely to the left of the download button */
-            background-color: var(--bg-offwhite);
-            color: var(--theme-primary);
-            border: 2px solid var(--theme-accent);
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            text-decoration: none;
-            font-family: 'Segoe UI', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .edit-btn:hover {
-            background-color: var(--theme-accent);
-            color: var(--text-dark);
-        }
-
-        /* EXACT A4 Document Pages (Using fixed pixels prevents html2canvas stretching bugs) */
-        /* --------------------------------------
-           COMMON PAGE STYLES
-           -------------------------------------- */
-        .document-page {
-            width: 210mm;
-            height: 297mm;
-            background-image: url('fullPage.jpg');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-color: white;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            position: relative;
-            box-sizing: border-box;
-            padding: 45mm 20mm 35mm 20mm;
-            margin-bottom: 40px;
-            overflow: hidden;
-        }
-
-        .document-page:first-child {
-            background-image: none;
-        }
-
-        /* --------------------------------------
-           YOUR ORIGINAL COVER PAGE DESIGN 
-           -------------------------------------- */
-        .document-page.cover-page {
-            padding: 0;
-            background-color: var(--bg-offwhite);
-        }
-
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 650px;
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: 2;
-            /* Your custom filter here: */
-            filter: brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1);
-        }
-
-        .cover-content-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-        }
-
-        .brand-logo {
-            position: absolute;
-            top: 50px;
-            left: 50px;
-            width: 30%;
-            filter: brightness(0) invert(1);
-        }
-
-        .title-section {
-            position: absolute;
-            top: 310px;
-            left: 100px;
-        }
-
-        .doc-arabic {
-            font-family: 'Cairo', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--theme-accent);
-            margin-bottom: -5px;
-            margin-left: 5px;
-        }
-
-        .doc-subtitle {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--theme-primary);
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            margin-bottom: 0px;
-            margin-left: 5px;
-        }
-
-        .cover-main-title {
-            font-size: 85px;
-            font-weight: 900;
-            color: var(--text-dark);
-            text-transform: uppercase;
-            line-height: 1;
-            letter-spacing: -3px;
-            margin: 0;
-            margin-bottom: 40px;
-        }
-
-        /* Data Box - Rebuilt for html2canvas compatibility */
-        .doc-data-box {
-            border-left: 4px solid var(--theme-accent);
-            padding-left: 20px;
-            margin-left: 10px;
-            display: block;
-        }
-
-        .data-row {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            /* Replaces gap so PDF generator understands */
-            width: 90%;
-        }
-
-        .data-icon {
-            width: 18px;
-            height: 18px;
-            min-width: 18px;
-            fill: var(--theme-primary);
-            margin-top: 2px;
-            margin-right: 15px;
-            /* Replaces gap */
-        }
-
-        .data-text-block {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .data-label {
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--text-dark);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 2px;
-        }
-
-        .data-value {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .doc-year {
-            position: absolute;
-            bottom: 120px;
-            right: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            z-index: 10;
-        }
-
-        .year-main {
-            font-size: 60px;
-            font-weight: 900;
-            color: white;
-            letter-spacing: -1px;
-            line-height: 1;
-        }
-
-        .year-sub {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--theme-accent);
-            letter-spacing: 2.5px;
-            margin-top: 5px;
-        }
-
-        /* --------------------------------------
-           CONTRACT INNER PAGES STYLES 
-           -------------------------------------- */
-        .content {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            font-size: 11pt;
-            border-top: 3px solid var(--theme-primary);
-            margin-top: 10px;
-            color: var(--text-dark);
-        }
-
-        .inner-doc-title {
-            color: var(--theme-primary);
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .inner-doc-subtitle {
-            text-align: center;
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--text-dark);
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: var(--theme-primary);
-            font-size: 13pt;
-            border-bottom: 1px dashed var(--theme-accent);
-            padding-bottom: 5px;
-            margin-top: 7px;
-            margin-bottom: 7px;
-            text-transform: uppercase;
-        }
-
-        p {
-            margin: 2px 0;
-        }
-
-        ul,
-        ol {
-            padding-left: 20px;
-            margin: 10px 0;
-        }
-
-        .layout-table {
-            display: table;
-            width: 100%;
-            margin-bottom: 5px;
-        }
-
-        .bg-gray {
-            padding: 15px;
-            border-left: 3px solid var(--theme-accent);
-        }
-
-        .bank-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 10pt;
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        .bank-table th,
-        .bank-table td {
-            border: 1px solid var(--theme-accent);
-            padding: 8px 12px;
-            text-align: left;
-        }
-
-        .bank-table th {
-            background-color: var(--theme-primary);
-            color: white;
-            width: 40%;
-        }
-
-        .signature-line {
-            border-bottom: 1px solid var(--text-dark);
-            margin-top: 40px;
-            margin-bottom: 10px;
-            width: 25%;
-        }
-    </style>
 </head>
 
 <body>
-<a href="edit_contract.php?id=<?php echo $client_id; ?>" class="edit-btn" data-html2canvas-ignore="true">✏️ Edit Contract</a>
+    <a href="edit_contract.php?id=<?php echo $client_id; ?>" class="edit-btn" data-html2canvas-ignore="true">✏️ Edit Contract</a>
     <button class="download-btn" onclick="generatePDF()" data-html2canvas-ignore="true">⬇ Download PDF</button>
 
-    <div id="contract-content">
+    <div id="contract-content" data-client-name="<?php echo $pdfClientName; ?>">
 
         <div class="document-page cover-page">
             <svg width="794" height="1123" viewBox="0 0 794 1123" style="position:absolute; top:0; left:0; z-index:1;"
@@ -474,8 +147,7 @@ $txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited'
                                 </svg>
                             <div class="data-text-block">
                                 <span class="data-label">Company Name</span>
-                                <span
-                                    class="data-value"><?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?></span>
+                                <span class="data-value"><?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?></span>
                             </div>
                         </div>
 
@@ -615,102 +287,7 @@ $txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited'
             </div>
         </div>
     </div>
-    <script>
-        function generatePDF() {
-            const element = document.getElementById('contract-content');
-            const pages = document.querySelectorAll('.document-page');
-            const logoImg = document.querySelector('.brand-logo');
 
-            // --- STEP 1: CONVERT LOGO TO WHITE USING CANVAS ---
-            // Create an invisible canvas
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            // Match the canvas size to the original image
-            canvas.width = logoImg.naturalWidth;
-            canvas.height = logoImg.naturalHeight;
-
-            // Draw the original image onto the canvas
-            ctx.drawImage(logoImg, 0, 0);
-
-            // Paint over the non-transparent pixels with pure white
-            ctx.globalCompositeOperation = 'source-in';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Swap the logo's source to this new white image data
-            const originalSrc = logoImg.src;
-            logoImg.src = canvas.toDataURL('image/png');
-            // --- 1. BAKE THE FILTER INTO THE WATERMARK ---
-            const watermarkImg = document.querySelector('.watermark');
-            const originalWatermarkSrc = watermarkImg.src;
-
-            // Only run if the image has successfully loaded
-            if (watermarkImg.naturalWidth > 0) {
-                canvas.width = watermarkImg.naturalWidth;
-                canvas.height = watermarkImg.naturalHeight;
-
-                // Apply the exact same CSS filter directly to the Canvas!
-                ctx.filter =
-                    'brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1)';
-
-                // Draw the image onto the canvas with the filter permanently baked in
-                ctx.drawImage(watermarkImg, 0, 0, canvas.width, canvas.height);
-
-                // Swap the watermark's source to this new perfectly filtered image
-                watermarkImg.src = canvas.toDataURL('image/png');
-
-                // Temporarily disable the CSS filter so it doesn't double-apply
-                watermarkImg.style.filter = 'none';
-            }
-
-            // 1. Prepare for PDF
-            pages.forEach(p => {
-                p.style.marginBottom = '0px';
-                p.style.boxShadow = 'none';
-                p.style.height = '296.9mm';
-                p.style.overflow = 'hidden';
-            });
-            element.style.overflow = 'hidden';
-            const clientName = "<?php echo str_replace(' ', '_', $clientName); ?>";
-            const filename = `Service_License_Agreement_${clientName}.pdf`;
-
-            const opt = {
-                margin: 0,
-                filename: filename,
-                image: {
-                    type: 'jpeg',
-                    quality: 1
-                },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    scrollY: 0,
-                    windowWidth: 1218
-                },
-                jsPDF: {
-                    unit: 'mm',
-                    format: 'a4',
-                    orientation: 'portrait'
-                }
-            };
-
-            // 2. Generate and then return normal web view styling
-            html2pdf().set(opt).from(element).save().then(() => {
-                pages.forEach(p => {
-                    p.style.marginBottom = '40px';
-                    p.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
-                    p.style.height = '297mm';
-                });
-                element.style.overflow = 'visible';
-                // Put the original image back so the website looks normal!
-                logoImg.src =
-                originalSrc; // Restore the original watermark image and CSS filter for the web view
-                watermarkImg.src = originalWatermarkSrc;
-                watermarkImg.style.filter = '';
-            });
-        }
-    </script>
+    <script src="contract.js"></script>
 </body>
-
 </html>

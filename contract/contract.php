@@ -150,6 +150,30 @@ $txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited'
             z-index: 1000;
         }
 
+        .edit-btn {
+            position: fixed;
+            top: 20px;
+            right: 210px; /* Positions it nicely to the left of the download button */
+            background-color: var(--bg-offwhite);
+            color: var(--theme-primary);
+            border: 2px solid var(--theme-accent);
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-decoration: none;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            background-color: var(--theme-accent);
+            color: var(--text-dark);
+        }
+
         /* EXACT A4 Document Pages (Using fixed pixels prevents html2canvas stretching bugs) */
         /* --------------------------------------
            COMMON PAGE STYLES
@@ -409,7 +433,7 @@ $txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited'
 </head>
 
 <body>
-
+<a href="edit_contract.php?id=<?php echo $client_id; ?>" class="edit-btn" data-html2canvas-ignore="true">✏️ Edit Contract</a>
     <button class="download-btn" onclick="generatePDF()" data-html2canvas-ignore="true">⬇ Download PDF</button>
 
     <div id="contract-content">

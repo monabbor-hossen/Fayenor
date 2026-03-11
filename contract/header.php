@@ -9,8 +9,7 @@
     <title><?php echo isset($pageTitle) ? $pageTitle : 'Service License Agreement'; ?></title>
 
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <!-- <link href="<?php echo BASE_URL; ?>assets/css/summernote-lite.min.css" rel="stylesheet"> -->
+     <link href="<?php echo BASE_URL; ?>assets/css/summernote-lite.min.css" rel="stylesheet">
     
     <link rel="stylesheet" href="contract.css">
 

@@ -27,20 +27,14 @@ try {
     die("Database Error: " . $e->getMessage());
 }
 
-// 2. Map Database fields to the Contract Variables
+// 2. Map Base Database fields to Variables
 $clientName      = $client['client_name'] ?? $client['company_name'];
 $date            = date('F j, Y'); 
-$iqamaNo         = "To Be Provided"; // Change this if you have an Iqama column
-$serviceProvider = $globalDefaults['service_provider'] ?? 'Basmat Rooq Company Limited';
+$iqamaNo         = "To Be Provided";
 $serviceFee      = number_format($client['contract_value'] ?? 0, 2); 
-$timelineDays    = "40"; 
-$companyLocation = "BURAYDAH, AL QASSIM-SAUDI ARABIA";
 $year            = date('Y'); 
-// 6. APPLY DATA (Use Individual Edit -> Or Global Default)
-$providerEmail   = $globalDefaults['provider_email'] ?? 'info@flyburjco.com';
-$signatoryName   = $globalDefaults['signatory_name'] ?? 'Saifullah';
 
-// --- CALCULATE DYNAMIC HIJRI YEAR (Kuwaiti Algorithm) ---
+// --- CALCULATE DYNAMIC HIJRI YEAR ---
 $y = (int)date('Y'); $m = (int)date('n'); $d = (int)date('j');
 $jd = (int)((1461*($y+4800+(int)(($m-14)/12)))/4) + (int)((367*($m-2-12*((int)(($m-14)/12))))/12) - (int)((3*((int)(($y+4900+(int)(($m-14)/12))/100)))/4) + $d - 32075;
 $l = $jd - 1948440 + 10632;
@@ -48,9 +42,8 @@ $n = (int)(($l - 1) / 10631);
 $l = $l - 10631 * $n + 354;
 $j = ((int)((10985 - $l) / 5316)) * ((int)(50 * $l / 17719)) + ((int)($l / 5670)) * ((int)(43 * $l / 15238));
 $hijriYear = 30 * $n + $j - 30;
-// --------------------------------------------------------
 
-// 3. GENERATE DYNAMIC SCOPE OF SERVICES (FROM WORKFLOW TABLE ONLY)
+// 3. GENERATE DYNAMIC SCOPE OF SERVICES (FROM WORKFLOW)
 $scopeList = [];
 if (!empty($client['hire_foreign_company']) && $client['hire_foreign_company'] !== 'Not Required') { $scopeList[] = "Arrangement of a Foreign Company (as required by MISA)"; }
 if (!empty($client['misa_application']) && $client['misa_application'] !== 'Not Required') { $scopeList[] = "Application and approval of MISA Service License"; }
@@ -61,16 +54,21 @@ if (!empty($client['muqeem']) && $client['muqeem'] !== 'Not Required') { $scopeL
 if (!empty($client['gosi']) && $client['gosi'] !== 'Not Required') { $scopeList[] = "GOSI Registration"; }
 if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not Required') { $scopeList[] = "Chamber of Commerce Registration"; }
 
-// 4. FETCH GLOBAL DEFAULTS FIRST
-$stmtDef = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
-$globalDefaults = $stmtDef->fetch(PDO::FETCH_ASSOC);
 
-// 5. FETCH CUSTOM CONTRACT TEXT (IF INDIVIDUALLY EDITED)
+// ====================================================================================
+// 4. SMART DATA MAPPING (Reads Global Defaults FIRST, then overrides if Custom exists)
+// ====================================================================================
+
+// A. Fetch Global Defaults
+$stmtDef = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
+$globalDefaults = $stmtDef->fetch(PDO::FETCH_ASSOC) ?: [];
+
+// B. Fetch Custom Client Text (if this specific client was edited)
 $stmtText = $db->prepare("SELECT * FROM client_contracts WHERE client_id = ?");
 $stmtText->execute([$client_id]);
-$customText = $stmtText->fetch(PDO::FETCH_ASSOC);
+$customText = $stmtText->fetch(PDO::FETCH_ASSOC) ?: [];
 
-// --- MERGE ADDITIONAL SCOPE ---
+// C. Merge Additional Scope (if custom exists)
 if (!empty($customText['additional_scope'])) {
     $extraLines = explode("\n", $customText['additional_scope']);
     foreach ($extraLines as $line) {
@@ -81,19 +79,26 @@ if (!empty($customText['additional_scope'])) {
     }
 }
 
-// 6. APPLY DATA (Use Individual Edit -> Or Global Default)
-$txt_objective = $customText['objective'] ?? $globalDefaults['objective'];
-$txt_permitted = $customText['permitted_activities'] ?? $globalDefaults['permitted_activities'];
-$txt_docs = $customText['documentation'] ?? $globalDefaults['documentation'];
-$txt_payment = $customText['payment_terms'] ?? $globalDefaults['payment_terms'];
-$txt_obligations = $customText['obligations'] ?? $globalDefaults['obligations'];
-$txt_timeline_days = $customText['timeline_days'] ?? $globalDefaults['timeline_days'];
-$txt_timeline_text = $customText['timeline_text'] ?? $globalDefaults['timeline_text'];
+// D. MAP VARIABLES: Uses Custom -> falls back to Global -> falls back to Fallback String
+$serviceProvider = $globalDefaults['service_provider'] ?? 'Basmat Rooq Company Limited';
+$providerEmail   = $globalDefaults['provider_email'] ?? 'info@flyburjco.com';
+$signatoryName   = $globalDefaults['signatory_name'] ?? 'Saifullah';
 
-$txt_bank_name = $customText['bank_name'] ?? $globalDefaults['bank_name'];
-$txt_account_number = $customText['account_number'] ?? $globalDefaults['account_number'];
-$txt_iban_number = $customText['iban_number'] ?? $globalDefaults['iban_number'];
-$txt_account_name = $customText['account_name'] ?? $globalDefaults['account_name'];
+$txt_objective = !empty($customText['objective']) ? $customText['objective'] : ($globalDefaults['objective'] ?? '');
+$txt_permitted = !empty($customText['permitted_activities']) ? $customText['permitted_activities'] : ($globalDefaults['permitted_activities'] ?? '');
+$txt_docs      = !empty($customText['documentation']) ? $customText['documentation'] : ($globalDefaults['documentation'] ?? '');
+$txt_payment   = !empty($customText['payment_terms']) ? $customText['payment_terms'] : ($globalDefaults['payment_terms'] ?? '');
+$txt_obligations = !empty($customText['obligations']) ? $customText['obligations'] : ($globalDefaults['obligations'] ?? '');
+$txt_timeline_days = !empty($customText['timeline_days']) ? $customText['timeline_days'] : ($globalDefaults['timeline_days'] ?? 40);
+$txt_timeline_text = !empty($customText['timeline_text']) ? $customText['timeline_text'] : ($globalDefaults['timeline_text'] ?? '');
+
+$txt_bank_name = !empty($customText['bank_name']) ? $customText['bank_name'] : ($globalDefaults['bank_name'] ?? '');
+$txt_account_number = !empty($customText['account_number']) ? $customText['account_number'] : ($globalDefaults['account_number'] ?? '');
+$txt_iban_number = !empty($customText['iban_number']) ? $customText['iban_number'] : ($globalDefaults['iban_number'] ?? '');
+$txt_account_name = !empty($customText['account_name']) ? $customText['account_name'] : ($globalDefaults['account_name'] ?? '');
+
+// ====================================================================================
+
 // Create a safe string for the PDF filename
 $pdfClientName = htmlspecialchars(str_replace(' ', '_', $clientName));
 
@@ -127,7 +132,7 @@ require_once 'header.php';
 
             <div class="cover-content-layer">
 
-                <img src="../assets/img/logo.png" class="brand-logo" alt="Basmat Rooq">
+                <img src="../assets/img/logo.png" class="brand-logo" alt="Logo">
 
                 <div class="title-section">
                     <div class="doc-arabic">ملف ترخيص وزارة الاستثمار</div>
@@ -136,36 +141,23 @@ require_once 'header.php';
 
                     <div class="doc-data-box">
                         <div class="data-row">
-                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
-                                </svg>
+                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" /></svg>
                             <div class="data-text-block">
                                 <span class="data-label">Company Name</span>
-                                <span class="data-value"><?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?></span>
+                                <span class="data-value"><?php echo htmlspecialchars($client['company_name'] ?? ''); ?></span>
                             </div>
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
-                                </svg>
+                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" /></svg>
                             <div class="data-text-block">
                                 <span class="data-label">Trade Name</span>
-                                <span
-                                    class="data-value"><?php echo htmlspecialchars($client['trade_name'] ?? 'ALSAMA SKR'); ?></span>
+                                <span class="data-value"><?php echo htmlspecialchars($client['trade_name'] ?? ''); ?></span>
                             </div>
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                                </svg>
+                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
                             <div class="data-text-block">
                                 <span class="data-label">Client Representative</span>
                                 <span class="data-value"><?php echo htmlspecialchars($clientName); ?></span>
@@ -173,11 +165,7 @@ require_once 'header.php';
                         </div>
 
                         <div class="data-row">
-                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
-                                </svg>
+                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" /></svg>
                             <div class="data-text-block">
                                 <span class="data-label">Date Issued</span>
                                 <span class="data-value"><?php echo $date; ?></span>
@@ -209,9 +197,11 @@ require_once 'header.php';
                 </div>
 
                 <h2>1. OBJECTIVE OF THE AGREEMENT</h2>
-                <p><?php echo $txt_objective; ?></p>
+                <div><?php echo $txt_objective; ?></div>
+                
                 <h2>2. PERMITTED ACTIVITIES UNDER SERVICE LICENSE</h2>
-                <p><?php echo $txt_permitted; ?></p>
+                <div><?php echo $txt_permitted; ?></div>
+                
                 <h2>3. SCOPE OF SERVICES</h2>
                 <p>The Service Provider shall be responsible for completing the following services for the Client:</p>
                 <ol>
@@ -226,10 +216,11 @@ require_once 'header.php';
             <div class="content">
                 <h2>4. CLIENT DOCUMENTATION REQUIREMENTS</h2>
                 <div><?php echo $txt_docs; ?></div>
+                
                 <h2>5. SERVICE CHARGES</h2>
                 <p>The Total professional service fee for this Agreement is <strong>SAR
                         <?php echo htmlspecialchars($serviceFee); ?> (Saudi Riyals Fifteen Thousand only)</strong>.</p>
-                <p><em style="color:red;">Note: All kind of Service provide by Flyburj Travels & Tourism Co. & All kind
+                <p><em style="color:red;">Note: All kind of Service provide by <?php echo htmlspecialchars($serviceProvider); ?> & All kind
                         of Govt. Payments are to be borne by the Client. </em></p>
 
                 <h2>6. PAYMENT TERMS</h2>
@@ -279,7 +270,6 @@ require_once 'header.php';
                     </div>
                     <p><strong>Date:</strong> _____________________</p>
                 </div>
-                
             </div>
         </div>
     </div>

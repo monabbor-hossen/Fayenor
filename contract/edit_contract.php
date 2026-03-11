@@ -47,33 +47,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $success_msg = '';
 if (isset($_SESSION['contract_success'])) {
     $success_msg = $_SESSION['contract_success'];
-    unset($_SESSION['contract_success']); // Delete it so it only shows once!
+    unset($_SESSION['contract_success']);
 }
 
-// Default Contract Text
-$defaults = [
-    'objective' => '<p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>',
-    'permitted' => '<p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory services, and other non-trading activities as approved by MISA</p>',
-    'docs' => "<ul><li>Original Passport Copy</li><li>Passport Size Photograph</li></ul><p><em>The Client confirms that all documents provided are valid, accurate, and genuine.</em></p>",
-    'payment' => "<ul><li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon issuance of the Investment License in Saudi Arabia, and the remaining 50% upon issuance of the Commercial Register.</li><li>If the client fails to fulfill the payment obligations, the company reserves the right to retain the official documents and papers until the full payment is settled and the final settlement is completed.</li><li>Should there be any changes to the government license fee, the agreement amount will be revised accordingly.</li><li>The contractual relationship with our company ends once the commercial register and investment license have been obtained and the agreed-upon services have been completed.</li></ul>",
-    'obligations' => "<p>The Client agrees to:</p><ul><li>Provide required documents promptly</li><li>Pay government fees on time</li><li>Cooperate fully during the application process</li><li>Comply with all Saudi laws, regulations, and MISA requirements</li></ul><p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the Service Provider.</p>",
-    'timeline_days' => 40,
-    'timeline_text' => "<p>The Service Provider shall not be held responsible for any delay caused by:</p><ul><li>Government system or server issues</li><li>Portal downtime or technical errors</li><li>Scheduled or unscheduled system maintenance</li></ul><p>Any delays arising from external or governmental processes shall not be considered a breach of this Agreement and will not affect the agreed service charges.</p>",
-    'bank_name' => 'SAUDI NATIONAL BANK',
-    'account_number' => '38300000264001',
-    'iban_number' => 'SA5010000038300000264001',
-    'account_name' => 'Flyburj Travel and Tourism Company'
-];
+// FETCH GLOBAL DEFAULT TEXT
+$stmtDef = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
+$defaults = $stmtDef->fetch(PDO::FETCH_ASSOC);
 
-// Fetch Custom Text
+// Fetch Custom Text (If this client was already specifically edited)
 $stmtCheck = $db->prepare("SELECT * FROM client_contracts WHERE client_id = ?");
 $stmtCheck->execute([$client_id]);
 $custom = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
+// MAP DATA (Prioritize Custom -> fallback to Default)
 $v_obj = $custom['objective'] ?? $defaults['objective'];
-$v_per = $custom['permitted_activities'] ?? $defaults['permitted'];
-$v_doc = $custom['documentation'] ?? $defaults['docs'];
-$v_pay = $custom['payment_terms'] ?? $defaults['payment'];
+$v_per = $custom['permitted_activities'] ?? $defaults['permitted_activities'];
+$v_doc = $custom['documentation'] ?? $defaults['documentation'];
+$v_pay = $custom['payment_terms'] ?? $defaults['payment_terms'];
 $v_obl = $custom['obligations'] ?? $defaults['obligations'];
 $v_tdy = $custom['timeline_days'] ?? $defaults['timeline_days'];
 $v_ttx = $custom['timeline_text'] ?? $defaults['timeline_text'];
@@ -82,7 +72,6 @@ $v_bnk = $custom['bank_name'] ?? $defaults['bank_name'];
 $v_acc = $custom['account_number'] ?? $defaults['account_number'];
 $v_ibn = $custom['iban_number'] ?? $defaults['iban_number'];
 $v_acn = $custom['account_name'] ?? $defaults['account_name'];
-// ... keep all your php setup at the top ...
 
 $v_add_scope = $custom['additional_scope'] ?? '';
 

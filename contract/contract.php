@@ -58,7 +58,11 @@ if (!empty($client['muqeem']) && $client['muqeem'] !== 'Not Required') { $scopeL
 if (!empty($client['gosi']) && $client['gosi'] !== 'Not Required') { $scopeList[] = "GOSI Registration"; }
 if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not Required') { $scopeList[] = "Chamber of Commerce Registration"; }
 
-// 4. FETCH CUSTOM CONTRACT TEXT (IF EDITED)
+// 4. FETCH GLOBAL DEFAULTS FIRST
+$stmtDef = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
+$globalDefaults = $stmtDef->fetch(PDO::FETCH_ASSOC);
+
+// 5. FETCH CUSTOM CONTRACT TEXT (IF INDIVIDUALLY EDITED)
 $stmtText = $db->prepare("SELECT * FROM client_contracts WHERE client_id = ?");
 $stmtText->execute([$client_id]);
 $customText = $stmtText->fetch(PDO::FETCH_ASSOC);
@@ -74,19 +78,19 @@ if (!empty($customText['additional_scope'])) {
     }
 }
 
-$txt_objective = $customText['objective'] ?? '<p>The objective of this Agreement is to appoint Flyburj Travels & Tourism Company as a facilitator and consultant to assist the Client in obtaining a MISA Service License in the Kingdom of Saudi Arabia, in accordance with the regulations of the Ministry of Investment of Saudi Arabia (MISA).</p>';
-$txt_permitted = $customText['permitted_activities'] ?? '<p>Service-based activities including consultancy, IT services, management support, marketing, training, professional advisory services, and other non-trading activities as approved by MISA</p>';
-$txt_docs = $customText['documentation'] ?? "<ul><li>Original Passport Copy</li><li>Passport Size Photograph</li></ul><p><em>The Client confirms that all documents provided are valid, accurate, and genuine.</em></p>";
-$txt_payment = $customText['payment_terms'] ?? "<ul><li>The Client shall pay 25% of the total service fees upon signing this Agreement, 25% upon issuance of the Investment License in Saudi Arabia, and the remaining 50% upon issuance of the Commercial Register.</li><li>If the client fails to fulfill the payment obligations, the company reserves the right to retain the official documents and papers until the full payment is settled and the final settlement is completed.</li><li>Should there be any changes to the government license fee, the agreement amount will be revised accordingly.</li><li>The contractual relationship with our company ends once the commercial register and investment license have been obtained and the agreed-upon services have been completed.</li></ul>";
-$txt_obligations = $customText['obligations'] ?? "<p>The Client agrees to:</p><ul><li>Provide required documents promptly</li><li>Pay government fees on time</li><li>Cooperate fully during the application process</li><li>Comply with all Saudi laws, regulations, and MISA requirements</li></ul><p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the Service Provider.</p>";
-$txt_timeline_days = $customText['timeline_days'] ?? 40;
-$txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider shall not be held responsible for any delay caused by:</p><ul><li>Government system or server issues</li><li>Portal downtime or technical errors</li><li>Scheduled or unscheduled system maintenance</li></ul><p>Any delays arising from external or governmental processes shall not be considered a breach of this Agreement and will not affect the agreed service charges.</p>";
+// 6. APPLY DATA (Use Individual Edit -> Or Global Default)
+$txt_objective = $customText['objective'] ?? $globalDefaults['objective'];
+$txt_permitted = $customText['permitted_activities'] ?? $globalDefaults['permitted_activities'];
+$txt_docs = $customText['documentation'] ?? $globalDefaults['documentation'];
+$txt_payment = $customText['payment_terms'] ?? $globalDefaults['payment_terms'];
+$txt_obligations = $customText['obligations'] ?? $globalDefaults['obligations'];
+$txt_timeline_days = $customText['timeline_days'] ?? $globalDefaults['timeline_days'];
+$txt_timeline_text = $customText['timeline_text'] ?? $globalDefaults['timeline_text'];
 
-$txt_bank_name = $customText['bank_name'] ?? 'SAUDI NATIONAL BANK';
-$txt_account_number = $customText['account_number'] ?? '38300000264001';
-$txt_iban_number = $customText['iban_number'] ?? 'SA5010000038300000264001';
-$txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited';
-
+$txt_bank_name = $customText['bank_name'] ?? $globalDefaults['bank_name'];
+$txt_account_number = $customText['account_number'] ?? $globalDefaults['account_number'];
+$txt_iban_number = $customText['iban_number'] ?? $globalDefaults['iban_number'];
+$txt_account_name = $customText['account_name'] ?? $globalDefaults['account_name'];
 // Create a safe string for the PDF filename
 $pdfClientName = htmlspecialchars(str_replace(' ', '_', $clientName));
 

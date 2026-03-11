@@ -70,6 +70,14 @@ $txt_payment = $customText['payment_terms'] ?? "<ul><li>The Client shall pay 25%
 $txt_obligations = $customText['obligations'] ?? "<p>The Client agrees to:</p><ul><li>Provide required documents promptly</li><li>Pay government fees on time</li><li>Cooperate fully during the application process</li><li>Comply with all Saudi laws, regulations, and MISA requirements</li></ul><p>Any delay caused by incomplete documents or late payments shall not be the responsibility of the Service Provider.</p>";
 $txt_timeline_days = $customText['timeline_days'] ?? 40;
 $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider shall not be held responsible for any delay caused by:</p><ul><li>Government system or server issues</li><li>Portal downtime or technical errors</li><li>Scheduled or unscheduled system maintenance</li></ul><p>Any delays arising from external or governmental processes shall not be considered a breach of this Agreement and will not affect the agreed service charges.</p>";
+
+$txt_bank_name = $customText['bank_name'] ?? 'SAUDI NATIONAL BANK';
+$txt_account_number = $customText['account_number'] ?? '38300000264001';
+$txt_iban_number = $customText['iban_number'] ?? 'SA5010000038300000264001';
+$txt_account_name = $customText['account_name'] ?? 'Flyburj Travel and Tourism Company';
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -392,15 +400,20 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
     <div id="contract-content">
 
         <div class="document-page cover-page">
-            <svg width="794" height="1123" viewBox="0 0 794 1123" style="position:absolute; top:0; left:0; z-index:1;" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="none" style="stroke: var(--theme-accent);" stroke-width="4" transform="translate(8, 8)" opacity="0.8" />
+            <svg width="794" height="1123" viewBox="0 0 794 1123" style="position:absolute; top:0; left:0; z-index:1;"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" fill="none" style="stroke: var(--theme-accent);"
+                    stroke-width="4" transform="translate(8, 8)" opacity="0.8" />
                 <path d="M 0,0 L 550,0 C 350,150 150,220 0,180 Z" style="fill: var(--theme-primary);" />
 
-                <path d="M 794,250 C 650,400 650,600 794,750 Z" fill="none" style="stroke: var(--theme-accent);" stroke-width="4" transform="translate(-8, 0)" opacity="0.8" />
+                <path d="M 794,250 C 650,400 650,600 794,750 Z" fill="none" style="stroke: var(--theme-accent);"
+                    stroke-width="4" transform="translate(-8, 0)" opacity="0.8" />
                 <path d="M 794,250 C 650,400 650,600 794,750 Z" style="fill: var(--theme-primary);" />
 
-                <path d="M 0,450 C 100,1050 550,800 794,880" fill="none" style="stroke: var(--theme-accent);" stroke-width="4" transform="translate(0, -8)" opacity="0.8"></path>
-                <path d="M 0,450 C 100,1050 550,800 794,880 L 794,1025 C 500,960 200,1123 0,1123 Z" style="fill: var(--theme-primary);"></path>
+                <path d="M 0,450 C 100,1050 550,800 794,880" fill="none" style="stroke: var(--theme-accent);"
+                    stroke-width="4" transform="translate(0, -8)" opacity="0.8"></path>
+                <path d="M 0,450 C 100,1050 550,800 794,880 L 794,1025 C 500,960 200,1123 0,1123 Z"
+                    style="fill: var(--theme-primary);"></path>
             </svg>
             <img src="../assets/img/logo_transparent.png" class="watermark" alt="">
 
@@ -415,8 +428,12 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
 
                     <div class="doc-data-box">
                         <div class="data-row">
-                        <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>    
-                        <div class="data-text-block">
+                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
+                                </svg>
+                            <div class="data-text-block">
                                 <span class="data-label">Company Name</span>
                                 <span
                                     class="data-value"><?php echo htmlspecialchars($client['company_name'] ?? 'Jahangir Contracting Ltd.'); ?></span>
@@ -424,8 +441,12 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
                         </div>
 
                         <div class="data-row">
-                        <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
-                        <div class="data-text-block">
+                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
+                                </svg>
+                            <div class="data-text-block">
                                 <span class="data-label">Trade Name</span>
                                 <span
                                     class="data-value"><?php echo htmlspecialchars($client['trade_name'] ?? 'ALSAMA SKR'); ?></span>
@@ -433,16 +454,24 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
                         </div>
 
                         <div class="data-row">
-                        <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> 
-                        <div class="data-text-block">
+                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                </svg>
+                            <div class="data-text-block">
                                 <span class="data-label">Client Representative</span>
                                 <span class="data-value"><?php echo htmlspecialchars($clientName); ?></span>
                             </div>
                         </div>
 
                         <div class="data-row">
-                        <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-                        <div class="data-text-block">
+                            <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                                </svg>
+                            <div class="data-text-block">
                                 <span class="data-label">Date Issued</span>
                                 <span class="data-value"><?php echo $date; ?></span>
                             </div>
@@ -498,23 +527,22 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
 
                 <h2>6. PAYMENT TERMS</h2>
                 <div><?php echo $txt_payment; ?></div>
-
                 <table class="bank-table">
                     <tr>
                         <th>NAME OF BANK</th>
-                        <td>SAUDI NATIONAL BANK</td>
+                        <td><?php echo htmlspecialchars($txt_bank_name); ?></td>
                     </tr>
                     <tr>
                         <th>ACCOUNT NUMBER</th>
-                        <td>38300000264001</td>
+                        <td><?php echo htmlspecialchars($txt_account_number); ?></td>
                     </tr>
                     <tr>
                         <th>ACCOUNT IBAN NUMBER</th>
-                        <td>SA5010000038300000264001</td>
+                        <td><?php echo htmlspecialchars($txt_iban_number); ?></td>
                     </tr>
                     <tr>
                         <th>AC NAME</th>
-                        <td><?php echo htmlspecialchars($serviceProvider); ?></td>
+                        <td><?php echo htmlspecialchars($txt_account_name); ?></td>
                     </tr>
                 </table>
             </div>
@@ -564,7 +592,7 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
             </div>
         </div>
     </div>
-  <script>
+    <script>
         function generatePDF() {
             const element = document.getElementById('contract-content');
             const pages = document.querySelectorAll('.document-page');
@@ -574,23 +602,23 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
             // Create an invisible canvas
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            
+
             // Match the canvas size to the original image
             canvas.width = logoImg.naturalWidth;
             canvas.height = logoImg.naturalHeight;
-            
+
             // Draw the original image onto the canvas
             ctx.drawImage(logoImg, 0, 0);
-            
+
             // Paint over the non-transparent pixels with pure white
             ctx.globalCompositeOperation = 'source-in';
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
+
             // Swap the logo's source to this new white image data
-            const originalSrc = logoImg.src; 
+            const originalSrc = logoImg.src;
             logoImg.src = canvas.toDataURL('image/png');
-// --- 1. BAKE THE FILTER INTO THE WATERMARK ---
+            // --- 1. BAKE THE FILTER INTO THE WATERMARK ---
             const watermarkImg = document.querySelector('.watermark');
             const originalWatermarkSrc = watermarkImg.src;
 
@@ -600,16 +628,17 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
                 canvas.height = watermarkImg.naturalHeight;
 
                 // Apply the exact same CSS filter directly to the Canvas!
-                ctx.filter = 'brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1)';
-                
+                ctx.filter =
+                    'brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1)';
+
                 // Draw the image onto the canvas with the filter permanently baked in
                 ctx.drawImage(watermarkImg, 0, 0, canvas.width, canvas.height);
 
                 // Swap the watermark's source to this new perfectly filtered image
                 watermarkImg.src = canvas.toDataURL('image/png');
-                
+
                 // Temporarily disable the CSS filter so it doesn't double-apply
-                watermarkImg.style.filter = 'none'; 
+                watermarkImg.style.filter = 'none';
             }
 
             // 1. Prepare for PDF
@@ -652,7 +681,8 @@ $txt_timeline_text = $customText['timeline_text'] ?? "<p>The Service Provider sh
                 });
                 element.style.overflow = 'visible';
                 // Put the original image back so the website looks normal!
-                logoImg.src = originalSrc;// Restore the original watermark image and CSS filter for the web view
+                logoImg.src =
+                originalSrc; // Restore the original watermark image and CSS filter for the web view
                 watermarkImg.src = originalWatermarkSrc;
                 watermarkImg.style.filter = '';
             });

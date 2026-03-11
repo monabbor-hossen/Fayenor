@@ -935,3 +935,46 @@ a:hover .avatar-circle-refined,
     justify-content: center;
     padding: 40px;
 }
+
+/* ==========================================================================
+   BEAUTIFUL BREADCRUMB STYLING
+   ========================================================================== */
+.pagetitle .breadcrumb {
+    background-color: rgba(212, 175, 55, 0.08) !important; /* Soft gold background */
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    border-left: 4px solid var(--theme-primary, #800020) !important;
+    margin-bottom: 20px !important;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.pagetitle .breadcrumb-item {
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.pagetitle .breadcrumb-item a {
+    color: var(--theme-primary, #800020) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.pagetitle .breadcrumb-item a:hover {
+    color: var(--theme-accent, #D4AF37) !important;
+}
+
+.pagetitle .breadcrumb-item.active {
+    color: #6c757d !important;
+}
+
+.pagetitle .breadcrumb-item + .breadcrumb-item::before {
+    content: "›" !important;
+    color: var(--theme-accent, #D4AF37) !important;
+    font-size: 20px;
+    line-height: 1;
+    vertical-align: middle;
+    padding: 0 10px;
+}

@@ -15,4 +15,4 @@
 
     <script src="<?php echo BASE_URL; ?>assets/js/html2pdf.bundle.min.js"></script>
 </head>
-<body>
+<body class="standalone-contract-page">

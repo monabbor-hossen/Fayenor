@@ -10,14 +10,13 @@
     --bg-offwhite: #ffffff;
 }
 
-body {
+body.standalone-contract-page {
     background-color: #2b2b2b;
     color: var(--text-dark);
     font-family: 'Montserrat', 'Segoe UI', sans-serif;
     margin: 0;
     padding: 40px 0;
 }
-
 #contract-content {
     display: block;
     width: 794px;

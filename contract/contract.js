@@ -90,7 +90,7 @@ function generatePDF() {
             scale: 2,
             useCORS: true,
             scrollY: 0,
-            windowWidth: 1218
+            windowWidth: 1521
         },
         jsPDF: {
             unit: 'mm',

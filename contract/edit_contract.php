@@ -21,6 +21,7 @@ $stmt->execute([$client_id]);
 $client = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$client) die("Client not found.");
 $clientName = $client['client_name'] ?? $client['company_name'];
+
 // Handle Form Submit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "INSERT INTO client_contracts (client_id, objective, permitted_activities, documentation, payment_terms, obligations, timeline_days, timeline_text, bank_name, account_number, iban_number, account_name, additional_scope) 
@@ -103,141 +104,15 @@ if (!empty($clientWf['chamber_commerce']) && $clientWf['chamber_commerce'] !== '
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <title>Edit Contract - <?php echo htmlspecialchars($clientName); ?></title>
+    
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
-
-        :root {
-            --theme-primary: #800020;
-            --theme-accent: #D4AF37;
-            --text-dark: #111111;
-            --text-muted: #555555;
-            --bg-offwhite: #ffffff;
-        }
-
-        body { 
-            background-color: #2b2b2b; /* Match contract.php dark background */
-            color: var(--text-dark); 
-            padding: 40px 0; 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-        }
-
-        /* Top Control Bar */
-        .control-bar {
-            width: 210mm;
-            max-width: 100%;
-            margin: 0 auto 20px auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .control-bar h2 {
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            margin: 0;
-            font-size: 24px;
-        }
-
-        .control-bar .client-name {
-            color: var(--theme-accent);
-        }
-
-        /* The A4 Document Container */
-        .document-page {
-            width: 210mm;
-            max-width: 100%;
-            background-color: white;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            margin: 0 auto;
-            padding: 25mm 20mm; /* Realistic document padding */
-            box-sizing: border-box;
-            border-top: 5px solid var(--theme-primary);
-        }
-
-        /* Mimicking the Contract Headers EXACTLY */
-        h2.contract-heading {
-            color: var(--theme-primary);
-            font-size: 13pt;
-            border-bottom: 1px dashed var(--theme-accent);
-            padding-bottom: 5px;
-            margin-top: 25px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-        }
-
-        /* Summernote Overrides to blend into the document */
-        .note-editor.note-frame {
-            border: 1px solid #e0e0e0 !important;
-            box-shadow: none !important;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .note-editor .note-editing-area {
-            font-family: 'Segoe UI', Roboto, sans-serif !important;
-            font-size: 11pt !important;
-            line-height: 1.6 !important;
-        }
-
-        /* Bank Inputs matching Contract Table vibe */
-        .bank-details-box {
-            background-color: #f8f9fa;
-            border-left: 3px solid var(--theme-accent);
-            padding: 20px;
-            margin: 20px 0;
-        }
-        .bank-details-box label {
-            color: var(--theme-primary);
-            font-weight: bold;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
-        .bank-details-box .form-control {
-            border: 1px solid #ced4da;
-            border-radius: 0;
-            font-size: 14px;
-        }
-        .bank-details-box .form-control:focus {
-            border-color: var(--theme-primary);
-            box-shadow: none;
-        }
-
-        /* Floating Save Button */
-        .floating-save-btn {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            z-index: 1050;
-            background-color: var(--theme-primary);
-            color: white;
-            border: 2px solid var(--theme-accent);
-            border-radius: 50px;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: 'Montserrat', sans-serif;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-        .floating-save-btn:hover {
-            transform: translateY(-5px) scale(1.05);
-            background-color: #6a001a;
-            color: white;
-        }
-    </style>
+    
+    <link rel="stylesheet" href="contract.css">
 </head>
 <body>
 
@@ -254,7 +129,7 @@ if (!empty($clientWf['chamber_commerce']) && $clientWf['chamber_commerce'] !== '
 
     <form method="POST" id="editContractForm">
         
-        <div class="document-page">
+        <div class="document-page edit-document-page">
             <?php if(!empty($success_msg)): ?>
                 <div class="alert alert-success fw-bold text-center" style="border-left: 5px solid #198754;">
                     <?php echo $success_msg; ?>
@@ -338,15 +213,7 @@ if (!empty($clientWf['chamber_commerce']) && $clientWf['chamber_commerce'] !== '
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-    <script>
-      $('.rich-editor').summernote({
-        tabsize: 2,
-        height: 140,
-        toolbar: [
-          ['style', ['bold', 'italic', 'underline', 'clear']],
-          ['para', ['ul', 'ol', 'paragraph']],
-        ]
-      });
-    </script>
+    
+    <script src="contract.js"></script>
 </body>
 </html>

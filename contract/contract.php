@@ -89,23 +89,12 @@ $txt_account_name = $customText['account_name'] ?? 'Basmat Rooq Company Limited'
 
 // Create a safe string for the PDF filename
 $pdfClientName = htmlspecialchars(str_replace(' ', '_', $clientName));
+
+// Define page title and load header
+$pageTitle = "Service License Agreement - " . htmlspecialchars($clientName);
+require_once 'header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
-    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
-    <title>Service License Agreement - <?php echo htmlspecialchars($clientName); ?></title>
-
-    <link rel="stylesheet" href="contract.css">
-
-    <script src="<?php echo BASE_URL; ?>assets/js/html2pdf.bundle.min.js"></script>
-</head>
-
-<body>
     <a href="edit_contract.php?id=<?php echo $client_id; ?>" class="edit-btn" data-html2canvas-ignore="true">✏️ Edit Contract</a>
     <button class="download-btn" onclick="generatePDF()" data-html2canvas-ignore="true">⬇ Download PDF</button>
 
@@ -288,6 +277,4 @@ $pdfClientName = htmlspecialchars(str_replace(' ', '_', $clientName));
         </div>
     </div>
 
-    <script src="contract.js"></script>
-</body>
-</html>
+<?php require_once 'footer.php'; ?>

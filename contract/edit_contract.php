@@ -82,6 +82,7 @@ $v_bnk = $custom['bank_name'] ?? $defaults['bank_name'];
 $v_acc = $custom['account_number'] ?? $defaults['account_number'];
 $v_ibn = $custom['iban_number'] ?? $defaults['iban_number'];
 $v_acn = $custom['account_name'] ?? $defaults['account_name'];
+// ... keep all your php setup at the top ...
 
 $v_add_scope = $custom['additional_scope'] ?? '';
 
@@ -98,23 +99,11 @@ if (!empty($clientWf['qiwa']) && $clientWf['qiwa'] !== 'Not Required') { $wfList
 if (!empty($clientWf['muqeem']) && $clientWf['muqeem'] !== 'Not Required') { $wfList[] = "Muqeem Registration"; }
 if (!empty($clientWf['gosi']) && $clientWf['gosi'] !== 'Not Required') { $wfList[] = "GOSI Registration"; }
 if (!empty($clientWf['chamber_commerce']) && $clientWf['chamber_commerce'] !== 'Not Required') { $wfList[] = "Chamber of Commerce Registration"; }
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
-    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
-    <title>Edit Contract - <?php echo htmlspecialchars($clientName); ?></title>
-    
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="contract.css">
-</head>
-<body>
+// Define page title and load header
+$pageTitle = "Edit Contract - " . htmlspecialchars($clientName);
+require_once 'header.php';
+?>
 
     <div class="control-bar">
         <div>
@@ -211,9 +200,4 @@ if (!empty($clientWf['chamber_commerce']) && $clientWf['chamber_commerce'] !== '
         Save Contract
     </button>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-    
-    <script src="contract.js"></script>
-</body>
-</html>
+<?php require_once 'footer.php'; ?>

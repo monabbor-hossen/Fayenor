@@ -16,7 +16,9 @@ if (typeof jQuery !== 'undefined') {
         }
     });
 }
-
+/* ==========================================================================
+   2. VIEW PAGE: PDF GENERATION FUNCTION
+   ========================================================================== */
 function generatePDF() {
     const element = document.getElementById('contract-content');
     const pages = document.querySelectorAll('.document-page');

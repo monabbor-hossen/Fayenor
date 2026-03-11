@@ -17,16 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "UPDATE default_contract_settings SET 
             objective=?, permitted_activities=?, documentation=?, payment_terms=?, 
             obligations=?, timeline_days=?, timeline_text=?, 
-            bank_name=?, account_number=?, iban_number=?, account_name=? 
+            bank_name=?, account_number=?, iban_number=?, account_name=?,
+            service_provider=?, provider_email=?, rep_name=? 
             WHERE id=1";
     $stmt = $db->prepare($sql);
     $stmt->execute([
         $_POST['objective'], $_POST['permitted'], $_POST['docs'], 
         $_POST['payment'], $_POST['obligations'], intval($_POST['timeline_days']), $_POST['timeline_text'],
-        $_POST['bank_name'], $_POST['account_number'], $_POST['iban_number'], $_POST['account_name']
+        $_POST['bank_name'], $_POST['account_number'], $_POST['iban_number'], $_POST['account_name'],
+        $_POST['service_provider'], $_POST['provider_email'], $_POST['rep_name']
     ]);
     
-    // Save success message to session and REDIRECT to stop form resubmission!
     $_SESSION['contract_success'] = "Global Default Settings Saved Successfully!";
     header("Location: default-contract.php");
     exit();
@@ -38,7 +39,6 @@ if (isset($_SESSION['contract_success'])) {
     $success_msg = $_SESSION['contract_success'];
     unset($_SESSION['contract_success']); // Remove so it only shows once
 }
-// ------------------------------------------------------------
 
 // Fetch Global Settings
 $stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
@@ -48,15 +48,15 @@ require_once 'includes/header.php';
 require_once 'includes/sidebar.php';
 ?>
 
-<link href="<?php echo BASE_URL; ?>assets/css/summernote-lite.min.css" rel="stylesheet">
-<link rel="stylesheet" href="<?php echo BASE_URL;?>/contract/contract.css">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../contract/contract.css">
 
 <main id="main" class="main">
     
     <div class="pagetitle mb-4">
-        <h3 style="text-white fw-bold mb-0">Global Contract Template</h3>
-        <p class="text-white-50 small mb-0" >
-            Manage default terms and bank details for all new client contracts.
+        <h1 style="color: #800020; font-weight: 800; font-family: 'Montserrat', sans-serif; letter-spacing: -0.5px;">Global Contract Template</h1>
+        <p class="text-muted mt-2" style="font-size: 15px; font-weight: 500;">
+            Manage default terms, company info, and bank details for all new client contracts.
         </p>
     </div>
 
@@ -72,6 +72,24 @@ require_once 'includes/sidebar.php';
 
             <div class="text-center mb-4">
                 <h4 style="color: #800020; font-family: 'Montserrat', sans-serif; font-weight: 800;">MASTER TEMPLATE SETTINGS</h4>
+            </div>
+
+            <div class="bank-details-box mb-4" style="background-color: #fcf8e3;">
+                <p style="color: #800020; font-weight: bold; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">Service Provider Details (Header & Signature)</p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Service Provider (Company Name)</label>
+                        <input type="text" name="service_provider" class="form-control" value="<?php echo htmlspecialchars($defaults['service_provider'] ?? 'Basmat Rooq Company Limited'); ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Contact Email</label>
+                        <input type="email" name="provider_email" class="form-control" value="<?php echo htmlspecialchars($defaults['provider_email'] ?? 'info@flyburjco.com'); ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Representative Name (Signature)</label>
+                        <input type="text" name="rep_name" class="form-control" value="<?php echo htmlspecialchars($defaults['rep_name'] ?? 'Saifullah'); ?>">
+                    </div>
+                </div>
             </div>
 
             <h2 class="contract-heading">1. Objective of the Agreement</h2>
@@ -131,9 +149,8 @@ require_once 'includes/sidebar.php';
     </button>
 </main>
 
-<script src="<?php echo BASE_URL;?>assets/js/jquery-3.6.0.min.js"></script>
-<script src="<?php echo BASE_URL; ?>assets/js/summernote-lite.min.js"></script>
-    
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script src="../contract/contract.js"></script>
 
 <?php require_once 'includes/footer.php'; ?>

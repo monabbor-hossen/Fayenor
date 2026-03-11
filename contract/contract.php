@@ -86,6 +86,8 @@ $txt_account_name = $customText['account_name'] ?? 'Flyburj Travel and Tourism C
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
+    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <title>Service License Agreement - <?php echo htmlspecialchars($clientName); ?></title>
 
     <script src="<?php echo BASE_URL; ?>assets/js/html2pdf.bundle.min.js"></script>

@@ -81,6 +81,9 @@ $v_acn = $custom['account_name'] ?? $defaults['account_name'];
     <meta charset="UTF-8">
     <title>Edit Contract - <?php echo htmlspecialchars($clientName); ?></title>
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    
+    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
+    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <style>
         body { background-color: #1a1a1a; color: white; padding: 40px 0; font-family: 'Segoe UI', sans-serif; }

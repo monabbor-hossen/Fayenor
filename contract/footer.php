@@ -1,5 +1,5 @@
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script src="<?php echo BASE_URL;?>assets/js/jquery-3.6.0.min.js"></script>
+    <script src="<?php echo BASE_URL; ?>assets/js/summernote-lite.min.js"></script>
     
     <script src="contract.js"></script>
 </body>

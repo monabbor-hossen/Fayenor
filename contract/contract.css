@@ -17,6 +17,7 @@ body.standalone-contract-page {
     margin: 0;
     padding: 40px 0;
 }
+
 #contract-content {
     display: block;
     width: 794px;
@@ -121,8 +122,9 @@ body.standalone-contract-page {
 
 /* EDIT PAGE SPECIFIC MODIFIER */
 .document-page.edit-document-page {
-    height: auto; /* Allow growth on edit page */
-    padding: 25mm 20mm; 
+    height: auto;
+    /* Allow growth on edit page */
+    padding: 25mm 20mm;
     border-top: 5px solid var(--theme-primary);
     background-image: none;
 }
@@ -132,26 +134,135 @@ body.standalone-contract-page {
    ========================================= */
 .watermark {
     position: absolute;
-    top: 50%; left: 50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 650px; opacity: 0.03; pointer-events: none; z-index: 2;
+    width: 650px;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 2;
     filter: brightness(0) drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white) invert(1);
 }
-.cover-content-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; }
-.brand-logo { position: absolute; top: 50px; left: 50px; width: 30%; filter: brightness(0) invert(1); }
-.title-section { position: absolute; top: 310px; left: 100px; }
-.doc-arabic { font-family: 'Cairo', sans-serif; font-size: 22px; font-weight: 800; color: var(--theme-accent); margin-bottom: -5px; margin-left: 5px; }
-.doc-subtitle { font-size: 20px; font-weight: 700; color: var(--theme-primary); text-transform: uppercase; letter-spacing: 5px; margin: 0 0 0 5px; }
-.cover-main-title { font-size: 85px; font-weight: 900; color: var(--text-dark); text-transform: uppercase; line-height: 1; letter-spacing: -3px; margin: 0 0 40px 0; }
-.doc-data-box { border-left: 4px solid var(--theme-accent); padding-left: 20px; margin-left: 10px; display: block; }
-.data-row { display: flex; align-items: flex-start; margin-bottom: 15px; width: 90%; }
-.data-icon { width: 18px; height: 18px; min-width: 18px; fill: var(--theme-primary); margin-top: 2px; margin-right: 15px; }
-.data-text-block { display: flex; flex-direction: column; }
-.data-label { font-size: 11px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 2px; }
-.data-value { font-size: 14px; color: var(--text-muted); font-weight: 500; }
-.doc-year { position: absolute; bottom: 120px; right: 100px; display: flex; flex-direction: column; align-items: flex-end; z-index: 10; }
-.year-main { font-size: 60px; font-weight: 900; color: white; letter-spacing: -1px; line-height: 1; }
-.year-sub { font-size: 15px; font-weight: 700; color: var(--theme-accent); letter-spacing: 2.5px; margin-top: 5px; }
+
+.cover-content-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.brand-logo {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 30%;
+    filter: brightness(0) invert(1);
+}
+
+.title-section {
+    position: absolute;
+    top: 310px;
+    left: 100px;
+}
+
+.doc-arabic {
+    font-family: 'Cairo', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--theme-accent);
+    margin-bottom: -5px;
+    margin-left: 5px;
+}
+
+.doc-subtitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--theme-primary);
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    margin: 0 0 0 5px;
+}
+
+.cover-main-title {
+    font-size: 85px;
+    font-weight: 900;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: -3px;
+    margin: 0 0 40px 0;
+}
+
+.doc-data-box {
+    border-left: 4px solid var(--theme-accent);
+    padding-left: 20px;
+    margin-left: 10px;
+    display: block;
+}
+
+.data-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    width: 90%;
+}
+
+.data-icon {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    fill: var(--theme-primary);
+    margin-top: 2px;
+    margin-right: 15px;
+}
+
+.data-text-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.data-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+}
+
+.data-value {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.doc-year {
+    position: absolute;
+    bottom: 120px;
+    right: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 10;
+}
+
+.year-main {
+    font-size: 60px;
+    font-weight: 900;
+    color: white;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.year-sub {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--theme-accent);
+    letter-spacing: 2.5px;
+    margin-top: 5px;
+}
 
 /* =========================================
    TYPOGRAPHY & INTERNAL ELEMENTS
@@ -163,32 +274,251 @@ body.standalone-contract-page {
     border-top: 3px solid var(--theme-primary);
     margin-top: 10px;
 }
-.inner-doc-title { color: var(--theme-primary); font-size: 14px; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; }
-.inner-doc-subtitle { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 20px; }
-h2 { color: var(--theme-primary); font-size: 13pt; border-bottom: 1px dashed var(--theme-accent); padding-bottom: 5px; margin: 7px 0; text-transform: uppercase; }
-h2.contract-heading { margin-top: 25px; margin-bottom: 10px; font-family: 'Montserrat', sans-serif; font-weight: 700; }
-p { margin: 2px 0; }
-ul, ol { padding-left: 20px; margin: 10px 0; }
-.layout-table { display: table; width: 100%; margin-bottom: 5px; }
-.bg-gray { padding: 15px; border-left: 3px solid var(--theme-accent); }
-.bank-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 10pt; background: rgba(255, 255, 255, 0.8); }
-.bank-table th, .bank-table td { border: 1px solid var(--theme-accent); padding: 8px 12px; text-align: left; }
-.bank-table th { background-color: var(--theme-primary); color: white; width: 40%; }
-.signature-line { border-bottom: 1px solid var(--text-dark); margin-top: 40px; margin-bottom: 10px; width: 25%; }
+
+.inner-doc-title {
+    color: var(--theme-primary);
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.inner-doc-subtitle {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: var(--theme-primary);
+    font-size: 13pt;
+    border-bottom: 1px dashed var(--theme-accent);
+    padding-bottom: 5px;
+    margin: 7px 0;
+    text-transform: uppercase;
+}
+
+h2.contract-heading {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+
+p {
+    margin: 2px 0;
+}
+
+ul,
+ol {
+    padding-left: 20px;
+    margin: 10px 0;
+}
+
+.layout-table {
+    display: table;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.bg-gray {
+    padding: 15px;
+    border-left: 3px solid var(--theme-accent);
+}
+
+.bank-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 10pt;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.bank-table th,
+.bank-table td {
+    border: 1px solid var(--theme-accent);
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.bank-table th {
+    background-color: var(--theme-primary);
+    color: white;
+    width: 40%;
+}
+
+.signature-line {
+    border-bottom: 1px solid var(--text-dark);
+    margin-top: 40px;
+    margin-bottom: 10px;
+    width: 25%;
+}
 
 /* =========================================
    EDIT PAGE SPECIFIC ELEMENTS
    ========================================= */
-.control-bar { width: 210mm; max-width: 100%; margin: 0 auto 20px auto; display: flex; justify-content: space-between; align-items: center; }
-.control-bar h2 { color: white; font-family: 'Montserrat', sans-serif; font-weight: 800; margin: 0; font-size: 24px; }
-.control-bar .client-name { color: var(--theme-accent); }
+.control-bar {
+    width: 210mm;
+    max-width: 100%;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.control-bar h2 {
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    margin: 0;
+    font-size: 24px;
+}
+
+.control-bar .client-name {
+    color: var(--theme-accent);
+}
 
 /* Form Fields */
-.bank-details-box { background-color: #f8f9fa; border-left: 3px solid var(--theme-accent); padding: 20px; margin: 20px 0; }
-.bank-details-box label { color: var(--theme-primary); font-weight: bold; font-size: 12px; text-transform: uppercase; }
-.bank-details-box .form-control { border: 1px solid #ced4da; border-radius: 0; font-size: 14px; }
-.bank-details-box .form-control:focus { border-color: var(--theme-primary); box-shadow: none; }
+.bank-details-box {
+    background-color: #f8f9fa;
+    border-left: 3px solid var(--theme-accent);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.bank-details-box label {
+    color: var(--theme-primary);
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.bank-details-box .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 0;
+    font-size: 14px;
+}
+
+.bank-details-box .form-control:focus {
+    border-color: var(--theme-primary);
+    box-shadow: none;
+}
 
 /* Summernote Editor Overrides */
-.note-editor.note-frame { border: 1px solid #e0e0e0 !important; box-shadow: none !important; border-radius: 4px; margin-bottom: 20px; background: white; }
-.note-editor .note-editing-area { font-family: 'Segoe UI', Roboto, sans-serif !important; font-size: 11pt !important; line-height: 1.6 !important; }
+.note-editor.note-frame {
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: none !important;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    background: white;
+}
+
+.note-editor .note-editing-area {
+    font-family: 'Segoe UI', Roboto, sans-serif !important;
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (MOBILE & TABLET)
+   ========================================================================== */
+@media (max-width: 768px) {
+
+    /* 1. Make the A4 Document fit the screen */
+    .document-page,
+    .document-page.edit-document-page {
+        width: 100% !important;
+        padding: 20px 15px !important;
+        border-radius: 0;
+        box-shadow: none;
+        border-top-width: 4px;
+        margin-bottom: 80px;
+        /* Leave space for bottom floating button */
+    }
+
+    /* 2. Control Bar (Top Header & Buttons) Stack */
+    .control-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        padding: 0 10px;
+        text-align: left;
+    }
+
+    .control-bar h2 {
+        font-size: 20px;
+    }
+
+    .control-bar>div:last-child {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .control-bar .btn {
+        flex: 1;
+        font-size: 14px;
+        padding: 8px;
+        text-align: center;
+        margin: 0 !important;
+    }
+
+    /* 3. Adjust Typography */
+    h2.contract-heading {
+        font-size: 12pt;
+        margin-top: 20px;
+    }
+
+    .cover-main-title {
+        font-size: 50px;
+    }
+
+    .doc-arabic {
+        font-size: 18px;
+    }
+
+    .doc-subtitle {
+        font-size: 16px;
+    }
+
+    .year-main {
+        font-size: 40px;
+    }
+
+    /* 4. Fix Inline Widths for Mobile */
+    div[style*="width: 250px"],
+    div[style*="width: 200px"] {
+        width: 100% !important;
+    }
+
+    /* 5. Adjust Bank Details Box */
+    .bank-details-box {
+        padding: 15px 10px;
+    }
+
+    /* 6. View PDF specific buttons */
+    .edit-btn,
+    .download-btn {
+        position: static;
+        display: block;
+        width: calc(100% - 30px);
+        margin: 10px auto;
+        text-align: center;
+    }
+}
+
+/* Specific Fixes for very small Mobile Phones */
+@media (max-width: 480px) {
+
+    /* Make the floating save button full-width at the bottom */
+    .floating-save-btn {
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
+        border-radius: 8px;
+        justify-content: center;
+        padding: 12px;
+        font-size: 16px;
+    }
+}

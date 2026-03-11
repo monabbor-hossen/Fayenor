@@ -48,15 +48,16 @@ require_once 'includes/header.php';
 require_once 'includes/sidebar.php';
 ?>
 
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../contract/contract.css">
+<link href="<?php echo BASE_URL; ?>assets/css/summernote-lite.min.css" rel="stylesheet">
+<link rel="stylesheet" href="<?php echo BASE_URL;?>/contract/contract.css">
 
 <main id="main" class="main">
-    <div class="pagetitle d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1>Global Contract Template</h1>
-            <nav><ol class="breadcrumb"><li class="breadcrumb-item"><a href="dashboard.php">Home</a></li><li class="breadcrumb-item active">Contract Template</li></ol></nav>
-        </div>
+    
+    <div class="pagetitle mb-4">
+        <h3 style="text-white fw-bold mb-0">Global Contract Template</h3>
+        <p class="text-white-50 small mb-0" >
+            Manage default terms and bank details for all new client contracts.
+        </p>
     </div>
 
     <form method="POST" id="defaultContractForm">
@@ -70,8 +71,7 @@ require_once 'includes/sidebar.php';
             <?php endif; ?>
 
             <div class="text-center mb-4">
-                <h4 style="color: #800020; font-family: 'Montserrat', sans-serif; font-weight: 800;">GLOBAL DEFAULT TEMPLATE</h4>
-                <p style="color: #555555; font-weight: bold;">(All new contracts will inherit these terms)</p>
+                <h4 style="color: #800020; font-family: 'Montserrat', sans-serif; font-weight: 800;">MASTER TEMPLATE SETTINGS</h4>
             </div>
 
             <h2 class="contract-heading">1. Objective of the Agreement</h2>
@@ -131,9 +131,9 @@ require_once 'includes/sidebar.php';
     </button>
 </main>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-
+<script src="<?php echo BASE_URL;?>assets/js/jquery-3.6.0.min.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/summernote-lite.min.js"></script>
+    
 <script src="../contract/contract.js"></script>
 
 <?php require_once 'includes/footer.php'; ?>

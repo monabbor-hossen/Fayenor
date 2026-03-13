@@ -892,7 +892,8 @@ function toggleClientExpense(clientId, checkbox) {
         checkbox.style.opacity = '1';
         checkbox.checked = !isChecked;
     });
-}/* ==========================================================================
+}
+/* ==========================================================================
    TOGGLE CLIENT EXPENSE ACCESS
    ========================================================================== */
 function toggleClientExpense(clientId, checkbox) {

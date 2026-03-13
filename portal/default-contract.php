@@ -14,17 +14,14 @@ $db = (new Database())->getConnection();
 
 // --- HANDLE SIGNATURE DELETION ---
 if (isset($_GET['action']) && $_GET['action'] === 'delete_signature') {
-    // Fetch the current filename to delete it from the server
     $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
     $curr = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!empty($curr['signature_image'])) {
         $filePath = '../assets/img/signatures/' . $curr['signature_image'];
-        // Remove the physical file if it exists
         if (file_exists($filePath)) {
             unlink($filePath);
         }
-        // Remove from database
         $db->query("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
     }
     
@@ -40,18 +37,24 @@ $defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 // --- HANDLE FORM SUBMIT WITH PRG (Post/Redirect/Get) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Set the old signature as default
     $signature_image = $defaults['signature_image'] ?? null;
+    $maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
 
-    // Handle File Upload if a new image was selected
+    // Handle File Upload 
     if (isset($_FILES['signature_file']) && $_FILES['signature_file']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../assets/img/signatures/';
         
+        // SERVER-SIDE SIZE CHECK (2MB Limit)
+        if ($_FILES['signature_file']['size'] > $maxFileSize) {
+            $_SESSION['contract_error'] = "Upload Failed: The signature image must be less than 2MB.";
+            header("Location: default-contract.php");
+            exit();
+        }
+
+        $uploadDir = '../assets/img/signatures/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        // Delete the old file before saving the new one
         if (!empty($signature_image) && file_exists($uploadDir . $signature_image)) {
             unlink($uploadDir . $signature_image);
         }
@@ -64,6 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($_FILES['signature_file']['tmp_name'], $targetFilePath)) {
                 $signature_image = $fileName;
             }
+        } else {
+            $_SESSION['contract_error'] = "Upload Failed: Only JPG and PNG files are allowed.";
+            header("Location: default-contract.php");
+            exit();
         }
     }
 
@@ -86,10 +93,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
+// Check for session messages
 $success_msg = '';
+$error_msg = '';
 if (isset($_SESSION['contract_success'])) {
     $success_msg = $_SESSION['contract_success'];
     unset($_SESSION['contract_success']);
+}
+if (isset($_SESSION['contract_error'])) {
+    $error_msg = $_SESSION['contract_error'];
+    unset($_SESSION['contract_error']);
 }
 
 require_once 'includes/header.php';
@@ -114,6 +127,12 @@ require_once 'includes/sidebar.php';
             <?php if(!empty($success_msg)): ?>
                 <div class="alert alert-success fw-bold text-center shadow-sm" style="border-left: 5px solid #198754; background: #d1e7dd; color: #0f5132;">
                     <?php echo $success_msg; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if(!empty($error_msg)): ?>
+                <div class="alert alert-danger fw-bold text-center shadow-sm" style="border-left: 5px solid #dc3545; background: #f8d7da; color: #842029;">
+                    <i class="bi bi-exclamation-octagon-fill me-2"></i> <?php echo $error_msg; ?>
                 </div>
             <?php endif; ?>
 
@@ -189,8 +208,12 @@ require_once 'includes/sidebar.php';
                         <input type="text" name="signatory_name" class="form-control" value="<?php echo htmlspecialchars($defaults['signatory_name'] ?? 'Saifullah'); ?>">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Upload New Signature (PNG/JPG)</label>
+                        <label class="form-label">Upload New Signature <span class="text-danger">(Max 2MB, PNG/JPG)</span></label>
                         <input type="file" id="signatureFileInput" name="signature_file" class="form-control" accept="image/png, image/jpeg">
+                        
+                        <div id="fileSizeError" class="text-danger mt-1 fw-bold" style="display: none; font-size: 13px;">
+                            <i class="bi bi-x-circle-fill"></i> File is too large. Maximum size is 2MB.
+                        </div>
                         
                         <?php 
                             $hasSignature = !empty($defaults['signature_image']); 
@@ -235,25 +258,21 @@ require_once 'includes/sidebar.php';
     <div class="modal fade" id="deleteSignatureModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow-lg" style="border: 0; border-radius: 12px; overflow: hidden;">
-          
           <div class="modal-header" style="background-color: #800020; color: white; border-bottom: 3px solid #D4AF37;">
             <h5 class="modal-title fw-bold" style="font-family: 'Montserrat', sans-serif;">
                 <i class="bi bi-exclamation-triangle-fill me-2" style="color: #D4AF37;"></i> Confirm Deletion
             </h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          
           <div class="modal-body text-center p-4" style="background-color: #ffffff; color: #111111;">
             <i class="bi bi-trash text-danger mb-3 d-block" style="font-size: 3.5rem;"></i>
             <h4 class="fw-bold mb-2" style="color: #800020;">Are you absolutely sure?</h4>
             <p class="text-muted mb-0" style="font-size: 15px;">This will permanently delete the official signature image from the server. This action cannot be undone.</p>
           </div>
-          
           <div class="modal-footer justify-content-center" style="background-color: #f8f9fa; border-top: 1px solid #e9ecef;">
             <button type="button" class="btn btn-outline-secondary fw-bold px-4" data-bs-dismiss="modal">Cancel</button>
             <a href="default-contract.php?action=delete_signature" class="btn fw-bold px-4" style="background-color: #800020; color: white; border: 2px solid #800020; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#6a001a'" onmouseout="this.style.backgroundColor='#800020'">Yes, Delete It</a>
           </div>
-
         </div>
       </div>
     </div>
@@ -272,15 +291,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewLabel = document.getElementById('signaturePreviewLabel');
     const btnDeleteServer = document.getElementById('btnDeleteServer');
     const btnCancelUpload = document.getElementById('btnCancelUpload');
+    const sizeError = document.getElementById('fileSizeError');
     
     const originalImgSrc = "<?php echo $signatureUrl; ?>";
     const hasOriginal = "<?php echo $hasSignature; ?>" === "1";
+    const maxFileSize = 2 * 1024 * 1024; // 2MB
 
     // 1. When user selects a file
     fileInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
         
+        // Hide error message on new selection
+        sizeError.style.display = 'none';
+        
         if (file) {
+            // INSTANT SIZE CHECK
+            if (file.size > maxFileSize) {
+                fileInput.value = ''; // Clear the input instantly
+                sizeError.style.display = 'block'; // Show error text
+                return; // Stop the code here
+            }
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 previewImg.src = e.target.result;
@@ -298,6 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 2. When user clicks "Cancel" on their local preview
     btnCancelUpload.addEventListener('click', function() {
         fileInput.value = ''; // Clear file input
+        sizeError.style.display = 'none'; // Hide any errors
         
         if (hasOriginal) {
             // Revert to old server image

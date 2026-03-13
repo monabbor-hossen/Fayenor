@@ -219,6 +219,7 @@
 <script src="<?php echo BASE_URL; ?>assets/js/all.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
 
-</body>
 
+
+</body>
 </html>

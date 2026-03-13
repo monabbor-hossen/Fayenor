@@ -228,7 +228,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
     </div>
 </div>
 
-<div class="modal fade" id="viewExpenseModal" tabindex="-1" aria-hidden="true">
+<!-- <div class="modal fade" id="viewExpenseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-modal rounded-4 shadow-lg">
             <div class="modal-header border-bottom border-light border-opacity-10">
@@ -272,7 +272,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 
 <?php require_once 'includes/footer.php'; ?>

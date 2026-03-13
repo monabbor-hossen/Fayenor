@@ -204,7 +204,7 @@ foreach ($all_workflows as $wf) {
                         <?php else: ?>
                             <?php foreach ($pending_clients as $pc): ?>
                                 <tr>
-                                    <td class="ps-4 fw-bold text-white"><?php echo htmlspecialchars($pc['company_name']); ?></td>
+                                    <td class="ps-4 fw-bold text-dark"><?php echo htmlspecialchars($pc['company_name']); ?></td>
                                     <td>
                                         <div class="d-flex flex-wrap gap-1">
                                             <?php foreach ($pc['pending_steps'] as $step): 
@@ -217,7 +217,7 @@ foreach ($all_workflows as $wf) {
                                         </div>
                                     </td>
                                     <td class="text-end pe-4">
-                                        <a href="client-edit.php?id=<?php echo $pc['client_id']; ?>" class="btn btn-sm btn-outline-light rounded-pill px-3" style="font-size: 0.8rem;">
+                                        <a href="client-edit.php?id=<?php echo $pc['client_id']; ?>" class="btn btn-sm btn-outline-light text-dark rounded-pill px-3" style="font-size: 0.8rem;">
                                             Manage <i class="bi bi-arrow-right ms-1"></i>
                                         </a>
                                     </td>

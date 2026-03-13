@@ -145,8 +145,8 @@ require_once 'includes/sidebar.php';
 <main id="main" class="main">
     
     <div class="pagetitle mb-4">
-        <h1 style="color: #800020; font-weight: 800; font-family: 'Montserrat', sans-serif; letter-spacing: -0.5px;">Contract Management</h1>
-        <p class="text-muted mt-2" style="font-size: 15px; font-weight: 500;">
+        <h3 class="text-white fw-bold mb-0">Contract Management</h3>
+        <p class="text-white-50 small mb-0">
             Manage your global master template or view generated client contracts.
         </p>
     </div>

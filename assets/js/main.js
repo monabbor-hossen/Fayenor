@@ -140,6 +140,9 @@ function saveModalChanges() {
 
     if (modalElement) modalElement.hide();
 }
+/**
+ * Toggles Password Visibility
+ */
 
 function togglePassword(inputId, iconId) {
     var input = document.getElementById(inputId);

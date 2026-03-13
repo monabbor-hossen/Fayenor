@@ -207,9 +207,9 @@ require_once 'includes/sidebar.php';
                             
                             <div id="signatureActionBtns">
                                 <?php if($hasSignature): ?>
-                                    <a href="default-contract.php?action=delete_signature" id="btnDeleteServer" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to permanently remove this signature?');">
+                                    <button type="button" id="btnDeleteServer" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteSignatureModal">
                                         <i class="bi bi-trash"></i> Remove
-                                    </a>
+                                    </button>
                                 <?php endif; ?>
                                 
                                 <button type="button" id="btnCancelUpload" class="btn btn-sm btn-outline-warning" style="display: none;">
@@ -231,6 +231,33 @@ require_once 'includes/sidebar.php';
         </svg>
         Save Global Template
     </button>
+
+    <div class="modal fade" id="deleteSignatureModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg" style="border: 0; border-radius: 12px; overflow: hidden;">
+          
+          <div class="modal-header" style="background-color: #800020; color: white; border-bottom: 3px solid #D4AF37;">
+            <h5 class="modal-title fw-bold" style="font-family: 'Montserrat', sans-serif;">
+                <i class="bi bi-exclamation-triangle-fill me-2" style="color: #D4AF37;"></i> Confirm Deletion
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          <div class="modal-body text-center p-4" style="background-color: #ffffff; color: #111111;">
+            <i class="bi bi-trash text-danger mb-3 d-block" style="font-size: 3.5rem;"></i>
+            <h4 class="fw-bold mb-2" style="color: #800020;">Are you absolutely sure?</h4>
+            <p class="text-muted mb-0" style="font-size: 15px;">This will permanently delete the official signature image from the server. This action cannot be undone.</p>
+          </div>
+          
+          <div class="modal-footer justify-content-center" style="background-color: #f8f9fa; border-top: 1px solid #e9ecef;">
+            <button type="button" class="btn btn-outline-secondary fw-bold px-4" data-bs-dismiss="modal">Cancel</button>
+            <a href="default-contract.php?action=delete_signature" class="btn fw-bold px-4" style="background-color: #800020; color: white; border: 2px solid #800020; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#6a001a'" onmouseout="this.style.backgroundColor='#800020'">Yes, Delete It</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
 </main>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

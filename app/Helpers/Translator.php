@@ -36,6 +36,7 @@ class Translator {
                 'user_access'       => 'User Access',
                 'logout'         => 'Logout',
                 'security'          => 'Security',
+                'billing'           => 'Billing & Invoices',
                 'client_messages'   => 'Client Messages',
                 'contract_template' => 'Contract Template',
 'financial_audit'   => 'Financial Audit',
@@ -77,6 +78,7 @@ class Translator {
                 'user_access'       => 'صلاحيات المستخدمين',
                 'activity_logs'  => 'سجلات النشاط',
                 'logout'         => 'تسجيل خروج',
+                'billing'           => 'الفواتير والمدفوعات',
                 'contract_template' => 'نموذج العقد',
 'financial_audit'   => 'التدقيق المالي',
                 'admin_portal'   => 'بوابة الإدارة'

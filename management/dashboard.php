@@ -78,7 +78,10 @@ unset($app);
 // --- FETCH TOTAL EXPENSES FOR DASHBOARD ---
 $stmtExpTotal = $db->prepare("SELECT SUM(amount) as total FROM expenses WHERE created_by = ?");
 $stmtExpTotal->execute([$_SESSION['user_id']]);
-$total_expenses = $stmtExpTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
+$expRow = $stmtExpTotal->fetch(PDO::FETCH_ASSOC);
+
+// CRITICAL FIX: Safely handle if the database returns false (no expenses)
+$total_expenses = $expRow ? ($expRow['total'] ?? 0.00) : 0.00;
 
 // --- FETCH 5 RECENT EXPENSES FOR WIDGET ---
 $stmtRecentExp = $db->prepare("SELECT title, amount, expense_date, category FROM expenses WHERE created_by = ? ORDER BY expense_date DESC, created_at DESC LIMIT 5");

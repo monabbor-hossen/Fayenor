@@ -8,7 +8,13 @@ if ($_SESSION['role'] === 'client') {
     // 1. Get the account ID
     $account_id = $_SESSION['account_id'] ?? $_SESSION['user_id'];
     
-    // 2. Fetch the permission (CRITICAL FIX: Added ->fetch())
+    // CRITICAL FIX: Ensure $db exists before querying!
+    require_once __DIR__ . '/../../app/Config/Database.php';
+    if (!isset($db)) {
+        $db = (new Database())->getConnection();
+    }
+    
+    // 2. Fetch the permission
     $stmtExp = $db->prepare("SELECT show_expenses FROM clients WHERE account_id = ? LIMIT 1");
     $stmtExp->execute([$account_id]);
     $resExp = $stmtExp->fetch(PDO::FETCH_ASSOC);
@@ -31,7 +37,7 @@ if ($_SESSION['role'] === 'client') {
                     class="nav-link <?php echo ($current_page == 'dashboard.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-grid-1x2 fs-5 me-1 text-gold"></i>
-                    <span class="fw-bold"><?php echo $text['my_dashboard']; ?></span>
+                    <span class="fw-bold"><?php echo $text['dashboard']; ?></span>
                 </a>
             </li>
             <li class="nav-item mb-2">
@@ -44,10 +50,10 @@ if ($_SESSION['role'] === 'client') {
             </li>
             <li class="nav-item mb-2">
                 <a href="chat.php"
-                    class="nav-link <?php echo ($current_page == 'chat.php') ? 'active-glass active bg-rooq-primary text-white shadow-sm' : 'text-white-50 hover-white'; ?> d-flex align-items-center rounded px-3 py-2"
+                    class="nav-link <?php echo ($current_page == 'chat.php') ? 'active-glass ' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-chat-dots fs-5 me-1 text-gold"></i>
-                    <span class="fw-bold flex-grow-1"><?php echo $text['support_messages']; ?></span>
+                    <span class="fw-bold flex-grow-1"><?php echo $text['support_chat']; ?></span>
                     <?php if (($unread_count ?? 0) > 0): ?>
                     <span class="badge bg-danger rounded-pill shadow-sm"><?php echo $unread_count; ?></span>
                     <?php endif; ?>
@@ -56,10 +62,10 @@ if ($_SESSION['role'] === 'client') {
             <?php if ($can_see_expenses): ?>
             <li class="nav-item mb-2">
                 <a href="expenses.php"
-                    class="nav-link <?php echo ($current_page == 'expenses.php') ? 'active-glass fw-bold' : ''; ?> d-flex align-items-center rounded px-3 py-2"
+                    class="nav-link <?php echo ($current_page == 'expenses.php') ? 'active-glass' : ''; ?>  rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-wallet2 fs-5 me-1 text-gold"></i>
-                    <span class="flex-grow-1"><?php echo $text['my_expenses']; ?></span>
+                    <span class="flex-grow-1"><?php echo $text['expenses']; ?></span>
                 </a>
             </li>
             <?php endif;?>

@@ -12,31 +12,30 @@ require_once '../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 
-// --- HANDLE SIGNATURE DELETION ---
-if (isset($_GET['action']) && $_GET['action'] === 'delete_signature') {
-    $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
-    $curr = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if (!empty($curr['signature_image'])) {
-        $filePath = '../assets/img/signatures/' . $curr['signature_image'];
-        if (file_exists($filePath)) {
-            unlink($filePath);
-        }
-        $db->query("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
-    }
-    
-    $_SESSION['contract_success'] = "Signature image removed successfully!";
-    header("Location: default-contract.php");
-    exit();
-}
-
-// 1. Fetch Global Settings First
-$stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
-$defaults = $stmt->fetch(PDO::FETCH_ASSOC);
-
-// --- HANDLE FORM SUBMIT WITH PRG (Post/Redirect/Get) ---
+// --- HANDLE FORM SUBMISSIONS (POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
+    // 1. HANDLE SIGNATURE DELETION
+    if (isset($_POST['action']) && $_POST['action'] === 'delete_signature') {
+        $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
+        $curr = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!empty($curr['signature_image'])) {
+            $filePath = '../assets/img/signatures/' . $curr['signature_image'];
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            $db->query("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
+        }
+        
+        $_SESSION['contract_success'] = "Signature image removed successfully!";
+        header("Location: default-contract.php");
+        exit();
+    }
+    
+    // 2. HANDLE SAVING GLOBAL TEMPLATE
+    $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
+    $defaults = $stmt->fetch(PDO::FETCH_ASSOC);
     $signature_image = $defaults['signature_image'] ?? null;
     $maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
 
@@ -92,6 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: default-contract.php");
     exit();
 }
+
+// 3. Fetch Global Settings for display
+$stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
+$defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Check for session messages
 $success_msg = '';
@@ -230,7 +233,8 @@ require_once 'includes/sidebar.php';
                             
                             <div id="signatureActionBtns">
                                 <?php if($hasSignature): ?>
-                                    <button type="button" id="btnDeleteServer" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteSignatureModal">
+                                    <button type="button" id="btnDeleteServer" class="btn btn-sm btn-outline-danger" 
+                                            onclick="triggerFormModal('deleteSignatureForm', 'Are you absolutely sure you want to permanently remove this signature image? This action cannot be undone.')">
                                         <i class="bi bi-trash"></i> Remove
                                     </button>
                                 <?php endif; ?>
@@ -255,27 +259,9 @@ require_once 'includes/sidebar.php';
         Save Global Template
     </button>
 
-    <div class="modal fade" id="deleteSignatureModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content shadow-lg" style="border: 0; border-radius: 12px; overflow: hidden;">
-          <div class="modal-header" style="background-color: #800020; color: white; border-bottom: 3px solid #D4AF37;">
-            <h5 class="modal-title fw-bold" style="font-family: 'Montserrat', sans-serif;">
-                <i class="bi bi-exclamation-triangle-fill me-2" style="color: #D4AF37;"></i> Confirm Deletion
-            </h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body text-center p-4" style="background-color: #ffffff; color: #111111;">
-            <i class="bi bi-trash text-danger mb-3 d-block" style="font-size: 3.5rem;"></i>
-            <h4 class="fw-bold mb-2" style="color: #800020;">Are you absolutely sure?</h4>
-            <p class="text-muted mb-0" style="font-size: 15px;">This will permanently delete the official signature image from the server. This action cannot be undone.</p>
-          </div>
-          <div class="modal-footer justify-content-center" style="background-color: #f8f9fa; border-top: 1px solid #e9ecef;">
-            <button type="button" class="btn btn-outline-secondary fw-bold px-4" data-bs-dismiss="modal">Cancel</button>
-            <a href="default-contract.php?action=delete_signature" class="btn fw-bold px-4" style="background-color: #800020; color: white; border: 2px solid #800020; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#6a001a'" onmouseout="this.style.backgroundColor='#800020'">Yes, Delete It</a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <form id="deleteSignatureForm" method="POST" style="display: none;">
+        <input type="hidden" name="action" value="delete_signature">
+    </form>
 
 </main>
 
@@ -300,16 +286,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. When user selects a file
     fileInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
-        
-        // Hide error message on new selection
         sizeError.style.display = 'none';
         
         if (file) {
-            // INSTANT SIZE CHECK
             if (file.size > maxFileSize) {
-                fileInput.value = ''; // Clear the input instantly
-                sizeError.style.display = 'block'; // Show error text
-                return; // Stop the code here
+                fileInput.value = ''; 
+                sizeError.style.display = 'block'; 
+                return; 
             }
 
             const reader = new FileReader();
@@ -326,19 +309,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 2. When user clicks "Cancel" on their local preview
+    // 2. Cancel upload
     btnCancelUpload.addEventListener('click', function() {
-        fileInput.value = ''; // Clear file input
-        sizeError.style.display = 'none'; // Hide any errors
+        fileInput.value = ''; 
+        sizeError.style.display = 'none'; 
         
         if (hasOriginal) {
-            // Revert to old server image
             previewImg.src = originalImgSrc;
             previewLabel.innerText = "Current Signature:";
             if (btnDeleteServer) btnDeleteServer.style.display = 'inline-block';
             btnCancelUpload.style.display = 'none';
         } else {
-            // No original image, hide the box completely
             previewBox.classList.remove('d-flex');
             previewBox.classList.add('d-none');
         }

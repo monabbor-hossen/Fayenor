@@ -5,13 +5,13 @@ var modalElement = null;
 var viewModalElement = null;
 
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. Initialize Global Workflow Modal (if it exists on the page)
+    // 1. Initialize Global Workflow Modal
     var workflowEl = document.getElementById('workflowModal');
     if (workflowEl) {
         modalElement = new bootstrap.Modal(workflowEl);
     }
 
-    // 2. Initialize View Client Modal (if it exists on the page)
+    // 2. Initialize View Client Modal
     var viewEl = document.getElementById('viewClientModal');
     if (viewEl) {
         viewModalElement = new bootstrap.Modal(viewEl);
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
     
-    // 4. Initialize Live Search (if elements exist)
+    // 4. Initialize Live Search
     setupLiveSearch('desktopSearchInput', 'desktopSearchResults');
     setupLiveSearch('mobileSearchInput', 'mobileSearchResults');
 });
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
    GLOBAL CUSTOM CONFIRM ALERT (BULLETPROOF METHOD)
    ========================================================================== */
 
-// 1. FOR FORMS (Used on Users page)
+// 1. FOR FORMS (Used on Users & Contract pages)
 function triggerFormModal(formId, customMessage) {
     document.getElementById('rooqConfirmMessage').innerText = customMessage;
     let oldBtn = document.getElementById('rooqConfirmActionBtn');
@@ -66,7 +66,6 @@ function triggerLinkModal(url, customMessage) {
    CLIENT ADD/EDIT PAGE & WORKFLOW LOGIC
    ========================================================================== */
 
-// Toggle between New and Existing Account forms
 function toggleAccountFields() {
     let accNew = document.getElementById('acc_new');
     let newFields = document.getElementById('new_account_fields');
@@ -83,7 +82,6 @@ function toggleAccountFields() {
     }
 }
 
-// Dim out Workflow cards when unchecked
 function toggleWorkflowCard(key) {
     const checkbox = document.getElementById('enable_' + key);
     const card = document.getElementById('card_' + key);
@@ -105,7 +103,6 @@ function toggleWorkflowCard(key) {
     }
 }
 
-// OPEN WORKFLOW MODAL
 function openEditModal(key, label) {
     document.getElementById('modalTitle').innerText = "Update: " + label;
     document.getElementById('current_field_key').value = key;
@@ -117,7 +114,6 @@ function openEditModal(key, label) {
     modalSelect.innerHTML = cardSelect.innerHTML; 
     modalSelect.value = cardSelect.value; 
     
-    // Fallback if note input doesn't exist yet
     if(document.getElementById('modal_note_text')) {
         document.getElementById('modal_note_text').value = cardNote ? cardNote.value : '';
     }
@@ -125,7 +121,6 @@ function openEditModal(key, label) {
     if (modalElement) modalElement.show();
 }
 
-// SAVE WORKFLOW CHANGES (Sync back to Card)
 function saveModalChanges() {
     const key = document.getElementById('current_field_key').value;
     const newStatus = document.getElementById('modal_status_select').value;
@@ -146,9 +141,6 @@ function saveModalChanges() {
     if (modalElement) modalElement.hide();
 }
 
-/**
- * Toggles Password Visibility
- */
 function togglePassword(inputId, iconId) {
     var input = document.getElementById(inputId);
     var icon = document.getElementById(iconId);
@@ -856,7 +848,6 @@ function checkLiveNotifications() {
     .catch(err => console.error("Notification check failed:", err));
 }
 
-// Check for new messages every 10 seconds silently in the background
 setInterval(checkLiveNotifications, 10000);
 
 /* ==========================================================================
@@ -866,50 +857,12 @@ function toggleClientExpense(clientId, checkbox) {
     const isChecked = checkbox.checked ? 1 : 0;
     checkbox.style.opacity = '0.5';
 
-    // Fetch directly from the same folder!
-    fetch('toggle_expense_api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })
-    })
-    .then(response => response.text()) // Grab raw text first to prevent silent crashes
-    .then(text => {
-        checkbox.style.opacity = '1';
-        try {
-            const data = JSON.parse(text);
-            if (!data.success) {
-                alert("Error: " + data.message);
-                checkbox.checked = !isChecked; // Revert switch
-            }
-        } catch (e) {
-            console.error("Server Error Response:", text);
-            alert("Failed to save. The database column might be missing. Check the Console (F12) for details.");
-            checkbox.checked = !isChecked; // Revert switch
-        }
-    })
-    .catch(err => {
-        console.error("Network Error:", err);
-        checkbox.style.opacity = '1';
-        checkbox.checked = !isChecked;
-    });
-}
-/* ==========================================================================
-   TOGGLE CLIENT EXPENSE ACCESS
-   ========================================================================== */
-function toggleClientExpense(clientId, checkbox) {
-    const isChecked = checkbox.checked ? 1 : 0;
-    
-    // Dim the switch while saving
-    checkbox.style.opacity = '0.5';
-
-    // Pointing exactly to where the file is located!
     fetch('../app/Api/toggle_expense_api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })
     })
     .then(async response => {
-        // If it hits a 404 page, throw an error immediately instead of reading HTML
         if (!response.ok) throw new Error("API File Not Found (404)");
         return response.json(); 
     })
@@ -940,11 +893,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewBox = document.getElementById('signaturePreviewBox');
     const previewImg = document.getElementById('signaturePreviewImg');
     const previewLabel = document.getElementById('signaturePreviewLabel');
-    const btnDeleteServer = document.getElementById('btnDeleteServer');
     const btnCancelUpload = document.getElementById('btnCancelUpload');
     const sizeError = document.getElementById('fileSizeError');
+    const btnDeleteServer = document.getElementById('btnDeleteServer');
     
-    // Fetch PHP variables safely from the HTML data attributes
     const originalImgSrc = previewBox.getAttribute('data-original-url');
     const hasOriginal = previewBox.getAttribute('data-has-original') === "1";
     const maxFileSize = 2 * 1024 * 1024; // 2MB
@@ -955,7 +907,6 @@ document.addEventListener('DOMContentLoaded', function() {
         sizeError.style.display = 'none';
         
         if (file) {
-            // Check file size limit
             if (file.size > maxFileSize) {
                 fileInput.value = ''; 
                 sizeError.style.display = 'block'; 
@@ -969,7 +920,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 previewBox.classList.remove('d-none');
                 previewBox.classList.add('d-flex');
                 
-                if (btnDeleteServer) btnDeleteServer.style.display = 'none';
+                // Hide the delete button if they are previewing a new file
+                if(btnDeleteServer) btnDeleteServer.style.display = 'none';
+                
                 btnCancelUpload.style.display = 'inline-block';
             }
             reader.readAsDataURL(file);
@@ -984,7 +937,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (hasOriginal) {
             previewImg.src = originalImgSrc;
             previewLabel.innerText = "Current Signature:";
-            if (btnDeleteServer) btnDeleteServer.style.display = 'inline-block';
+            if(btnDeleteServer) btnDeleteServer.style.display = 'inline-block';
             btnCancelUpload.style.display = 'none';
         } else {
             previewBox.classList.remove('d-flex');

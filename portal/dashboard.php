@@ -29,7 +29,13 @@ try {
     $stmtPaid = $db->query("SELECT COALESCE(SUM(amount), 0) FROM payments WHERE payment_status = 'Completed'");
     if ($stmtPaid) $total_paid = $stmtPaid->fetchColumn() ?: 0;
 
-    $stmtExp = $db->query("SELECT COALESCE(SUM(amount), 0) FROM expenses");
+    // --- STRICT INTERNAL EXPENSES ONLY ---
+    $stmtExp = $db->query("
+        SELECT COALESCE(SUM(e.amount), 0) as total 
+        FROM expenses e 
+        LEFT JOIN users u ON e.created_by = u.id 
+        WHERE u.role != 'client'
+    ");
     if ($stmtExp) $total_expenses = $stmtExp->fetchColumn() ?: 0;
 
 
@@ -47,7 +53,6 @@ try {
     // ========================================================================
     // 3. FETCH RECENT FINANCIAL ACTIVITY
     // ========================================================================
-    // Removed p.created_at to prevent crashes if column doesn't exist
     $stmtRecentPay = $db->query("
         SELECT p.*, c.company_name 
         FROM payments p 
@@ -56,10 +61,13 @@ try {
     ");
     if ($stmtRecentPay) $recent_payments = $stmtRecentPay->fetchAll(PDO::FETCH_ASSOC);
 
+    // --- STRICT INTERNAL RECENT EXPENSES ONLY ---
     $stmtRecentExp = $db->query("
-        SELECT title, amount, expense_date, category 
-        FROM expenses 
-        ORDER BY expense_date DESC LIMIT 5
+        SELECT e.title, e.amount, e.expense_date, e.category 
+        FROM expenses e
+        LEFT JOIN users u ON e.created_by = u.id 
+        WHERE u.role != 'client'
+        ORDER BY e.expense_date DESC LIMIT 5
     ");
     if ($stmtRecentExp) $recent_expenses = $stmtRecentExp->fetchAll(PDO::FETCH_ASSOC);
 

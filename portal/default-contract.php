@@ -13,16 +13,16 @@ require_once '../app/Config/Database.php';
 $db = (new Database())->getConnection();
 
 // ========================================================================
-// 1. HANDLE DELETING A CUSTOM CLIENT CONTRACT (Revert to Global)
+// 1. HANDLE DELETING A CONTRACT (Removes it from the list)
 // ========================================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_custom_contract') {
     $del_client_id = intval($_POST['client_id']);
     
-    // Delete their specific override so they fall back to the Master Template
+    // Delete the contract record
     $stmt = $db->prepare("DELETE FROM client_contracts WHERE client_id = ?");
     $stmt->execute([$del_client_id]);
     
-    $_SESSION['contract_success'] = "Client's custom contract removed. They are now using the Global Template.";
+    $_SESSION['contract_success'] = "Contract successfully deleted.";
     header("Location: default-contract.php");
     exit();
 }
@@ -59,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     $maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
 
     if (isset($_FILES['signature_file']) && $_FILES['signature_file']['error'] === UPLOAD_ERR_OK) {
-        
         if ($_FILES['signature_file']['size'] > $maxFileSize) {
             $_SESSION['contract_error'] = "Upload Failed: The signature image must be less than 2MB.";
             header("Location: default-contract.php");
@@ -113,11 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
 $stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
 $defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// 5. Fetch All Clients + Check if they have a Custom Contract overrides!
+// 5. Fetch ONLY Clients who have a GENERATED CONTRACT (inner join with client_contracts)
 $clientsStmt = $db->query("
-    SELECT c.client_id, c.company_name, c.client_name, c.contract_value,
-           (SELECT COUNT(*) FROM client_contracts cc WHERE cc.client_id = c.client_id) as is_custom
+    SELECT c.client_id, c.company_name, c.client_name, c.contract_value
     FROM clients c 
+    INNER JOIN client_contracts cc ON c.client_id = cc.client_id 
     ORDER BY c.client_id DESC
 ");
 $allClients = $clientsStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -142,7 +141,6 @@ require_once 'includes/sidebar.php';
 <link rel="stylesheet" href="../contract/contract.css">
 
 <style>
-    /* LEFT SIDE VERTICAL TABS STYLING */
     .vertical-tabs {
         background: #ffffff;
         border-radius: 12px;
@@ -167,7 +165,7 @@ require_once 'includes/sidebar.php';
         font-size: 1.1rem;
     }
     .vertical-tabs .nav-link.active {
-        background-color: rgba(128, 0, 32, 0.08); /* Light Burgundy tint */
+        background-color: rgba(128, 0, 32, 0.08); 
         color: #800020;
         border-right: 4px solid #800020;
         font-weight: 700;
@@ -178,7 +176,6 @@ require_once 'includes/sidebar.php';
         transform: translateX(3px);
     }
     
-    /* Table Styling */
     .contract-table th {
         background-color: #800020;
         color: white;
@@ -198,7 +195,7 @@ require_once 'includes/sidebar.php';
     <div class="pagetitle mb-4">
         <h1 style="color: #800020; font-weight: 800; font-family: 'Montserrat', sans-serif; letter-spacing: -0.5px;">Contract Management</h1>
         <p class="text-muted mt-2" style="font-size: 15px; font-weight: 500;">
-            Manage your global master template or view specific client contracts.
+            Manage your global master template or view generated client contracts.
         </p>
     </div>
 
@@ -366,7 +363,10 @@ require_once 'includes/sidebar.php';
                                     <tbody>
                                         <?php if(empty($allClients)): ?>
                                             <tr>
-                                                <td colspan="5" class="text-center py-4 text-muted">No clients found.</td>
+                                                <td colspan="5" class="text-center py-5 text-muted">
+                                                    <i class="bi bi-file-earmark-x fs-1 d-block mb-2"></i>
+                                                    No contracts have been generated yet.
+                                                </td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach($allClients as $client): ?>
@@ -374,16 +374,12 @@ require_once 'includes/sidebar.php';
                                                     <td class="fw-bold text-muted">#<?php echo $client['client_id']; ?></td>
                                                     <td class="fw-bold" style="color: #800020;"><?php echo htmlspecialchars($client['company_name']); ?></td>
                                                     <td>
-                                                        <?php if($client['is_custom'] > 0): ?>
-                                                            <span class="badge bg-warning text-dark border"><i class="bi bi-pencil me-1"></i> Customized</span>
-                                                        <?php else: ?>
-                                                            <span class="badge bg-light text-muted border"><i class="bi bi-globe me-1"></i> Global Master</span>
-                                                        <?php endif; ?>
+                                                        <span class="badge bg-success text-white border"><i class="bi bi-check-circle me-1"></i> Generated</span>
                                                     </td>
                                                     <td>SAR <?php echo number_format($client['contract_value'], 2); ?></td>
                                                     <td class="text-end text-nowrap">
                                                         
-                                                        <a href="../contract/edit_contract.php?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" title="Customize for this specific client">
+                                                        <a href="../contract/edit_contract.php?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" title="Edit Contract">
                                                             <i class="bi bi-pencil-square"></i> Edit
                                                         </a>
                                                         
@@ -391,17 +387,15 @@ require_once 'includes/sidebar.php';
                                                             <i class="bi bi-file-earmark-pdf-fill"></i> View
                                                         </a>
 
-                                                        <?php if($client['is_custom'] > 0): ?>
-                                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill fw-bold ms-1" title="Delete custom settings and revert to Global" 
-                                                                    onclick="triggerFormModal('deleteContract_<?php echo $client['client_id']; ?>', 'Are you sure you want to delete this custom contract? It will reset back to the Global Master Template. This cannot be undone.')">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                            
-                                                            <form id="deleteContract_<?php echo $client['client_id']; ?>" method="POST" style="display:none;">
-                                                                <input type="hidden" name="action" value="delete_custom_contract">
-                                                                <input type="hidden" name="client_id" value="<?php echo $client['client_id']; ?>">
-                                                            </form>
-                                                        <?php endif; ?>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill fw-bold ms-1" title="Delete Contract" 
+                                                                onclick="triggerFormModal('deleteContract_<?php echo $client['client_id']; ?>', 'Are you sure you want to delete this contract? It will be removed from this list.')">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                        
+                                                        <form id="deleteContract_<?php echo $client['client_id']; ?>" method="POST" style="display:none;">
+                                                            <input type="hidden" name="action" value="delete_custom_contract">
+                                                            <input type="hidden" name="client_id" value="<?php echo $client['client_id']; ?>">
+                                                        </form>
 
                                                     </td>
                                                 </tr>
@@ -416,7 +410,9 @@ require_once 'includes/sidebar.php';
                 
             </div>
         </div>
-    </div> <button type="submit" form="defaultContractForm" id="floatingSaveBtn" class="floating-save-btn">
+    </div> 
+
+    <button type="submit" form="defaultContractForm" id="floatingSaveBtn" class="floating-save-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
           <path d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4.207a1 1 0 0 0-.293-.707l-2.5-2.5A1 1 0 0 0 10.5 1H2zm13 3.207V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h8.5l3.5 3.5zM4 3h5v3H4V3z"/>
         </svg>
@@ -440,12 +436,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const floatingSaveBtn = document.getElementById('floatingSaveBtn');
 
     if (templateTabBtn && listTabBtn && floatingSaveBtn) {
-        // Hide button when switching to List tab
         listTabBtn.addEventListener('shown.bs.tab', function () {
             floatingSaveBtn.style.display = 'none';
         });
         
-        // Show button when switching back to Template tab
         templateTabBtn.addEventListener('shown.bs.tab', function () {
             floatingSaveBtn.style.display = 'flex'; 
         });

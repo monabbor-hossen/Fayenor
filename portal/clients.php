@@ -198,13 +198,14 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                                 <a href="client-finance.php?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-warning border-0 opacity-75 hover-opacity-100"><i class="bi bi-cash-stack"></i></a>
                                 <a href="client-edit.php?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100"><i class="bi bi-pencil-square"></i></a>
                                 <button class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100" title="View Details" data-client='<?php echo $clientJson; ?>' onclick="openViewModal(this)"><i class="bi bi-eye"></i></button>
-                                <a href="../contract/contract.php?id=<?php echo $client['client_id']; ?>" 
-   target="_blank" 
-   class="btn btn-sm btn-outline-info rounded-circle border-0 shadow-none" 
-   data-bs-toggle="tooltip" 
+                               <form action="generate_contract.php" method="POST">
+    <input type="hidden" name="client_id" value="<?php echo htmlspecialchars($client['client_id']); ?>">
+    
+    <button type="submit" class="btn btn-sm btn-outline-info rounded-circle border-0 shadow-none" data-bs-toggle="tooltip" 
    title="Generate Contract">
-    <i class="bi bi-file-earmark-pdf"></i>
-</a>
+        <i class="bi bi-file-earmark-plus-fill"></i>
+    </button>
+</form>
 <a href="../contract/edit_contract.php?id=<?php echo $client['client_id']; ?>" 
    class="btn btn-sm btn-outline-warning rounded-circle border-0 shadow-none" 
    data-bs-toggle="tooltip" 

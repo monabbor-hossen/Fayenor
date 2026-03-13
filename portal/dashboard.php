@@ -148,6 +148,9 @@ foreach ($all_workflows as $wf) {
         position: relative;
         z-index: 1;
     }
+    .clean-table thead tr {
+        background: transparent
+    }   
     .clean-table th {
         font-weight: 500;
         text-transform: uppercase;
@@ -156,9 +159,12 @@ foreach ($all_workflows as $wf) {
         color: rgba(255, 255, 255, 0.4);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding-bottom: 15px;
+        background: transparent;
     }
     .clean-table td {
         border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        
+        background: transparent;
         padding: 16px 0;
         vertical-align: middle;
     }
@@ -315,7 +321,6 @@ foreach ($all_workflows as $wf) {
             </div>
         </div>
     </div>
-
     <div class="col-xl-4">
         <h6 class="text-white-50 fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;"><i class="bi bi-activity me-2 text-gold"></i>Recent Ledger</h6>
         

@@ -1,82 +1,92 @@
 <?php
 // portal/dashboard.php
-
-// 1. Load header (which automatically handles Admin/Client security checks)
 require_once 'includes/header.php';
 require_once __DIR__ . '/../app/Config/Database.php';
 
-$db = (new Database())->getConnection();
+// --- SECURITY: ENSURE ONLY ADMIN/STAFF ACCESS THIS ---
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
+    header("Location: ../public/login.php");
+    exit();
+}
 
-// Initialize variables safely to prevent crashes
+// ========================================================================
+// 1. BULLETPROOF DATA FETCHING
+// ========================================================================
+// We set strict defaults so the page NEVER crashes even if a table is empty.
 $total_clients = 0;
-$total_revenue = 0;
-$total_paid = 0;
-$total_expenses = 0;
+$total_revenue = 0.0;
+$total_paid = 0.0;
+$total_expenses = 0.0;
 $all_workflows = [];
 $recent_payments = [];
 $recent_expenses = [];
+$pending_clients = [];
 
 try {
-    // ========================================================================
-    // 1. CALCULATE TOP KPI METRICS
-    // ========================================================================
-    $stmtClients = $db->query("SELECT COUNT(*) FROM clients WHERE is_active = 1");
-    if ($stmtClients) $total_clients = $stmtClients->fetchColumn() ?: 0;
+    $db = (new Database())->getConnection();
 
-    $stmtRev = $db->query("SELECT COALESCE(SUM(contract_value), 0) FROM clients WHERE is_active = 1");
-    if ($stmtRev) $total_revenue = floatval($stmtRev->fetchColumn());
+    // 1. Total Clients
+    try {
+        $stmt = $db->query("SELECT COUNT(*) FROM clients WHERE is_active = 1");
+        if ($stmt) $total_clients = intval($stmt->fetchColumn());
+    } catch (Throwable $e) {}
 
-    $stmtPaid = $db->query("SELECT COALESCE(SUM(amount), 0) FROM payments WHERE payment_status = 'Completed'");
-    if ($stmtPaid) $total_paid = floatval($stmtPaid->fetchColumn());
+    // 2. Expected Revenue
+    try {
+        $stmt = $db->query("SELECT SUM(contract_value) FROM clients WHERE is_active = 1");
+        if ($stmt) $total_revenue = floatval($stmt->fetchColumn());
+    } catch (Throwable $e) {}
 
-    $stmtExp = $db->query("
-        SELECT COALESCE(SUM(e.amount), 0) as total 
-        FROM expenses e 
-        LEFT JOIN users u ON e.created_by = u.id 
-        WHERE u.role != 'client'
-    ");
-    if ($stmtExp) $total_expenses = floatval($stmtExp->fetchColumn());
+    // 3. Total Collected
+    try {
+        $stmt = $db->query("SELECT SUM(amount) FROM payments WHERE payment_status = 'Completed'");
+        if ($stmt) $total_paid = floatval($stmt->fetchColumn());
+    } catch (Throwable $e) {}
 
-    // ========================================================================
-    // 2. FETCH ACTIONABLE WORKFLOWS
-    // ========================================================================
-    $stmtWF = $db->query("
-        SELECT c.client_id, c.company_name, w.* FROM clients c 
-        LEFT JOIN workflow_tracking w ON c.client_id = w.client_id 
-        WHERE c.is_active = 1
-    ");
-    if ($stmtWF) $all_workflows = $stmtWF->fetchAll(PDO::FETCH_ASSOC);
+    // 4. Internal Expenses Only
+    try {
+        $stmt = $db->query("SELECT SUM(e.amount) FROM expenses e LEFT JOIN users u ON e.created_by = u.id WHERE u.role != 'client'");
+        if ($stmt) $total_expenses = floatval($stmt->fetchColumn());
+    } catch (Throwable $e) {}
 
-    // ========================================================================
-    // 3. FETCH RECENT FINANCIAL ACTIVITY
-    // ========================================================================
-    $stmtRecentPay = $db->query("
-        SELECT p.*, c.company_name 
-        FROM payments p 
-        JOIN clients c ON p.client_id = c.client_id 
-        ORDER BY p.payment_date DESC LIMIT 5
-    ");
-    if ($stmtRecentPay) $recent_payments = $stmtRecentPay->fetchAll(PDO::FETCH_ASSOC);
+    // 5. Workflows
+    try {
+        $stmt = $db->query("SELECT c.client_id, c.company_name, w.* FROM clients c LEFT JOIN workflow_tracking w ON c.client_id = w.client_id WHERE c.is_active = 1");
+        if ($stmt) {
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (is_array($res)) $all_workflows = $res;
+        }
+    } catch (Throwable $e) {}
 
-    $stmtRecentExp = $db->query("
-        SELECT e.title, e.amount, e.expense_date, e.category 
-        FROM expenses e
-        LEFT JOIN users u ON e.created_by = u.id 
-        WHERE u.role != 'client'
-        ORDER BY e.expense_date DESC LIMIT 5
-    ");
-    if ($stmtRecentExp) $recent_expenses = $stmtRecentExp->fetchAll(PDO::FETCH_ASSOC);
+    // 6. Recent Payments
+    try {
+        $stmt = $db->query("SELECT p.amount, p.payment_date, p.payment_status, c.company_name FROM payments p JOIN clients c ON p.client_id = c.client_id ORDER BY p.payment_date DESC LIMIT 5");
+        if ($stmt) {
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (is_array($res)) $recent_payments = $res;
+        }
+    } catch (Throwable $e) {}
 
-} catch (PDOException $e) {
-    error_log("Dashboard DB Error: " . $e->getMessage());
+    // 7. Recent Expenses
+    try {
+        $stmt = $db->query("SELECT e.title, e.amount, e.expense_date, e.category FROM expenses e LEFT JOIN users u ON e.created_by = u.id WHERE u.role != 'client' ORDER BY e.expense_date DESC LIMIT 5");
+        if ($stmt) {
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (is_array($res)) $recent_expenses = $res;
+        }
+    } catch (Throwable $e) {}
+
+} catch (Throwable $e) {
+    // Master catch prevents complete fatal crashes
+    error_log("Dashboard Master Error: " . $e->getMessage());
 }
 
-// Financial Calculations
+// ========================================================================
+// 2. DATA PROCESSING & CALCULATIONS
+// ========================================================================
 $total_due = max(0, $total_revenue - $total_paid);
 $collection_rate = ($total_revenue > 0) ? round(($total_paid / $total_revenue) * 100) : 0;
 
-// Workflow Processing
-$pending_clients = [];
 $workflow_columns = [
     'hire_foreign_company' => 'Foreign Hire',
     'misa_application' => 'MISA',
@@ -89,6 +99,7 @@ $workflow_columns = [
 ];
 
 foreach ($all_workflows as $wf) {
+    if (!is_array($wf)) continue;
     $pending_steps = [];
     foreach ($workflow_columns as $col => $label) {
         if (isset($wf[$col]) && in_array($wf[$col], ['Pending', 'In Process', 'Applied'])) {
@@ -100,8 +111,8 @@ foreach ($all_workflows as $wf) {
     }
     if (!empty($pending_steps)) {
         $pending_clients[] = [
-            'client_id' => $wf['client_id'],
-            'company_name' => $wf['company_name'],
+            'client_id' => $wf['client_id'] ?? '-',
+            'company_name' => $wf['company_name'] ?? 'Unknown Entity',
             'pending_steps' => $pending_steps
         ];
     }
@@ -109,10 +120,10 @@ foreach ($all_workflows as $wf) {
 ?>
 
 <style>
-    /* Minimalist Dashboard Specific Styles */
+    /* Elegant Minimalist Dashboard Styles */
     .kpi-card {
         background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.04);
         border-radius: 16px;
         padding: 24px;
         position: relative;
@@ -121,16 +132,17 @@ foreach ($all_workflows as $wf) {
     }
     .kpi-card:hover {
         background: rgba(255, 255, 255, 0.04);
-        border-color: rgba(212, 175, 55, 0.2);
+        border-color: rgba(212, 175, 55, 0.15);
     }
     .kpi-icon-bg {
         position: absolute;
         bottom: -15px;
         right: -10px;
         font-size: 6rem;
-        opacity: 0.03;
+        opacity: 0.02;
         z-index: 0;
         transform: rotate(-10deg);
+        color: #ffffff;
     }
     .kpi-content {
         position: relative;
@@ -157,9 +169,19 @@ foreach ($all_workflows as $wf) {
         display: inline-block;
         margin-right: 6px;
     }
+    .ledger-item {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+    }
+    .ledger-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
 </style>
 
-<div class="d-flex justify-content-between align-items-end mb-4 pb-2 border-bottom border-light border-opacity-10">
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3 border-bottom border-light border-opacity-10">
     <div>
         <h3 class="text-white fw-light mb-1" style="letter-spacing: -0.5px;">Overview</h3>
         <p class="text-white-50 small mb-0">System health and financial summary.</p>
@@ -191,7 +213,7 @@ foreach ($all_workflows as $wf) {
             <div class="kpi-content d-flex flex-column h-100 justify-content-between">
                 <div class="text-white-50 small text-uppercase mb-3" style="letter-spacing: 1px;">Expected Revenue</div>
                 <div>
-                    <div class="fs-3 fw-bold text-white mb-1">SAR <?php echo number_format($total_revenue, 2); ?></div>
+                    <div class="fs-4 fw-bold text-white mb-1">SAR <?php echo number_format($total_revenue, 2); ?></div>
                     <div class="small text-white-50">Total contract value</div>
                 </div>
             </div>
@@ -204,7 +226,7 @@ foreach ($all_workflows as $wf) {
             <div class="kpi-content d-flex flex-column h-100 justify-content-between">
                 <div class="text-white-50 small text-uppercase mb-3" style="letter-spacing: 1px;">Collected Funds</div>
                 <div>
-                    <div class="fs-3 fw-bold text-success mb-1">SAR <?php echo number_format($total_paid, 2); ?></div>
+                    <div class="fs-4 fw-bold text-success mb-1">SAR <?php echo number_format($total_paid, 2); ?></div>
                     <div class="small text-success opacity-75">
                         <i class="bi bi-pie-chart-fill me-1"></i> <?php echo $collection_rate; ?>% Collection Rate
                     </div>
@@ -215,11 +237,11 @@ foreach ($all_workflows as $wf) {
 
     <div class="col">
         <div class="kpi-card h-100 border-start border-3" style="border-left-color: #dc3545 !important;">
-            <i class="bi bi-hourglass-split kpi-icon-bg"></i>
+            <i class="bi bi-hourglass-split kpi-icon-bg text-danger opacity-10"></i>
             <div class="kpi-content d-flex flex-column h-100 justify-content-between">
                 <div class="text-white-50 small text-uppercase mb-3" style="letter-spacing: 1px;">Outstanding Due</div>
                 <div>
-                    <div class="fs-3 fw-bold text-danger mb-1">SAR <?php echo number_format($total_due, 2); ?></div>
+                    <div class="fs-4 fw-bold text-danger mb-1">SAR <?php echo number_format($total_due, 2); ?></div>
                     <div class="small text-white-50">Pending client invoices</div>
                 </div>
             </div>
@@ -228,12 +250,12 @@ foreach ($all_workflows as $wf) {
 
     <div class="col">
         <div class="kpi-card h-100 border-start border-3" style="border-left-color: #ffc107 !important;">
-            <i class="bi bi-cash-coin kpi-icon-bg"></i>
+            <i class="bi bi-cash-coin kpi-icon-bg text-warning opacity-10"></i>
             <div class="kpi-content d-flex flex-column h-100 justify-content-between">
                 <div class="text-white-50 small text-uppercase mb-3" style="letter-spacing: 1px;">Internal Expenses</div>
                 <div>
-                    <div class="fs-3 fw-bold text-warning mb-1">SAR <?php echo number_format($total_expenses, 2); ?></div>
-                    <div class="small text-white-50">Total operational outgoings</div>
+                    <div class="fs-4 fw-bold text-warning mb-1">SAR <?php echo number_format($total_expenses, 2); ?></div>
+                    <div class="small text-white-50">Operational outgoings</div>
                 </div>
             </div>
         </div>
@@ -242,9 +264,9 @@ foreach ($all_workflows as $wf) {
 
 <div class="row g-5">
     <div class="col-xl-8">
-        <h6 class="text-gold fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;">Pending Workflows</h6>
+        <h6 class="text-white-50 fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;"><i class="bi bi-diagram-3 me-2 text-gold"></i>Pending Workflows</h6>
         
-        <div class="glass-panel p-4 pb-2 overflow-hidden">
+        <div class="glass-panel p-4 pb-2 overflow-hidden shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
             <div class="table-responsive">
                 <table class="table clean-table table-borderless text-white mb-0">
                     <thead>
@@ -266,8 +288,8 @@ foreach ($all_workflows as $wf) {
                             <?php foreach ($pending_clients as $pc): ?>
                                 <tr>
                                     <td>
-                                        <div class="fw-bold text-white"><?php echo htmlspecialchars($pc['company_name']); ?></div>
-                                        <div class="text-white-50 small" style="font-size: 0.7rem;">ID: #<?php echo $pc['client_id']; ?></div>
+                                        <div class="fw-bold text-white" style="font-size: 0.95rem;"><?php echo htmlspecialchars($pc['company_name']); ?></div>
+                                        <div class="text-white-50" style="font-size: 0.7rem;">ID: #<?php echo htmlspecialchars($pc['client_id']); ?></div>
                                     </td>
                                     <td>
                                         <div class="d-flex flex-wrap gap-2">
@@ -275,7 +297,7 @@ foreach ($all_workflows as $wf) {
                                                 $dotColor = ($step['status'] == 'In Process') ? 'bg-primary' : 'bg-warning';
                                                 $textColor = ($step['status'] == 'In Process') ? 'text-white' : 'text-white-50';
                                             ?>
-                                                <div class="small <?php echo $textColor; ?> d-flex align-items-center bg-dark bg-opacity-50 px-2 py-1 rounded">
+                                                <div class="small <?php echo $textColor; ?> d-flex align-items-center bg-dark bg-opacity-50 px-2 py-1 rounded" style="font-size: 0.8rem;">
                                                     <span class="status-dot <?php echo $dotColor; ?>"></span>
                                                     <?php echo htmlspecialchars($step['step']); ?>
                                                 </div>
@@ -295,22 +317,21 @@ foreach ($all_workflows as $wf) {
     </div>
 
     <div class="col-xl-4">
-        <h6 class="text-gold fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;">Recent Ledger</h6>
+        <h6 class="text-white-50 fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;"><i class="bi bi-activity me-2 text-gold"></i>Recent Ledger</h6>
         
-        <div class="glass-panel p-4 mb-4">
-            <h6 class="text-white-50 small text-uppercase mb-3 border-bottom border-light border-opacity-10 pb-2">Latest Incoming</h6>
+        <div class="glass-panel p-4 mb-4 shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
+            <h6 class="text-white-50 small text-uppercase mb-4 border-bottom border-light border-opacity-10 pb-2" style="letter-spacing: 1px;">Latest Incoming</h6>
             
             <?php if (count($recent_payments) > 0): ?>
-                <div class="d-flex flex-column gap-3">
+                <div class="d-flex flex-column">
                     <?php foreach ($recent_payments as $pay): ?>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="text-truncate pe-3" style="max-width: 60%;">
+                        <div class="d-flex justify-content-between align-items-center ledger-item">
+                            <div class="text-truncate pe-3" style="max-width: 65%;">
                                 <div class="text-white small fw-bold text-truncate"><?php echo htmlspecialchars($pay['company_name']); ?></div>
-                                <div class="text-white-50" style="font-size: 0.65rem;"><?php echo date('M d, Y', strtotime($pay['payment_date'])); ?></div>
+                                <div class="text-white-50" style="font-size: 0.7rem;"><?php echo date('M d, Y', strtotime($pay['payment_date'])); ?></div>
                             </div>
                             <div class="text-end">
                                 <div class="text-success small fw-bold">+SAR <?php echo number_format($pay['amount'], 2); ?></div>
-                                <div class="text-white-50" style="font-size: 0.65rem;"><?php echo htmlspecialchars($pay['payment_status']); ?></div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -320,16 +341,16 @@ foreach ($all_workflows as $wf) {
             <?php endif; ?>
         </div>
 
-        <div class="glass-panel p-4">
-            <h6 class="text-white-50 small text-uppercase mb-3 border-bottom border-light border-opacity-10 pb-2">Latest Outgoing</h6>
+        <div class="glass-panel p-4 shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
+            <h6 class="text-white-50 small text-uppercase mb-4 border-bottom border-light border-opacity-10 pb-2" style="letter-spacing: 1px;">Latest Outgoing</h6>
             
             <?php if (count($recent_expenses) > 0): ?>
-                <div class="d-flex flex-column gap-3">
+                <div class="d-flex flex-column">
                     <?php foreach ($recent_expenses as $exp): ?>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="text-truncate pe-3" style="max-width: 60%;">
+                        <div class="d-flex justify-content-between align-items-center ledger-item">
+                            <div class="text-truncate pe-3" style="max-width: 65%;">
                                 <div class="text-white small fw-bold text-truncate"><?php echo htmlspecialchars($exp['title']); ?></div>
-                                <div class="text-white-50" style="font-size: 0.65rem;"><?php echo date('M d, Y', strtotime($exp['expense_date'])); ?> &bull; <?php echo htmlspecialchars($exp['category']); ?></div>
+                                <div class="text-white-50" style="font-size: 0.7rem;"><?php echo date('M d', strtotime($exp['expense_date'])); ?> &bull; <?php echo htmlspecialchars($exp['category']); ?></div>
                             </div>
                             <div class="text-end">
                                 <div class="text-warning small fw-bold">-SAR <?php echo number_format($exp['amount'], 2); ?></div>

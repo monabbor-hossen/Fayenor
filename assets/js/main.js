@@ -948,3 +948,103 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+/* ==========================================================================
+   PUBLIC INDEX PAGE: SCROLL REVEAL & 3D CANVAS ANIMATION
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. SCROLL REVEAL ANIMATION
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    // 2. 3D TORUS KNOT CANVAS ANIMATION
+    const canvas = document.getElementById('hero-canvas');
+    
+    // Safety check: Only run animation if canvas exists (so it doesn't break other pages)
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, centerX, centerY;
+        
+        function resizeCanvas() {
+            const heroSection = document.getElementById('hero-section');
+            if (!heroSection) return;
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = heroSection.offsetHeight;
+            centerX = width / 2;
+            centerY = height / 2;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let time = 0;
+        const fov = 400; 
+        const p = 3; 
+        const q = 7; 
+        const resolution = 600; 
+
+        function animate() {
+            time += 0.004;
+
+            ctx.fillStyle = 'rgba(61, 0, 15, 0.2)'; 
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.globalCompositeOperation = 'lighter';
+
+            const strands = 5; 
+
+            for (let s = 0; s < strands; s++) {
+                ctx.beginPath();
+                
+                let opacity = 0.3 + (s * 0.1);
+                ctx.strokeStyle = s % 2 === 0 ? `rgba(212, 175, 55, ${opacity})` : `rgba(243, 213, 106, ${opacity})`;
+                ctx.lineWidth = 1.5;
+
+                for (let i = 0; i <= resolution; i++) {
+                    let t = (i / resolution) * Math.PI * 2;
+                    let angle = t + time; 
+                    let strandOffset = (s * 0.2); 
+
+                    let radius = (width < 768 ? 100 : 200) + Math.sin(time * 2) * 20;
+                    let r = radius * (2 + Math.cos(q * angle + strandOffset));
+                    
+                    let x3d = r * Math.cos(p * angle);
+                    let y3d = r * Math.sin(p * angle);
+                    let z3d = radius * Math.sin(q * angle + strandOffset);
+
+                    let rotX = time * 0.5;
+                    let rotY = time * 0.3;
+
+                    let xRotY = x3d * Math.cos(rotY) - z3d * Math.sin(rotY);
+                    let zRotY = x3d * Math.sin(rotY) + z3d * Math.cos(rotY);
+
+                    let yRotX = y3d * Math.cos(rotX) - zRotY * Math.sin(rotX);
+                    let zRotX = y3d * Math.sin(rotX) + zRotY * Math.cos(rotX);
+
+                    let scale = fov / (fov + zRotX); 
+                    let screenX = centerX + xRotY * scale;
+                    let screenY = centerY + yRotX * scale;
+
+                    if (i === 0) {
+                        ctx.moveTo(screenX, screenY);
+                    } else {
+                        ctx.lineTo(screenX, screenY);
+                    }
+                }
+                ctx.stroke();
+            }
+
+            ctx.globalCompositeOperation = 'source-over';
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    }
+});

@@ -12,38 +12,44 @@ require_once '../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 
-// --- HANDLE SIGNATURE DELETION ---
-if (isset($_GET['action']) && $_GET['action'] === 'delete_signature') {
+// ========================================================================
+// 1. HANDLE SIGNATURE DELETION (Triggered by the global modal)
+// ========================================================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_signature') {
+    // Get the current file name
     $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
     $curr = $stmt->fetch(PDO::FETCH_ASSOC);
     
+    // Delete physical file from the server
     if (!empty($curr['signature_image'])) {
         $filePath = '../assets/img/signatures/' . $curr['signature_image'];
         if (file_exists($filePath)) {
-            unlink($filePath);
+            @unlink($filePath); // Supress errors if file is locked
         }
-        $db->query("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
     }
     
-    $_SESSION['contract_success'] = "Signature image removed successfully!";
+    // FORCE the database column to be empty
+    $db->exec("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
+    
+    $_SESSION['contract_success'] = "Signature image successfully removed!";
     header("Location: default-contract.php");
     exit();
 }
 
-// 1. Fetch Global Settings First
-$stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
-$defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// --- HANDLE FORM SUBMIT WITH PRG (Post/Redirect/Get) ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// ========================================================================
+// 2. HANDLE SAVING THE GLOBAL TEMPLATE
+// ========================================================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     
+    $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
+    $defaults = $stmt->fetch(PDO::FETCH_ASSOC);
     $signature_image = $defaults['signature_image'] ?? null;
     $maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
 
     // Handle File Upload 
     if (isset($_FILES['signature_file']) && $_FILES['signature_file']['error'] === UPLOAD_ERR_OK) {
         
-        // SERVER-SIDE SIZE CHECK (2MB Limit)
         if ($_FILES['signature_file']['size'] > $maxFileSize) {
             $_SESSION['contract_error'] = "Upload Failed: The signature image must be less than 2MB.";
             header("Location: default-contract.php");
@@ -56,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!empty($signature_image) && file_exists($uploadDir . $signature_image)) {
-            unlink($uploadDir . $signature_image);
+            @unlink($uploadDir . $signature_image);
         }
 
         $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', basename($_FILES['signature_file']['name']));
@@ -92,6 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: default-contract.php");
     exit();
 }
+
+// 3. Fetch Global Settings for display
+$stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
+$defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Check for session messages
 $success_msg = '';
@@ -229,13 +239,13 @@ require_once 'includes/sidebar.php';
                                 <span id="signaturePreviewLabel" class="d-block small text-muted text-uppercase fw-bold mb-1" style="font-size: 10px; letter-spacing: 1px;">
                                     <?php echo $hasSignature ? 'Current Signature:' : 'New Signature Preview:'; ?>
                                 </span>
-                                <img id="signaturePreviewImg" src="<?php echo $signatureUrl; ?>" alt="Signature" style="max-height: 50px; max-width: 100%;">
+                                <img id="signaturePreviewImg" src="<?php echo $signatureUrl; ?>?t=<?php echo time(); ?>" alt="Signature" style="max-height: 50px; max-width: 100%;">
                             </div>
                             
                             <div id="signatureActionBtns">
                                 <?php if($hasSignature): ?>
-                                    <button type="button" id="btnDeleteServer" class="btn btn-sm btn-outline-danger border-0 opacity-50 hover-opacity-100" 
-                                            onclick="triggerFormModal('deleteSignatureForm', 'Are you absolutely sure you want to permanently remove this signature image? This action cannot be undone.')">
+                                    <button type="button" class="btn btn-sm btn-outline-danger border-0" 
+                                            onclick="triggerFormModal('deleteSignatureForm', 'Are you absolutely sure you want to permanently remove this signature image?')">
                                         <i class="bi bi-trash"></i> Remove
                                     </button>
                                 <?php endif; ?>
@@ -260,7 +270,7 @@ require_once 'includes/sidebar.php';
         Save Global Template
     </button>
 
-    <form id="deleteSignatureForm" method="POST" style="display: none;">
+    <form id="deleteSignatureForm" method="POST" action="default-contract.php" style="display: none;">
         <input type="hidden" name="action" value="delete_signature">
     </form>
 

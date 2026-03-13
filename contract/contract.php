@@ -27,12 +27,91 @@ try {
     die("Database Error: " . $e->getMessage());
 }
 
+// ====================================================================================
+// NEW & IMPROVED: MATHEMATICAL NUMBER TO WORDS CONVERTER
+// ====================================================================================
+function convertNumberToWords($num) {
+    if ($num == 0) return "Zero";
+    
+    $ones = [
+        0 => '', 1 => 'One', 2 => 'Two', 3 => 'Three', 4 => 'Four', 5 => 'Five', 6 => 'Six', 
+        7 => 'Seven', 8 => 'Eight', 9 => 'Nine', 10 => 'Ten', 11 => 'Eleven', 12 => 'Twelve', 
+        13 => 'Thirteen', 14 => 'Fourteen', 15 => 'Fifteen', 16 => 'Sixteen', 17 => 'Seventeen', 
+        18 => 'Eighteen', 19 => 'Nineteen'
+    ];
+    $tens = [
+        0 => '', 1 => 'Ten', 2 => 'Twenty', 3 => 'Thirty', 4 => 'Forty', 5 => 'Fifty', 
+        6 => 'Sixty', 7 => 'Seventy', 8 => 'Eighty', 9 => 'Ninety'
+    ];
+    $hundreds = ['Hundred', 'Thousand', 'Million', 'Billion', 'Trillion'];
+
+    $num = number_format((float)$num, 2, ".", "");
+    $parts = explode(".", $num);
+    $wholenum = intval($parts[0]);
+    $decnum = intval($parts[1]);
+
+    // Helper to process numbers in blocks of 3 (e.g., 025, 105, 999)
+    $convertGroup = function($n) use ($ones, $tens) {
+        $res = "";
+        $h = floor($n / 100);
+        $r = $n % 100;
+        if ($h > 0) {
+            $res .= $ones[$h] . " Hundred ";
+        }
+        if ($r > 0) {
+            if ($r < 20) {
+                $res .= $ones[$r] . " ";
+            } else {
+                $t = floor($r / 10);
+                $o = $r % 10;
+                $res .= $tens[$t] . " ";
+                if ($o > 0) {
+                    $res .= $ones[$o] . " ";
+                }
+            }
+        }
+        return $res;
+    };
+
+    $words = [];
+    $groups = [];
+    while ($wholenum > 0) {
+        $groups[] = $wholenum % 1000;
+        $wholenum = floor($wholenum / 1000);
+    }
+
+    for ($i = 0; $i < count($groups); $i++) {
+        if ($groups[$i] > 0) {
+            $groupWords = $convertGroup($groups[$i]);
+            if ($i > 0) {
+                $groupWords .= $hundreds[$i] . " ";
+            }
+            array_unshift($words, $groupWords); // Add to the front
+        }
+    }
+
+    $rettxt = trim(preg_replace('/\s+/', ' ', implode("", $words)));
+
+    // Handle Halalas (Decimals)
+    if ($decnum > 0) {
+        $rettxt .= " and " . trim($convertGroup($decnum)) . " Halalas";
+    }
+
+    return empty($rettxt) ? "Zero" : $rettxt;
+}
+// ====================================================================================
+
 // 2. Map Base Database fields to Variables
 $clientName      = $client['client_name'] ?? $client['company_name'];
 $date            = date('F j, Y'); 
 $iqamaNo         = "To Be Provided";
-$serviceFee      = number_format($client['contract_value'] ?? 0, 2); 
 $year            = date('Y'); 
+
+// Format the Fee & Dynamically Generate the words!
+$rawFee          = $client['contract_value'] ?? 0;
+$serviceFee      = number_format($rawFee, 2); 
+$serviceFeeWords = ucwords(convertNumberToWords($rawFee)); 
+
 
 // --- CALCULATE DYNAMIC HIJRI YEAR ---
 $y = (int)date('Y'); $m = (int)date('n'); $d = (int)date('j');
@@ -56,19 +135,15 @@ if (!empty($client['chamber_commerce']) && $client['chamber_commerce'] !== 'Not 
 
 
 // ====================================================================================
-// 4. SMART DATA MAPPING (Reads Global Defaults FIRST, then overrides if Custom exists)
+// 4. SMART DATA MAPPING
 // ====================================================================================
-
-// A. Fetch Global Defaults
 $stmtDef = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
 $globalDefaults = $stmtDef->fetch(PDO::FETCH_ASSOC) ?: [];
 
-// B. Fetch Custom Client Text (if this specific client was edited)
 $stmtText = $db->prepare("SELECT * FROM client_contracts WHERE client_id = ?");
 $stmtText->execute([$client_id]);
 $customText = $stmtText->fetch(PDO::FETCH_ASSOC) ?: [];
 
-// C. Merge Additional Scope (if custom exists)
 if (!empty($customText['additional_scope'])) {
     $extraLines = explode("\n", $customText['additional_scope']);
     foreach ($extraLines as $line) {
@@ -79,11 +154,10 @@ if (!empty($customText['additional_scope'])) {
     }
 }
 
-// D. MAP VARIABLES: Uses Custom -> falls back to Global -> falls back to Fallback String
 $serviceProvider = $globalDefaults['service_provider'] ?? 'Basmat Rooq Company Limited';
 $providerEmail   = $globalDefaults['provider_email'] ?? 'info@flyburjco.com';
 $signatoryName   = $globalDefaults['signatory_name'] ?? 'Saifullah';
-$signatureImage  = $globalDefaults['signature_image'] ?? null; // <-- ADD THIS LINE
+$signatureImage  = $globalDefaults['signature_image'] ?? null; 
 
 $txt_objective = !empty($customText['objective']) ? $customText['objective'] : ($globalDefaults['objective'] ?? '');
 $txt_permitted = !empty($customText['permitted_activities']) ? $customText['permitted_activities'] : ($globalDefaults['permitted_activities'] ?? '');
@@ -98,12 +172,7 @@ $txt_account_number = !empty($customText['account_number']) ? $customText['accou
 $txt_iban_number = !empty($customText['iban_number']) ? $customText['iban_number'] : ($globalDefaults['iban_number'] ?? '');
 $txt_account_name = !empty($customText['account_name']) ? $customText['account_name'] : ($globalDefaults['account_name'] ?? '');
 
-// ====================================================================================
-
-// Create a safe string for the PDF filename
 $pdfClientName = htmlspecialchars(str_replace(' ', '_', $clientName));
-
-// Define page title and load header
 $pageTitle = "Service License Agreement - " . htmlspecialchars($clientName);
 require_once 'header.php';
 ?>
@@ -220,7 +289,8 @@ require_once 'header.php';
                 
                 <h2>5. SERVICE CHARGES</h2>
                 <p>The Total professional service fee for this Agreement is <strong>SAR
-                        <?php echo htmlspecialchars($serviceFee); ?> (Saudi Riyals Fifteen Thousand only)</strong>.</p>
+                        <?php echo htmlspecialchars($serviceFee); ?> (Saudi Riyals <?php echo htmlspecialchars($serviceFeeWords); ?> Only)</strong>.</p>
+                
                 <p><em style="color:red;">Note: All kind of Service provide by <?php echo htmlspecialchars($serviceProvider); ?> & All kind
                         of Govt. Payments are to be borne by the Client. </em></p>
 
@@ -258,6 +328,7 @@ require_once 'header.php';
                     subject to timely submission of documents and payments by the Client.</p>
                     
                 <div><?php echo $txt_timeline_text; ?></div>
+                
                 <h2>9. ACCEPTANCE & SIGNATURES</h2>
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
 

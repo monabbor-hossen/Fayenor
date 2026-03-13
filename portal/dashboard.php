@@ -154,12 +154,14 @@ foreach ($all_workflows as $wf) {
         letter-spacing: 1px;
         font-size: 0.75rem;
         color: rgba(255, 255, 255, 0.4);
+        background: transparent;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding-bottom: 15px;
     }
     .clean-table td {
         border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         padding: 16px 0;
+        background: transparent;
         vertical-align: middle;
     }
     .status-dot {
@@ -280,7 +282,7 @@ foreach ($all_workflows as $wf) {
                         <tr>
                             <th style="width: 35%;">Client Entity</th>
                             <th style="width: 45%;">Pending Milestones</th>
-                            <th class="text-end" style="width: 20%;">Items</th>
+                            <th class="text-end" style="width: 20%;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -311,8 +313,12 @@ foreach ($all_workflows as $wf) {
                                             <?php endforeach; ?>
                                         </div>
                                     </td>
-                                    <td class="text-end text-white-50 small fw-bold">
-                                        <?php echo count($pc['pending_steps']); ?> Tasks
+                                    <td class="text-end align-middle">
+                                        <a href="client-edit.php?id=<?php echo htmlspecialchars($pc['client_id']); ?>" 
+                                           class="btn btn-sm text-white-50 border border-light border-opacity-10 bg-dark bg-opacity-25 rounded-pill px-3 shadow-none hover-white" 
+                                           style="font-size: 0.75rem; transition: all 0.3s ease;">
+                                            Manage <i class="bi bi-chevron-right ms-1" style="font-size: 0.65rem;"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

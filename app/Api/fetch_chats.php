@@ -6,6 +6,11 @@ require_once __DIR__ . '/../Config/Database.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 session_write_close(); // Prevents XAMPP from freezing
 
+// Fallback safety for the encryption key
+if (!defined('CHAT_ENCRYPTION_KEY')) {
+    define('CHAT_ENCRYPTION_KEY', 'BasmatRooq_Super_Secret_Key_2024!'); 
+}
+
 $client_id = $_GET['client_id'] ?? 0;
 if (!$client_id || !isset($_SESSION['user_id'])) exit;
 
@@ -35,6 +40,30 @@ try {
     foreach ($messages as $msg) {
         $is_me = ($viewer_type === 'client' && $msg['sender_type'] === 'client') || ($viewer_type === 'internal' && in_array($msg['sender_type'], ['admin', 'staff']));
         
+        // ========================================================================
+        // DECRYPTION LOGIC (With Smart Fallback for old unencrypted messages)
+        // ========================================================================
+        $encryption_method = 'aes-256-cbc';
+        $stored_payload = $msg['message'];
+        
+        // Attempt to base64 decode
+        $decoded_data = base64_decode($stored_payload, true);
+        $iv_length = openssl_cipher_iv_length($encryption_method);
+
+        // Check if it's a valid encrypted payload
+        if ($decoded_data !== false && strlen($decoded_data) > $iv_length) {
+            $iv = substr($decoded_data, 0, $iv_length);
+            $encrypted_text = substr($decoded_data, $iv_length);
+            $decrypted_message = openssl_decrypt($encrypted_text, $encryption_method, CHAT_ENCRYPTION_KEY, 0, $iv);
+            
+            // If decryption succeeds, use it. Otherwise, fallback to the raw text
+            $display_message = ($decrypted_message !== false) ? $decrypted_message : $stored_payload;
+        } else {
+            // Old Plain-Text Fallback
+            $display_message = $stored_payload;
+        }
+        // ========================================================================
+
         // Use Flexbox to align the wrapper instead of margins
         $wrapper_align = $is_me ? 'justify-content-end' : 'justify-content-start';
         $text_align = $is_me ? 'text-end' : 'text-start';
@@ -55,7 +84,7 @@ try {
                 <div class='d-flex flex-column {$text_align}' style='max-width: 85%;'>
                     {$sender_name}
                     <div class='p-3 shadow-sm' style='{$bg_color} {$border_radius} display: inline-block; text-align: left; word-break: break-word;'>
-                        " . nl2br(htmlspecialchars($msg['message'])) . "
+                        " . nl2br(htmlspecialchars($display_message)) . "
                     </div>
                     <div class='small text-white-50 mt-1 px-1' style='font-size: 0.7rem;'>{$time}</div>
                 </div>

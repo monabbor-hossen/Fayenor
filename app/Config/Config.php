@@ -13,4 +13,7 @@ define('DB_HOST', 'localhost');
 define('DB_NAME', 'rooqflow');
 define('DB_USER', 'jihan');
 define('DB_PASS', '123456');
+
+// Add this to the bottom of app/Config/Config.php
+define('CHAT_ENCRYPTION_KEY', 'Your_Super_Secret_32_Character_Key!!');
 ?>

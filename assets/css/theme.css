@@ -6,16 +6,22 @@
     --white: #ffffff;
     --transparent: transparent;
 
-    /* --- Background Colors --- */
+    /* --- Background & UI Colors --- */
     --bg-radial-start: #33000d;
     --bg-radial-end: #121212;
     --bg-login-end: #4a0012;
+    --bg-dark-burgundy: #3d000f; /* Used for Hero fade */
     --bg-header: rgba(128, 0, 32, 0.9);
     --bg-dropdown: rgba(45, 45, 45, 0.95);
     --bg-popup: #1a1a1a;
     --bg-modal: rgba(20, 5, 10, 0.98);
     --bg-sidebar-start: rgba(51, 0, 13, 0.98);
     --bg-sidebar-end: rgba(20, 0, 5, 0.99);
+    --bg-light: #f8f9fa; /* Used for Tab hovers */
+    
+    /* --- Text & Border Colors --- */
+    --text-muted: #6c757d;
+    --border-light: #f0f0f0;
 
     /* --- Glass Whites (rgba 255, 255, 255) --- */
     --glass-03: rgba(255, 255, 255, 0.03);
@@ -38,6 +44,7 @@
     --black-90: rgba(0, 0, 0, 0.9);
 
     /* --- Glass Golds (rgba 212, 175, 55) --- */
+    --gold-08: rgba(212, 175, 55, 0.08); /* Soft Gold Background */
     --gold-10: rgba(212, 175, 55, 0.1);
     --gold-15: rgba(212, 175, 55, 0.15);
     --gold-20: rgba(212, 175, 55, 0.2);
@@ -46,6 +53,10 @@
     --gold-50: rgba(212, 175, 55, 0.5);
     --gold-60: rgba(212, 175, 55, 0.6);
     --gold-90: rgba(212, 175, 55, 0.9);
+
+    /* --- Custom Tinted Glass --- */
+    --burgundy-glass: rgba(128, 0, 32, 0.08);
+    --burgundy-dark-glass: rgba(61, 0, 15, 0.4);
 
     /* --- Status & Badge Colors --- */
     --wf-line: #444444;
@@ -71,10 +82,16 @@
     --badge-process-bg: rgba(52, 152, 219, 0.1);
     --badge-process-border: rgba(52, 152, 219, 0.3);
 
+    /* --- Typography --- */
+    --font-primary: 'Segoe UI', system-ui, sans-serif;
+    --font-secondary: 'Montserrat', sans-serif;
+
     /* --- Font Sizes --- */
-    --fs-xxs: 0.75rem;
+    --fs-xxs: 0.75rem;   /* 12px */
+    --fs-12: 0.75rem;    /* 12px alias */
     --fs-xs: 0.8rem;
-    --fs-sm: 0.85rem;
+    --fs-sm: 0.85rem;    
+    --fs-14: 0.875rem;   /* 14px alias */
     --fs-base: 0.9rem;
     --fs-md: 0.95rem;
     --fs-lg: 1.1rem;
@@ -94,7 +111,7 @@
 body {
     background: radial-gradient(circle at top right, var(--bg-radial-start), var(--bg-radial-end));
     color: var(--white);
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: var(--font-primary);
     scroll-behavior: smooth;
 }
 
@@ -174,25 +191,21 @@ body {
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* =========================================
-   BUTTONS & PANELS
+   BUTTONS & PANELS (MERGED & OPTIMIZED)
    ========================================= */
 .glass-panel {
-    background: var(--glass-05);
+    background: var(--burgundy-dark-glass);
     backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-10);
-    border-radius: 24px;
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--gold-20);
+    border-radius: 16px;
     padding: 40px;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
 .glass-panel:hover {
@@ -299,7 +312,7 @@ body {
 }
 
 /* ==========================================================================
-   FORMS, INPUTS & UTILITIES (MERGED & OPTIMIZED)
+   FORMS, INPUTS & UTILITIES
    ========================================================================== */
 .glass-input {
     background: var(--glass-05);
@@ -745,15 +758,8 @@ a:hover .avatar-circle-refined,
 }
 
 @keyframes popIn {
-    0% {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 .calendar-header {
@@ -857,17 +863,9 @@ a:hover .avatar-circle-refined,
 }
 
 @keyframes floatSVG {
-    0% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
-
-    100% {
-        transform: translateY(0px);
-    }
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
 }
 
 .error-bg-glow {
@@ -940,10 +938,10 @@ a:hover .avatar-circle-refined,
    BEAUTIFUL BREADCRUMB STYLING
    ========================================================================== */
 .pagetitle .breadcrumb {
-    background-color: rgba(212, 175, 55, 0.08) !important; /* Soft gold background */
+    background-color: var(--gold-08) !important;
     padding: 12px 20px !important;
     border-radius: 8px !important;
-    border-left: 4px solid var(--theme-primary, #800020) !important;
+    border-left: 4px solid var(--rooq-burgundy) !important;
     margin-bottom: 20px !important;
     display: flex;
     align-items: center;
@@ -951,37 +949,36 @@ a:hover .avatar-circle-refined,
 }
 
 .pagetitle .breadcrumb-item {
-    font-size: 14px;
-    font-weight: 600;
-    font-family: 'Montserrat', sans-serif;
+    font-size: var(--fs-14);
+    font-weight: var(--fw-semi);
+    font-family: var(--font-secondary);
 }
 
 .pagetitle .breadcrumb-item a {
-    color: var(--theme-primary, #800020) !important;
+    color: var(--rooq-burgundy) !important;
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .pagetitle .breadcrumb-item a:hover {
-    color: var(--theme-accent, #D4AF37) !important;
+    color: var(--rooq-gold) !important;
 }
 
 .pagetitle .breadcrumb-item.active {
-    color: #6c757d !important;
+    color: var(--text-muted) !important;
 }
 
 .pagetitle .breadcrumb-item + .breadcrumb-item::before {
     content: "›" !important;
-    color: var(--theme-accent, #D4AF37) !important;
+    color: var(--rooq-gold) !important;
     font-size: 20px;
     line-height: 1;
     vertical-align: middle;
     padding: 0 10px;
 }
 
-
 /* ==========================================================================
-   PUBLIC INDEX PAGE (HERO CANVAS & GLASS PANELS)
+   PUBLIC INDEX PAGE (HERO CANVAS)
    ========================================================================== */
 #hero-canvas {
     position: absolute;
@@ -999,7 +996,7 @@ a:hover .avatar-circle-refined,
     left: 0;
     width: 100%;
     height: 200px; 
-    background: linear-gradient(to bottom, transparent 0%, #3d000f 100%);
+    background: linear-gradient(to bottom, transparent 0%, var(--bg-dark-burgundy) 100%);
     z-index: 5; 
     pointer-events: none; 
 }
@@ -1012,14 +1009,6 @@ a:hover .avatar-circle-refined,
 
 .hero-content .interactive-layer {
     pointer-events: auto; 
-}
-
-.glass-panel {
-    background: rgba(61, 0, 15, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    border-radius: 15px;
 }
 
 .text-shadow-glow {
@@ -1037,25 +1026,21 @@ a:hover .avatar-circle-refined,
     transform: translateY(0); 
 }
 
-.section-padding {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
-}
-
 /* ==========================================================================
    DEFAULT CONTRACT PAGE: VERTICAL TABS & LIST UI
    ========================================================================== */
 .vertical-tabs {
-    background: #ffffff;
+    background: var(--white);
     border-radius: 12px;
     padding: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    border: 1px solid #f0f0f0;
+    border: 1px solid var(--border-light);
 }
+
 .vertical-tabs .nav-link {
-    color: #6c757d;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
+    color: var(--text-muted);
+    font-family: var(--font-secondary);
+    font-weight: var(--fw-semi);
     text-align: left;
     padding: 14px 20px;
     border-radius: 8px;
@@ -1065,30 +1050,34 @@ a:hover .avatar-circle-refined,
     display: flex;
     align-items: center;
 }
+
 .vertical-tabs .nav-link i {
-    font-size: 1.1rem;
+    font-size: var(--fs-lg);
 }
+
 .vertical-tabs .nav-link.active {
-    background-color: rgba(128, 0, 32, 0.08); 
-    color: #800020;
-    border-right: 4px solid #800020;
-    font-weight: 700;
+    background-color: var(--burgundy-glass); 
+    color: var(--rooq-burgundy);
+    border-right: 4px solid var(--rooq-burgundy);
+    font-weight: var(--fw-bold);
 }
+
 .vertical-tabs .nav-link:hover:not(.active) {
-    background-color: #f8f9fa;
-    color: #800020;
+    background-color: var(--bg-light);
+    color: var(--rooq-burgundy);
     transform: translateX(3px);
 }
 
 .contract-table th {
-    background-color: #800020;
-    color: white;
-    font-weight: 600;
+    background-color: var(--rooq-burgundy);
+    color: var(--white);
+    font-weight: var(--fw-semi);
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: var(--fs-12);
     letter-spacing: 0.5px;
 }
+
 .contract-table td {
     vertical-align: middle;
-    font-size: 14px;
+    font-size: var(--fs-14);
 }

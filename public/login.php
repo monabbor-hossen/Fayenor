@@ -44,7 +44,7 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
     <title>Login | Basmat Rooq</title>
     
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/theme.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
     

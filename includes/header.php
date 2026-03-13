@@ -37,6 +37,44 @@ $text = $translator->getTranslation($lang);
 
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/theme.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/mobile.css">
+    <style>
+        
+        /* * ==========================================
+         * REQUIRED CSS FOR CANVAS EXTRACTION
+         * ==========================================
+         * If you move this to another app, you need 
+         * this CSS to position the canvas behind your content.
+         */
+        #hero-section {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #800020 0%, #3d000f 100%);
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind the text */
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10; /* Above the canvas */
+            pointer-events: none; /* Let clicks pass through to canvas if needed */
+        }
+        
+        .hero-content > * {
+            pointer-events: auto; /* Re-enable clicks on buttons */
+        }
+    </style>
 </head>
 <body>
 <div id="global-loader" class="global-loader">

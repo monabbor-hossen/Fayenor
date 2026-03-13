@@ -1,6 +1,8 @@
 <?php require_once '../includes/header.php'; ?>
 
 <header class="min-vh-100 d-flex align-items-center text-center">
+    
+        <canvas id="hero-canvas"></canvas>
     <div class="container">
         <div class="glass-panel p-5 reveal">
             <h1 class="display-1 fw-bold text-uppercase"><?php echo $text['hero_title']; ?></h1>

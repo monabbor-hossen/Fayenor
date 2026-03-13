@@ -83,6 +83,7 @@ if (!empty($customText['additional_scope'])) {
 $serviceProvider = $globalDefaults['service_provider'] ?? 'Basmat Rooq Company Limited';
 $providerEmail   = $globalDefaults['provider_email'] ?? 'info@flyburjco.com';
 $signatoryName   = $globalDefaults['signatory_name'] ?? 'Saifullah';
+$signatureImage  = $globalDefaults['signature_image'] ?? null; // <-- ADD THIS LINE
 
 $txt_objective = !empty($customText['objective']) ? $customText['objective'] : ($globalDefaults['objective'] ?? '');
 $txt_permitted = !empty($customText['permitted_activities']) ? $customText['permitted_activities'] : ($globalDefaults['permitted_activities'] ?? '');
@@ -259,11 +260,23 @@ require_once 'header.php';
                 <div><?php echo $txt_timeline_text; ?></div>
                 <h2>9. ACCEPTANCE & SIGNATURES</h2>
                 <p>By signing below, both Parties agree to the terms and conditions of this Agreement.</p>
+
                 <div class="layout-table">
                     <strong>For <?php echo htmlspecialchars($serviceProvider); ?></strong>
                     <p>Name: <strong><?php echo htmlspecialchars($signatoryName); ?></strong></p>
-                    <div style="display:flex; align-items: baseline;">Signature: <div class="signature-line"></div>
+                    
+                    <div style="display:flex; align-items: flex-end; margin-bottom: 10px;">
+                        <span style="margin-right: 10px; margin-bottom: 5px;">Signature:</span>
+                        
+                        <?php if ($signatureImage): ?>
+                            <div style="border-bottom: 1px solid var(--text-dark); width: 25%; text-align: center; padding-bottom: 2px;">
+                                <img src="../assets/img/signatures/<?php echo htmlspecialchars($signatureImage); ?>" style="max-height: 40px; max-width: 100%;">
+                            </div>
+                        <?php else: ?>
+                            <div class="signature-line" style="margin-top:0; width: 25%;"></div>
+                        <?php endif; ?>
                     </div>
+
                     <strong>For the Client</strong>
                     <p>Name: <strong><?php echo htmlspecialchars($clientName); ?></strong></p>
                     <div style="display:flex; align-items: baseline;">Signature: <div class="signature-line"></div>

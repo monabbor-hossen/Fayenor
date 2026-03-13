@@ -12,23 +12,54 @@ require_once '../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 
+// 1. Fetch Global Settings First (So we know the old signature image)
+$stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
+$defaults = $stmt->fetch(PDO::FETCH_ASSOC);
+
 // --- HANDLE FORM SUBMIT WITH PRG (Post/Redirect/Get) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    // Set the old signature as default
+    $signature_image = $defaults['signature_image'] ?? null;
+
+    // Handle File Upload if a new image was selected
+    if (isset($_FILES['signature_file']) && $_FILES['signature_file']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../assets/img/signatures/';
+        
+        // Create the folder if it doesn't exist
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        // Generate a unique, safe filename
+        $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', basename($_FILES['signature_file']['name']));
+        $targetFilePath = $uploadDir . $fileName;
+        $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+        
+        // Allow only images
+        if (in_array($fileType, ['jpg', 'jpeg', 'png'])) {
+            if (move_uploaded_file($_FILES['signature_file']['tmp_name'], $targetFilePath)) {
+                $signature_image = $fileName; // Update variable with new file name
+            }
+        }
+    }
+
+    // Save to Database
     $sql = "UPDATE default_contract_settings SET 
-            service_provider=?, provider_email=?, signatory_name=?,
+            service_provider=?, provider_email=?, signatory_name=?, signature_image=?,
             objective=?, permitted_activities=?, documentation=?, payment_terms=?, 
             obligations=?, timeline_days=?, timeline_text=?, 
             bank_name=?, account_number=?, iban_number=?, account_name=? 
             WHERE id=1";
     $stmt = $db->prepare($sql);
     $stmt->execute([
-        $_POST['service_provider'], $_POST['provider_email'], $_POST['signatory_name'],
+        $_POST['service_provider'], $_POST['provider_email'], $_POST['signatory_name'], $signature_image,
         $_POST['objective'], $_POST['permitted'], $_POST['docs'], 
         $_POST['payment'], $_POST['obligations'], intval($_POST['timeline_days']), $_POST['timeline_text'],
         $_POST['bank_name'], $_POST['account_number'], $_POST['iban_number'], $_POST['account_name']
     ]);
     
-    // Save success message to session and REDIRECT to stop form resubmission!
+    // Save success message to session and REDIRECT!
     $_SESSION['contract_success'] = "Global Default Settings Saved Successfully!";
     header("Location: default-contract.php");
     exit();
@@ -40,10 +71,6 @@ if (isset($_SESSION['contract_success'])) {
     $success_msg = $_SESSION['contract_success'];
     unset($_SESSION['contract_success']); // Remove so it only shows once
 }
-
-// Fetch Global Settings
-$stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
-$defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 
 require_once 'includes/header.php';
 require_once 'includes/sidebar.php';
@@ -57,11 +84,11 @@ require_once 'includes/sidebar.php';
     <div class="pagetitle mb-4">
         <h1 style="color: #800020; font-weight: 800; font-family: 'Montserrat', sans-serif; letter-spacing: -0.5px;">Global Contract Template</h1>
         <p class="text-muted mt-2" style="font-size: 15px; font-weight: 500;">
-            Manage default terms, provider details, and bank accounts for all new client contracts.
+            Manage default terms, provider details, signatures, and bank accounts for all new client contracts.
         </p>
     </div>
 
-    <form method="POST" id="defaultContractForm">
+    <form method="POST" id="defaultContractForm" enctype="multipart/form-data">
         <div class="document-page edit-document-page">
             
             <?php if(!empty($success_msg)): ?>
@@ -138,8 +165,18 @@ require_once 'includes/sidebar.php';
             <div class="bank-details-box">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Company Representative Name (Signatory)</label>
+                        <label class="form-label">Signatory Name (Company Representative)</label>
                         <input type="text" name="signatory_name" class="form-control" value="<?php echo htmlspecialchars($defaults['signatory_name'] ?? 'Saifullah'); ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Signature Image (PNG/JPG)</label>
+                        <input type="file" name="signature_file" class="form-control" accept="image/*">
+                        
+                        <?php if(!empty($defaults['signature_image'])): ?>
+                            <div class="mt-2 p-2 bg-white border rounded d-inline-block">
+                                <img src="../assets/img/signatures/<?php echo htmlspecialchars($defaults['signature_image']); ?>" alt="Signature" style="max-height: 50px;">
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

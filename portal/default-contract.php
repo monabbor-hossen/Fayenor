@@ -12,7 +12,28 @@ require_once '../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 
-// 1. Fetch Global Settings First (So we know the old signature image)
+// --- HANDLE SIGNATURE DELETION ---
+if (isset($_GET['action']) && $_GET['action'] === 'delete_signature') {
+    // Fetch the current filename to delete it from the server
+    $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
+    $curr = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!empty($curr['signature_image'])) {
+        $filePath = '../assets/img/signatures/' . $curr['signature_image'];
+        // Remove the physical file if it exists
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+        // Remove from database
+        $db->query("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
+    }
+    
+    $_SESSION['contract_success'] = "Signature image removed successfully!";
+    header("Location: default-contract.php");
+    exit();
+}
+
+// 1. Fetch Global Settings First
 $stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
 $defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -26,25 +47,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['signature_file']) && $_FILES['signature_file']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../assets/img/signatures/';
         
-        // Create the folder if it doesn't exist
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        // Generate a unique, safe filename
+        // Delete the old file before saving the new one (saves server space)
+        if (!empty($signature_image) && file_exists($uploadDir . $signature_image)) {
+            unlink($uploadDir . $signature_image);
+        }
+
         $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', basename($_FILES['signature_file']['name']));
         $targetFilePath = $uploadDir . $fileName;
         $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
         
-        // Allow only images
         if (in_array($fileType, ['jpg', 'jpeg', 'png'])) {
             if (move_uploaded_file($_FILES['signature_file']['tmp_name'], $targetFilePath)) {
-                $signature_image = $fileName; // Update variable with new file name
+                $signature_image = $fileName;
             }
         }
     }
 
-    // Save to Database
     $sql = "UPDATE default_contract_settings SET 
             service_provider=?, provider_email=?, signatory_name=?, signature_image=?,
             objective=?, permitted_activities=?, documentation=?, payment_terms=?, 
@@ -59,17 +81,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['bank_name'], $_POST['account_number'], $_POST['iban_number'], $_POST['account_name']
     ]);
     
-    // Save success message to session and REDIRECT!
     $_SESSION['contract_success'] = "Global Default Settings Saved Successfully!";
     header("Location: default-contract.php");
     exit();
 }
 
-// Check for success message in session
 $success_msg = '';
 if (isset($_SESSION['contract_success'])) {
     $success_msg = $_SESSION['contract_success'];
-    unset($_SESSION['contract_success']); // Remove so it only shows once
+    unset($_SESSION['contract_success']);
 }
 
 require_once 'includes/header.php';
@@ -92,7 +112,7 @@ require_once 'includes/sidebar.php';
         <div class="document-page edit-document-page">
             
             <?php if(!empty($success_msg)): ?>
-                <div class="alert alert-success fw-bold text-center" style="border-left: 5px solid #198754; background: #d1e7dd; color: #0f5132;">
+                <div class="alert alert-success fw-bold text-center shadow-sm" style="border-left: 5px solid #198754; background: #d1e7dd; color: #0f5132;">
                     <?php echo $success_msg; ?>
                 </div>
             <?php endif; ?>
@@ -169,12 +189,18 @@ require_once 'includes/sidebar.php';
                         <input type="text" name="signatory_name" class="form-control" value="<?php echo htmlspecialchars($defaults['signatory_name'] ?? 'Saifullah'); ?>">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Signature Image (PNG/JPG)</label>
-                        <input type="file" name="signature_file" class="form-control" accept="image/*">
+                        <label class="form-label">Upload New Signature (PNG/JPG)</label>
+                        <input type="file" name="signature_file" class="form-control" accept="image/png, image/jpeg">
                         
                         <?php if(!empty($defaults['signature_image'])): ?>
-                            <div class="mt-2 p-2 bg-white border rounded d-inline-block">
-                                <img src="../assets/img/signatures/<?php echo htmlspecialchars($defaults['signature_image']); ?>" alt="Signature" style="max-height: 50px;">
+                            <div class="mt-3 p-3 bg-white border rounded d-flex justify-content-between align-items-center shadow-sm">
+                                <div>
+                                    <span class="d-block small text-muted text-uppercase fw-bold mb-1" style="font-size: 10px; letter-spacing: 1px;">Current Signature:</span>
+                                    <img src="../assets/img/signatures/<?php echo htmlspecialchars($defaults['signature_image']); ?>" alt="Signature" style="max-height: 40px;">
+                                </div>
+                                <a href="default-contract.php?action=delete_signature" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to remove this signature?');">
+                                    <i class="bi bi-trash"></i> Remove
+                                </a>
                             </div>
                         <?php endif; ?>
                     </div>

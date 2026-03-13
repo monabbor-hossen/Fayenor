@@ -125,8 +125,8 @@ require_once 'includes/sidebar.php';
 <main id="main" class="main">
     
     <div class="pagetitle mb-4">
-        <h1 style="color: #800020; font-weight: 800; font-family: 'Montserrat', sans-serif; letter-spacing: -0.5px;">Global Contract Template</h1>
-        <p class="text-muted mt-2" style="font-size: 15px; font-weight: 500;">
+        <h3 class="text-white fw-bold mb-0">Global Contract Template</h3>
+        <p class="text-white-50 small mb-0">
             Manage default terms, provider details, signatures, and bank accounts for all new client contracts.
         </p>
     </div>

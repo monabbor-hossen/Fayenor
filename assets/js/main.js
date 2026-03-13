@@ -927,3 +927,68 @@ function toggleClientExpense(clientId, checkbox) {
         checkbox.checked = !isChecked; // Revert switch
     });
 }
+
+/* ==========================================================================
+   CONTRACT SIGNATURE PREVIEW & VALIDATION (default-contract.php)
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('signatureFileInput');
+    
+    // Safety check: Only run this script if the file input actually exists on the page
+    if (!fileInput) return; 
+
+    const previewBox = document.getElementById('signaturePreviewBox');
+    const previewImg = document.getElementById('signaturePreviewImg');
+    const previewLabel = document.getElementById('signaturePreviewLabel');
+    const btnDeleteServer = document.getElementById('btnDeleteServer');
+    const btnCancelUpload = document.getElementById('btnCancelUpload');
+    const sizeError = document.getElementById('fileSizeError');
+    
+    // Fetch PHP variables safely from the HTML data attributes
+    const originalImgSrc = previewBox.getAttribute('data-original-url');
+    const hasOriginal = previewBox.getAttribute('data-has-original') === "1";
+    const maxFileSize = 2 * 1024 * 1024; // 2MB
+
+    // 1. When user selects a file
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        sizeError.style.display = 'none';
+        
+        if (file) {
+            // Check file size limit
+            if (file.size > maxFileSize) {
+                fileInput.value = ''; 
+                sizeError.style.display = 'block'; 
+                return; 
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewLabel.innerText = "New Signature Preview:";
+                previewBox.classList.remove('d-none');
+                previewBox.classList.add('d-flex');
+                
+                if (btnDeleteServer) btnDeleteServer.style.display = 'none';
+                btnCancelUpload.style.display = 'inline-block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 2. Cancel upload
+    btnCancelUpload.addEventListener('click', function() {
+        fileInput.value = ''; 
+        sizeError.style.display = 'none'; 
+        
+        if (hasOriginal) {
+            previewImg.src = originalImgSrc;
+            previewLabel.innerText = "Current Signature:";
+            if (btnDeleteServer) btnDeleteServer.style.display = 'inline-block';
+            btnCancelUpload.style.display = 'none';
+        } else {
+            previewBox.classList.remove('d-flex');
+            previewBox.classList.add('d-none');
+        }
+    });
+});

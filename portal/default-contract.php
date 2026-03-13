@@ -12,30 +12,31 @@ require_once '../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 
-// --- HANDLE FORM SUBMISSIONS (POST) ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// --- HANDLE SIGNATURE DELETION ---
+if (isset($_GET['action']) && $_GET['action'] === 'delete_signature') {
+    $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
+    $curr = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    // 1. HANDLE SIGNATURE DELETION
-    if (isset($_POST['action']) && $_POST['action'] === 'delete_signature') {
-        $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
-        $curr = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!empty($curr['signature_image'])) {
-            $filePath = '../assets/img/signatures/' . $curr['signature_image'];
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
-            $db->query("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
+    if (!empty($curr['signature_image'])) {
+        $filePath = '../assets/img/signatures/' . $curr['signature_image'];
+        if (file_exists($filePath)) {
+            unlink($filePath);
         }
-        
-        $_SESSION['contract_success'] = "Signature image removed successfully!";
-        header("Location: default-contract.php");
-        exit();
+        $db->query("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
     }
     
-    // 2. HANDLE SAVING GLOBAL TEMPLATE
-    $stmt = $db->query("SELECT signature_image FROM default_contract_settings WHERE id = 1");
-    $defaults = $stmt->fetch(PDO::FETCH_ASSOC);
+    $_SESSION['contract_success'] = "Signature image removed successfully!";
+    header("Location: default-contract.php");
+    exit();
+}
+
+// 1. Fetch Global Settings First
+$stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
+$defaults = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// --- HANDLE FORM SUBMIT WITH PRG (Post/Redirect/Get) ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
     $signature_image = $defaults['signature_image'] ?? null;
     $maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
 
@@ -91,10 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: default-contract.php");
     exit();
 }
-
-// 3. Fetch Global Settings for display
-$stmt = $db->query("SELECT * FROM default_contract_settings WHERE id = 1");
-$defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Check for session messages
 $success_msg = '';
@@ -223,7 +220,11 @@ require_once 'includes/sidebar.php';
                             $signatureUrl = $hasSignature ? '../assets/img/signatures/' . htmlspecialchars($defaults['signature_image']) : '';
                         ?>
                         
-                        <div id="signaturePreviewBox" class="mt-3 p-3 bg-white border rounded justify-content-between align-items-center shadow-sm <?php echo $hasSignature ? 'd-flex' : 'd-none'; ?>">
+                        <div id="signaturePreviewBox" 
+                             data-has-original="<?php echo $hasSignature ? '1' : '0'; ?>" 
+                             data-original-url="<?php echo $signatureUrl; ?>" 
+                             class="mt-3 p-3 bg-white border rounded justify-content-between align-items-center shadow-sm <?php echo $hasSignature ? 'd-flex' : 'd-none'; ?>">
+                            
                             <div>
                                 <span id="signaturePreviewLabel" class="d-block small text-muted text-uppercase fw-bold mb-1" style="font-size: 10px; letter-spacing: 1px;">
                                     <?php echo $hasSignature ? 'Current Signature:' : 'New Signature Preview:'; ?>
@@ -233,7 +234,7 @@ require_once 'includes/sidebar.php';
                             
                             <div id="signatureActionBtns">
                                 <?php if($hasSignature): ?>
-                                    <button type="button" id="btnDeleteServer" class="btn btn-sm btn-outline-danger" 
+                                    <button type="button" id="btnDeleteServer" class="btn btn-sm btn-outline-danger border-0 opacity-50 hover-opacity-100" 
                                             onclick="triggerFormModal('deleteSignatureForm', 'Are you absolutely sure you want to permanently remove this signature image? This action cannot be undone.')">
                                         <i class="bi bi-trash"></i> Remove
                                     </button>
@@ -268,63 +269,5 @@ require_once 'includes/sidebar.php';
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script src="../contract/contract.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.getElementById('signatureFileInput');
-    const previewBox = document.getElementById('signaturePreviewBox');
-    const previewImg = document.getElementById('signaturePreviewImg');
-    const previewLabel = document.getElementById('signaturePreviewLabel');
-    const btnDeleteServer = document.getElementById('btnDeleteServer');
-    const btnCancelUpload = document.getElementById('btnCancelUpload');
-    const sizeError = document.getElementById('fileSizeError');
-    
-    const originalImgSrc = "<?php echo $signatureUrl; ?>";
-    const hasOriginal = "<?php echo $hasSignature; ?>" === "1";
-    const maxFileSize = 2 * 1024 * 1024; // 2MB
-
-    // 1. When user selects a file
-    fileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        sizeError.style.display = 'none';
-        
-        if (file) {
-            if (file.size > maxFileSize) {
-                fileInput.value = ''; 
-                sizeError.style.display = 'block'; 
-                return; 
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImg.src = e.target.result;
-                previewLabel.innerText = "New Signature Preview:";
-                previewBox.classList.remove('d-none');
-                previewBox.classList.add('d-flex');
-                
-                if (btnDeleteServer) btnDeleteServer.style.display = 'none';
-                btnCancelUpload.style.display = 'inline-block';
-            }
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // 2. Cancel upload
-    btnCancelUpload.addEventListener('click', function() {
-        fileInput.value = ''; 
-        sizeError.style.display = 'none'; 
-        
-        if (hasOriginal) {
-            previewImg.src = originalImgSrc;
-            previewLabel.innerText = "Current Signature:";
-            if (btnDeleteServer) btnDeleteServer.style.display = 'inline-block';
-            btnCancelUpload.style.display = 'none';
-        } else {
-            previewBox.classList.remove('d-flex');
-            previewBox.classList.add('d-none');
-        }
-    });
-});
-</script>
 
 <?php require_once 'includes/footer.php'; ?>

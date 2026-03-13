@@ -148,9 +148,6 @@ foreach ($all_workflows as $wf) {
         position: relative;
         z-index: 1;
     }
-    .clean-table thead tr {
-        background: transparent
-    }   
     .clean-table th {
         font-weight: 500;
         text-transform: uppercase;
@@ -159,12 +156,9 @@ foreach ($all_workflows as $wf) {
         color: rgba(255, 255, 255, 0.4);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding-bottom: 15px;
-        background: transparent;
     }
     .clean-table td {
         border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        
-        background: transparent;
         padding: 16px 0;
         vertical-align: middle;
     }
@@ -270,7 +264,14 @@ foreach ($all_workflows as $wf) {
 
 <div class="row g-5">
     <div class="col-xl-8">
-        <h6 class="text-white-50 fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;"><i class="bi bi-diagram-3 me-2 text-gold"></i>Pending Workflows</h6>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h6 class="text-white-50 fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">
+                <i class="bi bi-diagram-3 me-2 text-gold"></i>Pending Workflows
+            </h6>
+            <a href="clients.php" class="text-gold small text-decoration-none fw-bold hover-white" style="letter-spacing: 0.5px;">
+                View All <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
         
         <div class="glass-panel p-4 pb-2 overflow-hidden shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
             <div class="table-responsive">
@@ -321,11 +322,15 @@ foreach ($all_workflows as $wf) {
             </div>
         </div>
     </div>
+
     <div class="col-xl-4">
         <h6 class="text-white-50 fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;"><i class="bi bi-activity me-2 text-gold"></i>Recent Ledger</h6>
         
         <div class="glass-panel p-4 mb-4 shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
-            <h6 class="text-white-50 small text-uppercase mb-4 border-bottom border-light border-opacity-10 pb-2" style="letter-spacing: 1px;">Latest Incoming</h6>
+            <div class="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-10 pb-2 mb-4">
+                <h6 class="text-white-50 small text-uppercase mb-0" style="letter-spacing: 1px;">Latest Incoming</h6>
+                <a href="audit-finance.php" class="text-gold small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
             
             <?php if (count($recent_payments) > 0): ?>
                 <div class="d-flex flex-column">
@@ -347,7 +352,10 @@ foreach ($all_workflows as $wf) {
         </div>
 
         <div class="glass-panel p-4 shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
-            <h6 class="text-white-50 small text-uppercase mb-4 border-bottom border-light border-opacity-10 pb-2" style="letter-spacing: 1px;">Latest Outgoing</h6>
+            <div class="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-10 pb-2 mb-4">
+                <h6 class="text-white-50 small text-uppercase mb-0" style="letter-spacing: 1px;">Latest Outgoing</h6>
+                <a href="expenses.php" class="text-gold small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
             
             <?php if (count($recent_expenses) > 0): ?>
                 <div class="d-flex flex-column">
@@ -355,7 +363,7 @@ foreach ($all_workflows as $wf) {
                         <div class="d-flex justify-content-between align-items-center ledger-item">
                             <div class="text-truncate pe-3" style="max-width: 65%;">
                                 <div class="text-white small fw-bold text-truncate"><?php echo htmlspecialchars($exp['title']); ?></div>
-                                <div class="text-white-50" style="font-size: 0.7rem;"><?php echo date('M d', strtotime($exp['expense_date'])); ?> &bull; <?php echo htmlspecialchars($exp['category']); ?></div>
+                                <div class="text-white-50" style="font-size: 0.7rem;"><?php echo date('M d, Y', strtotime($exp['expense_date'])); ?> &bull; <?php echo htmlspecialchars($exp['category']); ?></div>
                             </div>
                             <div class="text-end">
                                 <div class="text-warning small fw-bold">-SAR <?php echo number_format($exp['amount'], 2); ?></div>

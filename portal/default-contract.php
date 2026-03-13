@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mkdir($uploadDir, 0777, true);
         }
 
-        // Delete the old file before saving the new one (saves server space)
+        // Delete the old file before saving the new one
         if (!empty($signature_image) && file_exists($uploadDir . $signature_image)) {
             unlink($uploadDir . $signature_image);
         }
@@ -190,19 +190,34 @@ require_once 'includes/sidebar.php';
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Upload New Signature (PNG/JPG)</label>
-                        <input type="file" name="signature_file" class="form-control" accept="image/png, image/jpeg">
+                        <input type="file" id="signatureFileInput" name="signature_file" class="form-control" accept="image/png, image/jpeg">
                         
-                        <?php if(!empty($defaults['signature_image'])): ?>
-                            <div class="mt-3 p-3 bg-white border rounded d-flex justify-content-between align-items-center shadow-sm">
-                                <div>
-                                    <span class="d-block small text-muted text-uppercase fw-bold mb-1" style="font-size: 10px; letter-spacing: 1px;">Current Signature:</span>
-                                    <img src="../assets/img/signatures/<?php echo htmlspecialchars($defaults['signature_image']); ?>" alt="Signature" style="max-height: 40px;">
-                                </div>
-                                <a href="default-contract.php?action=delete_signature" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to remove this signature?');">
-                                    <i class="bi bi-trash"></i> Remove
-                                </a>
+                        <?php 
+                            $hasSignature = !empty($defaults['signature_image']); 
+                            $signatureUrl = $hasSignature ? '../assets/img/signatures/' . htmlspecialchars($defaults['signature_image']) : '';
+                        ?>
+                        
+                        <div id="signaturePreviewBox" class="mt-3 p-3 bg-white border rounded justify-content-between align-items-center shadow-sm <?php echo $hasSignature ? 'd-flex' : 'd-none'; ?>">
+                            <div>
+                                <span id="signaturePreviewLabel" class="d-block small text-muted text-uppercase fw-bold mb-1" style="font-size: 10px; letter-spacing: 1px;">
+                                    <?php echo $hasSignature ? 'Current Signature:' : 'New Signature Preview:'; ?>
+                                </span>
+                                <img id="signaturePreviewImg" src="<?php echo $signatureUrl; ?>" alt="Signature" style="max-height: 50px; max-width: 100%;">
                             </div>
-                        <?php endif; ?>
+                            
+                            <div id="signatureActionBtns">
+                                <?php if($hasSignature): ?>
+                                    <a href="default-contract.php?action=delete_signature" id="btnDeleteServer" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to permanently remove this signature?');">
+                                        <i class="bi bi-trash"></i> Remove
+                                    </a>
+                                <?php endif; ?>
+                                
+                                <button type="button" id="btnCancelUpload" class="btn btn-sm btn-outline-warning" style="display: none;">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -221,5 +236,55 @@ require_once 'includes/sidebar.php';
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script src="../contract/contract.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('signatureFileInput');
+    const previewBox = document.getElementById('signaturePreviewBox');
+    const previewImg = document.getElementById('signaturePreviewImg');
+    const previewLabel = document.getElementById('signaturePreviewLabel');
+    const btnDeleteServer = document.getElementById('btnDeleteServer');
+    const btnCancelUpload = document.getElementById('btnCancelUpload');
+    
+    const originalImgSrc = "<?php echo $signatureUrl; ?>";
+    const hasOriginal = "<?php echo $hasSignature; ?>" === "1";
+
+    // 1. When user selects a file
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewLabel.innerText = "New Signature Preview:";
+                previewBox.classList.remove('d-none');
+                previewBox.classList.add('d-flex');
+                
+                if (btnDeleteServer) btnDeleteServer.style.display = 'none';
+                btnCancelUpload.style.display = 'inline-block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 2. When user clicks "Cancel" on their local preview
+    btnCancelUpload.addEventListener('click', function() {
+        fileInput.value = ''; // Clear file input
+        
+        if (hasOriginal) {
+            // Revert to old server image
+            previewImg.src = originalImgSrc;
+            previewLabel.innerText = "Current Signature:";
+            if (btnDeleteServer) btnDeleteServer.style.display = 'inline-block';
+            btnCancelUpload.style.display = 'none';
+        } else {
+            // No original image, hide the box completely
+            previewBox.classList.remove('d-flex');
+            previewBox.classList.add('d-none');
+        }
+    });
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

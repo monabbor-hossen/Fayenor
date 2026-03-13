@@ -118,15 +118,15 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                 </button>
             <?php endif;?>
 
-            <a href="<?php echo $current_url; ?>?lang=<?php echo ($lang == 'en' ? 'ar' : 'en'); ?>" 
+            <!-- <a href="<?php echo $current_url; ?>?lang=<?php echo ($lang == 'en' ? 'ar' : 'en'); ?>" 
                class="btn btn-sm btn-outline-light rounded-pill px-3 fw-bold d-none d-sm-block">
                 <i class="bi bi-globe me-1"></i> <?php echo ($lang == 'en' ? 'عربي' : 'English'); ?>
             </a>
-            
-            <a href="<?php echo $current_url; ?>?lang=<?php echo ($lang == 'en' ? 'ar' : 'en'); ?>" 
+             -->
+            <!-- <a href="<?php echo $current_url; ?>?lang=<?php echo ($lang == 'en' ? 'ar' : 'en'); ?>" 
                class="text-white opacity-75 hover-gold d-block d-sm-none text-decoration-none">
                 <i class="bi bi-globe fs-5"></i>
-            </a>
+            </a> -->
             <div class="dropdown">
                 <div class="position-relative d-block" style="cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-bell text-white fs-5 opacity-75 hover-gold"></i>

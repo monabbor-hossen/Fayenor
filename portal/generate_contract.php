@@ -15,31 +15,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['client_id'])) {
     try {
         $db = (new Database())->getConnection();
 
-        // 1. Check if a contract already exists for this client
+        // 1. Check if a contract already exists for this client in the database
         $stmt = $db->prepare("SELECT client_id FROM client_contracts WHERE client_id = ?");
         $stmt->execute([$client_id]);
         
+        // 2. If it does NOT exist, create the record so it shows up in your lists
         if ($stmt->rowCount() == 0) {
-            // 2. If it doesn't exist, insert a new blank record.
-            // By inserting a blank record, your contract.php logic will automatically 
-            // inherit all the text from the Global Default settings!
             $insert = $db->prepare("INSERT INTO client_contracts (client_id) VALUES (?)");
             $insert->execute([$client_id]);
-            
-            $_SESSION['contract_success'] = "Contract generated successfully! You can now edit it or view the PDF.";
-        } else {
-            $_SESSION['contract_error'] = "A contract has already been generated for this client.";
         }
 
-    } catch (Exception $e) {
-        $_SESSION['contract_error'] = "Database Error: " . $e->getMessage();
-    }
+        // 3. PERFECT REDIRECT: Send them directly to view the contract!
+        header("Location: ../contract/contract.php?id=" . $client_id);
+        exit();
 
-    // Redirect them back to the Contract tab list
-    header("Location: default-contract.php");
-    exit();
+    } catch (Exception $e) {
+        // If there is a database error, go back and show the error message
+        $_SESSION['contract_error'] = "Database Error: " . $e->getMessage();
+        header("Location: default-contract.php");
+        exit();
+    }
 } else {
-    // If accessed without a POST request
+    // If accessed directly without clicking the button
     header("Location: default-contract.php");
     exit();
 }

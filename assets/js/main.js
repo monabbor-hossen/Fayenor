@@ -1048,3 +1048,23 @@ document.addEventListener('DOMContentLoaded', function() {
         animate();
     }
 });
+
+
+/* ==========================================================================
+   DEFAULT CONTRACT PAGE: HIDE SAVE BUTTON ON LIST TAB
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', function () {
+    const templateTabBtn = document.getElementById('template-tab');
+    const listTabBtn = document.getElementById('list-tab');
+    const floatingSaveBtn = document.getElementById('floatingSaveBtn');
+
+    if (templateTabBtn && listTabBtn && floatingSaveBtn) {
+        listTabBtn.addEventListener('shown.bs.tab', function () {
+            floatingSaveBtn.style.display = 'none';
+        });
+        
+        templateTabBtn.addEventListener('shown.bs.tab', function () {
+            floatingSaveBtn.style.display = 'flex'; 
+        });
+    }
+});

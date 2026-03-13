@@ -1041,3 +1041,54 @@ a:hover .avatar-circle-refined,
     padding-top: 5rem;
     padding-bottom: 5rem;
 }
+
+/* ==========================================================================
+   DEFAULT CONTRACT PAGE: VERTICAL TABS & LIST UI
+   ========================================================================== */
+.vertical-tabs {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+}
+.vertical-tabs .nav-link {
+    color: #6c757d;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-align: left;
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+}
+.vertical-tabs .nav-link i {
+    font-size: 1.1rem;
+}
+.vertical-tabs .nav-link.active {
+    background-color: rgba(128, 0, 32, 0.08); 
+    color: #800020;
+    border-right: 4px solid #800020;
+    font-weight: 700;
+}
+.vertical-tabs .nav-link:hover:not(.active) {
+    background-color: #f8f9fa;
+    color: #800020;
+    transform: translateX(3px);
+}
+
+.contract-table th {
+    background-color: #800020;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+.contract-table td {
+    vertical-align: middle;
+    font-size: 14px;
+}

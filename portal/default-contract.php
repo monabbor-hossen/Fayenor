@@ -13,16 +13,16 @@ require_once '../app/Config/Database.php';
 $db = (new Database())->getConnection();
 
 // ========================================================================
-// 1. HANDLE DELETING A CONTRACT (Removes it from the list)
+// 1. HANDLE DELETING A CUSTOM CLIENT CONTRACT (Revert to Global)
 // ========================================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_custom_contract') {
     $del_client_id = intval($_POST['client_id']);
     
-    // Delete the contract record
+    // Delete their specific override so they fall back to the Master Template
     $stmt = $db->prepare("DELETE FROM client_contracts WHERE client_id = ?");
     $stmt->execute([$del_client_id]);
     
-    $_SESSION['contract_success'] = "Contract successfully deleted.";
+    $_SESSION['contract_success'] = "Client's custom contract removed. They are now using the Global Template.";
     header("Location: default-contract.php");
     exit();
 }
@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     $maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
 
     if (isset($_FILES['signature_file']) && $_FILES['signature_file']['error'] === UPLOAD_ERR_OK) {
+        
         if ($_FILES['signature_file']['size'] > $maxFileSize) {
             $_SESSION['contract_error'] = "Upload Failed: The signature image must be less than 2MB.";
             header("Location: default-contract.php");
@@ -114,7 +115,8 @@ $defaults = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // 5. Fetch ONLY Clients who have a GENERATED CONTRACT (inner join with client_contracts)
 $clientsStmt = $db->query("
-    SELECT c.client_id, c.company_name, c.client_name, c.contract_value
+    SELECT c.client_id, c.company_name, c.client_name, c.contract_value,
+           (SELECT COUNT(*) FROM client_contracts cc_check WHERE cc_check.client_id = c.client_id AND (cc_check.objective IS NOT NULL OR cc_check.payment_terms IS NOT NULL)) as is_custom
     FROM clients c 
     INNER JOIN client_contracts cc ON c.client_id = cc.client_id 
     ORDER BY c.client_id DESC
@@ -139,56 +141,6 @@ require_once 'includes/sidebar.php';
 
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../contract/contract.css">
-
-<style>
-    .vertical-tabs {
-        background: #ffffff;
-        border-radius: 12px;
-        padding: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        border: 1px solid #f0f0f0;
-    }
-    .vertical-tabs .nav-link {
-        color: #6c757d;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
-        text-align: left;
-        padding: 14px 20px;
-        border-radius: 8px;
-        margin-bottom: 8px;
-        transition: all 0.3s ease;
-        border: none;
-        display: flex;
-        align-items: center;
-    }
-    .vertical-tabs .nav-link i {
-        font-size: 1.1rem;
-    }
-    .vertical-tabs .nav-link.active {
-        background-color: rgba(128, 0, 32, 0.08); 
-        color: #800020;
-        border-right: 4px solid #800020;
-        font-weight: 700;
-    }
-    .vertical-tabs .nav-link:hover:not(.active) {
-        background-color: #f8f9fa;
-        color: #800020;
-        transform: translateX(3px);
-    }
-    
-    .contract-table th {
-        background-color: #800020;
-        color: white;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 12px;
-        letter-spacing: 0.5px;
-    }
-    .contract-table td {
-        vertical-align: middle;
-        font-size: 14px;
-    }
-</style>
 
 <main id="main" class="main">
     
@@ -374,7 +326,11 @@ require_once 'includes/sidebar.php';
                                                     <td class="fw-bold text-muted">#<?php echo $client['client_id']; ?></td>
                                                     <td class="fw-bold" style="color: #800020;"><?php echo htmlspecialchars($client['company_name']); ?></td>
                                                     <td>
-                                                        <span class="badge bg-success text-white border"><i class="bi bi-check-circle me-1"></i> Generated</span>
+                                                        <?php if($client['is_custom'] > 0): ?>
+                                                            <span class="badge bg-warning text-dark border"><i class="bi bi-pencil me-1"></i> Customized</span>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-success text-white border"><i class="bi bi-check-circle me-1"></i> Generated</span>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td>SAR <?php echo number_format($client['contract_value'], 2); ?></td>
                                                     <td class="text-end text-nowrap">
@@ -388,7 +344,7 @@ require_once 'includes/sidebar.php';
                                                         </a>
 
                                                         <button type="button" class="btn btn-sm btn-outline-danger rounded-pill fw-bold ms-1" title="Delete Contract" 
-                                                                onclick="triggerFormModal('deleteContract_<?php echo $client['client_id']; ?>', 'Are you sure you want to delete this contract? It will be removed from this list.')">
+                                                                onclick="triggerFormModal('deleteContract_<?php echo $client['client_id']; ?>', 'Are you sure you want to delete this contract? It will be removed from this list and reset if regenerated.')">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                         
@@ -428,23 +384,5 @@ require_once 'includes/sidebar.php';
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script src="../contract/contract.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const templateTabBtn = document.getElementById('template-tab');
-    const listTabBtn = document.getElementById('list-tab');
-    const floatingSaveBtn = document.getElementById('floatingSaveBtn');
-
-    if (templateTabBtn && listTabBtn && floatingSaveBtn) {
-        listTabBtn.addEventListener('shown.bs.tab', function () {
-            floatingSaveBtn.style.display = 'none';
-        });
-        
-        templateTabBtn.addEventListener('shown.bs.tab', function () {
-            floatingSaveBtn.style.display = 'flex'; 
-        });
-    }
-});
-</script>
 
 <?php require_once 'includes/footer.php'; ?>

@@ -3,6 +3,7 @@ class Translator {
     public function getTranslation($lang) {
         $data = [
             'en' => [
+                // Public Pages
                 'hero_title'     => 'Basmat Rooq',
                 'hero_desc'      => 'Digitizing the Saudi Investment Journey.',
                 'about_us'       => 'About Us',
@@ -19,9 +20,30 @@ class Translator {
                 'location_label' => 'Headquarters',
                 'location_val'   => 'Unaizah, Al-Qassim, KSA',
                 'login'          => 'Access Portal',
-                'explore_us'     => 'Get to know us'
+                'explore_us'     => 'Get to know us',
+
+                // Dashboard / Sidebar
+                'main_menu'         => 'Main Menu',
+                'dashboard'      => 'Dashboard',
+                'clients'        => 'Clients',
+                'contracts'      => 'Contracts',
+                'payroll'        => 'Payroll',
+                'system'            => 'System',
+                'expenses'       => 'Expenses',
+                'settings'       => 'Settings',
+                'support_chat'   => 'Support Chat',
+                'activity_logs'  => 'Activity Logs',
+                'user_access'       => 'User Access',
+                'logout'         => 'Logout',
+                'security'          => 'Security',
+                'client_messages'   => 'Client Messages',
+                'contract_template' => 'Contract Template',
+'financial_audit'   => 'Financial Audit',
+                'admin_portal'   => 'Admin Portal'
+                
             ],
             'ar' => [
+                // Public Pages
                 'hero_title'     => 'بصمة روق',
                 'hero_desc'      => 'رقمنة رحلة الاستثمار السعودي.',
                 'about_us'       => 'من نحن',
@@ -38,7 +60,27 @@ class Translator {
                 'location_label' => 'المقر الرئيسي',
                 'location_val'   => 'عنيزة، القصيم، المملكة العربية السعودية',
                 'login'          => 'دخول البوابة',
-                'explore_us'     => 'تعرف علينا'
+                'explore_us'     => 'تعرف علينا',
+
+                // Dashboard / Sidebar
+                'main_menu'         => 'القائمة الرئيسية',
+                'dashboard'      => 'لوحة القيادة',
+                'clients'        => 'العملاء',
+                'contracts'      => 'العقود',
+                'payroll'        => 'الرواتب',
+                'expenses'       => 'المصاريف',
+                'settings'       => 'الإعدادات',
+                'system'            => 'النظام',
+                'support_chat'   => 'دردشة الدعم',
+                'security'          => 'الأمان',
+                'client_messages'   => 'رسائل العملاء',
+                'user_access'       => 'صلاحيات المستخدمين',
+                'activity_logs'  => 'سجلات النشاط',
+                'logout'         => 'تسجيل خروج',
+                'contract_template' => 'نموذج العقد',
+'financial_audit'   => 'التدقيق المالي',
+                'admin_portal'   => 'بوابة الإدارة'
+
             ]
         ];
         return $data[$lang] ?? $data['en'];

@@ -7,3 +7,42 @@ body[dir="rtl"] .ms-auto { margin-right: auto !important; margin-left: 0 !import
 
 /* Mirroring icons if necessary */
 body[dir="rtl"] .bi-arrow-right::before { content: "\f12f"; } /* Mirror arrow icon */
+/* =========================================
+   DASHBOARD RTL FLIP (ARABIC)
+   ========================================= */
+
+/* Move the sidebar to the right side of the screen */
+[dir="rtl"] .portal-sidebar {
+    left: auto !important;
+    right: -100%;
+    border-right: none;
+    border-left: 1px solid var(--glass-10);
+    transition: right 0.3s ease-in-out;
+}
+
+/* Slide it in from the right */
+[dir="rtl"] .portal-sidebar.show {
+    right: 0 !important;
+    box-shadow: -10px 0 30px var(--black-50);
+}
+
+/* Fix sidebar link borders and icons */
+[dir="rtl"] .nav-link {
+    border-left: none;
+    border-right: 3px solid var(--transparent);
+}
+
+[dir="rtl"] .active-glass {
+    border-left-color: transparent;
+    border-right-color: var(--rooq-gold);
+}
+
+/* Flip Bootstrap margins for icons */
+[dir="rtl"] .me-3, [dir="rtl"] .me-2 {
+    margin-left: 1rem !important;
+    margin-right: 0 !important;
+}
+
+/* Flip tables and text alignments */
+[dir="rtl"] .text-end { text-align: left !important; }
+[dir="rtl"] .text-start { text-align: right !important; }

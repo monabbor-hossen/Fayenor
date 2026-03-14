@@ -3,6 +3,10 @@
 require_once __DIR__ . '/../app/Auth/SessionManager.php';
 require_once __DIR__ . '/../app/Config/Database.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $auth = new SessionManager();
     $user  = $_POST['username'] ?? '';

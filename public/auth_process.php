@@ -39,9 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Success Redirect
             if (isset($_SESSION['role']) && $_SESSION['role'] === 'client') {
-                header("Location: ../management/dashboard.php");
+                header("Location: ../management/dashboard");
             } else {
-                header("Location: ../portal/dashboard.php");
+                header("Location: ../portal/dashboard");
             }
             exit();
         }
@@ -49,10 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Security Error (Locked out, or Wrong Password)
         if (session_status() === PHP_SESSION_NONE) session_start();
         $_SESSION['error'] = $e->getMessage(); // Show the specific security message
-        header("Location: login.php");
+        header("Location: login");
         exit();
     }
 } else {
-    header("Location: login.php");
+    header("Location: login");
     exit();
 }

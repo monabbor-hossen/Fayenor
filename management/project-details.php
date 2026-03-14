@@ -5,14 +5,14 @@ require_once __DIR__ . '/../app/Config/Database.php';
 
 // --- SECURITY: ENSURE ONLY CLIENTS ACCESS THIS ---
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
-    header("Location: ../public/login.php");
+    header("Location: ../public/login");
     exit();
 }
 
 $client_id = $_GET['id'] ?? null;
 
 if (!$client_id) {
-    echo "<script>window.location.href='dashboard.php';</script>";
+    echo "<script>window.location.href='dashboard';</script>";
     exit();
 }
 
@@ -33,7 +33,7 @@ if (!$project) {
                 <i class='bi bi-shield-lock text-danger fs-1 mb-3 d-block'></i>
                 <h4 class='text-white'>Access Denied or Project Not Found</h4>
                 <p class='text-white-50'>You do not have permission to view this project or it has been deactivated.</p>
-                <a href='dashboard.php' class='btn btn-outline-light mt-3'>Return to Dashboard</a>
+                <a href='dashboard' class='btn btn-outline-light mt-3'>Return to Dashboard</a>
             </div>
           </div>";
     require_once 'includes/footer.php';
@@ -86,7 +86,7 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
 
 <div class="container-fluid py-4">
     <div class="mb-4">
-        <a href="dashboard.php" class="text-white-50 text-decoration-none hover-white small fw-bold">
+        <a href="dashboard" class="text-white-50 text-decoration-none hover-white small fw-bold">
             <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
         </a>
     </div>

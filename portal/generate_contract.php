@@ -5,7 +5,7 @@ require_once '../app/Config/Database.php';
 
 // Security Check (Admin/Staff only)
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
-    header("Location: ../public/login.php");
+    header("Location: ../public/login");
     exit();
 }
 
@@ -32,11 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['client_id'])) {
     } catch (Exception $e) {
         // If there is a database error, go back and show the error message
         $_SESSION['contract_error'] = "Database Error: " . $e->getMessage();
-        header("Location: default-contract.php");
+        header("Location: default-contract");
         exit();
     }
 } else {
     // If accessed directly without clicking the button
-    header("Location: default-contract.php");
+    header("Location: default-contract");
     exit();
 }

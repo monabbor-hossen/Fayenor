@@ -15,7 +15,7 @@
             <p class="lead mb-4 text-white-50"><?php echo $text['hero_desc']; ?></p>
             <div class="nav-buttons">
                 <a href="#about" class="btn btn-outline-light rounded-pill px-4 py-2 me-2"><?php echo $text['explore_us']; ?></a>
-                <a href="<?php echo BASE_URL; ?>public/login.php" class="btn btn-rooq-primary rounded-pill px-4 py-2"><?php echo $text['login']; ?></a>
+                <a href="<?php echo BASE_URL; ?>public/login" class="btn btn-rooq-primary rounded-pill px-4 py-2"><?php echo $text['login']; ?></a>
             </div>
         </div>
     </div>

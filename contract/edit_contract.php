@@ -100,8 +100,8 @@ require_once 'header.php';
             <div class="text-white-50 mt-1">Client: <span class="client-name"><?php echo htmlspecialchars($clientName); ?></span></div>
         </div>
         <div>
-            <a href="../portal/clients.php" class="btn btn-outline-light me-2 fw-bold">Cancel</a>
-            <a href="contract.php?id=<?php echo $client_id; ?>" target="_blank" class="btn fw-bold" style="background-color: var(--theme-accent); color: #111;">Preview PDF</a>
+            <a href="../portal/clients" class="btn btn-outline-light me-2 fw-bold">Cancel</a>
+            <a href="contract?id=<?php echo $client_id; ?>" target="_blank" class="btn fw-bold" style="background-color: var(--theme-accent); color: #111;">Preview PDF</a>
         </div>
     </div>
 

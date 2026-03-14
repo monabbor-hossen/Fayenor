@@ -297,7 +297,7 @@ function setupLiveSearch(inputId, resultsId) {
         }
 
         timeout = setTimeout(() => {
-            fetch(`search_api.php?term=${encodeURIComponent(term)}`)
+            fetch(`search_api?term=${encodeURIComponent(term)}`)
                 .then(async response => {
                     const text = await response.text(); 
                     try {
@@ -374,7 +374,7 @@ function toggleMobileSearch() {
 
 function toggleLoginStatus(type, id, checkbox) {
     const isChecked = checkbox.checked;
-    fetch('toggle_status_api.php', {
+    fetch('toggle_status_api', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: type, id: id, status: isChecked })
@@ -676,7 +676,7 @@ function loadChats() {
         if(box && box.innerHTML === "") box.innerHTML = "<div class='text-center text-white-50 mt-5'>No active projects found.</div>";
         return;
     }
-    fetch(`../app/Api/fetch_chats.php?client_id=${window.currentChatClientId}`)
+    fetch(`../app/Api/fetch_chats?client_id=${window.currentChatClientId}`)
     .then(r => {
         if (!r.ok) throw new Error("Server returned " + r.status);
         return r.text();
@@ -723,7 +723,7 @@ function sendMessage() {
     box.scrollTop = box.scrollHeight; 
     lastChatHTML = "FORCE_REFRESH"; 
 
-    fetch('../app/Api/send_chat.php', {
+    fetch('../app/Api/send_chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client_id: window.currentChatClientId, message: msg })
@@ -825,7 +825,7 @@ function checkLiveNotifications() {
 
     if (!baseUrl) return; // Safety check
 
-    fetch(baseUrl + 'app/Api/check_notifications.php')
+    fetch(baseUrl + 'app/Api/check_notifications')
     .then(response => response.json())
     .then(data => {
         if (data.error) return;
@@ -860,7 +860,7 @@ function toggleClientExpense(clientId, checkbox) {
     const isChecked = checkbox.checked ? 1 : 0;
     checkbox.style.opacity = '0.5';
 
-    fetch('../app/Api/toggle_expense_api.php', {
+    fetch('../app/Api/toggle_expense_api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })

@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['full_name'] = $full_name;
                  // Save message and safely redirect using JavaScript
                 $_SESSION['success_msg'] = "Expense added successfully!";
-                echo "<script>window.location.href='settings.php';</script>";
+                echo "<script>window.location.href='settings';</script>";
                 exit();
             }
         } catch (PDOException $e) {
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Security::logActivity("Changed account password");
                 // Save message and safely redirect using JavaScript
                 $_SESSION['success_msg'] = "Expense added successfully!";
-                echo "<script>window.location.href='settings.php';</script>";
+                echo "<script>window.location.href='settings';</script>";
                 exit();
             }
         }
@@ -113,7 +113,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
                     <div class="tab-pane fade show active" id="profile" role="tabpanel">
                         <h5 class="text-gold fw-bold mb-4 border-bottom border-secondary border-opacity-25 pb-2">Profile Information</h5>
-                        <form method="POST" action="settings.php">
+                        <form method="POST" action="settings">
                             <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
                             
                             <div class="row g-4 mb-4">
@@ -140,7 +140,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     <div class="tab-pane fade" id="security" role="tabpanel">
                         <h5 class="text-gold fw-bold mb-4 border-bottom border-secondary border-opacity-25 pb-2">Change Password</h5>
-                        <form method="POST" action="settings.php">
+                        <form method="POST" action="settings">
                             <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
                             
                             <div class="row g-4 mb-4">

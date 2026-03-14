@@ -3,7 +3,7 @@ session_start();
 
 // Security Check (Admin/Staff only)
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
-    header("Location: ../public/login.php");
+    header("Location: ../public/login");
     exit();
 }
 
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stmt->execute([$del_client_id]);
     
     $_SESSION['contract_success'] = "Client's custom contract removed. They are now using the Global Template.";
-    header("Location: default-contract.php");
+    header("Location: default-contract");
     exit();
 }
 
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $db->exec("UPDATE default_contract_settings SET signature_image = NULL WHERE id = 1");
     
     $_SESSION['contract_success'] = "Signature image successfully removed!";
-    header("Location: default-contract.php");
+    header("Location: default-contract");
     exit();
 }
 
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         
         if ($_FILES['signature_file']['size'] > $maxFileSize) {
             $_SESSION['contract_error'] = "Upload Failed: The signature image must be less than 2MB.";
-            header("Location: default-contract.php");
+            header("Location: default-contract");
             exit();
         }
 
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
             }
         } else {
             $_SESSION['contract_error'] = "Upload Failed: Only JPG and PNG files are allowed.";
-            header("Location: default-contract.php");
+            header("Location: default-contract");
             exit();
         }
     }
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     ]);
     
     $_SESSION['contract_success'] = "Global Default Settings Saved Successfully!";
-    header("Location: default-contract.php");
+    header("Location: default-contract");
     exit();
 }
 
@@ -335,11 +335,11 @@ require_once 'includes/sidebar.php';
                                                     <td>SAR <?php echo number_format($client['contract_value'], 2); ?></td>
                                                     <td class="text-end text-nowrap">
                                                         
-                                                        <a href="../contract/edit_contract.php?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" title="Edit Contract">
+                                                        <a href="../contract/edit_contract?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" title="Edit Contract">
                                                             <i class="bi bi-pencil-square"></i> Edit
                                                         </a>
                                                         
-                                                        <a href="../contract/contract.php?id=<?php echo $client['client_id']; ?>" class="btn btn-sm rounded-pill fw-bold text-white ms-1" style="background-color: #D4AF37; border-color: #D4AF37;" title="View Final PDF">
+                                                        <a href="../contract/contract?id=<?php echo $client['client_id']; ?>" class="btn btn-sm rounded-pill fw-bold text-white ms-1" style="background-color: #D4AF37; border-color: #D4AF37;" title="View Final PDF">
                                                             <i class="bi bi-file-earmark-pdf-fill"></i> View
                                                         </a>
 
@@ -375,7 +375,7 @@ require_once 'includes/sidebar.php';
         Save Global Template
     </button>
 
-    <form id="deleteSignatureForm" method="POST" action="default-contract.php" style="display: none;">
+    <form id="deleteSignatureForm" method="POST" action="default-contract" style="display: none;">
         <input type="hidden" name="action" value="delete_signature">
     </form>
 

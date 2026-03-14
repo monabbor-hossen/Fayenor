@@ -5,7 +5,7 @@ require_once __DIR__ . '/../app/Config/Database.php';
 
 // Security check: Only Admin/Staff can see expenses
 if ($_SESSION['role'] === 'client') {
-    echo "<script>window.location.href='../management/dashboard.php';</script>";
+    echo "<script>window.location.href='../management/dashboard';</script>";
     exit();
 }
 
@@ -25,11 +25,11 @@ if (isset($_GET['delete_id'])) {
         
         // Save message and safely redirect using JavaScript
         $_SESSION['success_msg'] = "Expense deleted successfully!";
-        echo "<script>window.location.href='expenses.php';</script>";
+        echo "<script>window.location.href='expenses';</script>";
         exit();
     } catch (PDOException $e) {
         $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
-        echo "<script>window.location.href='expenses.php';</script>";
+        echo "<script>window.location.href='expenses';</script>";
         exit();
     }
 }
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
             
             // Save message and safely redirect using JavaScript
             $_SESSION['success_msg'] = "Expense added successfully!";
-            echo "<script>window.location.href='expenses.php';</script>";
+            echo "<script>window.location.href='expenses';</script>";
             exit();
             
         } catch (PDOException $e) {
@@ -117,7 +117,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
             <div class="glass-panel p-4 h-100">
                 <h5 class="text-gold fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Add New Expense</h5>
                 
-                <form action="expenses.php" method="POST">
+                <form action="expenses" method="POST">
                     <div class="mb-3">
                         <label class="form-label text-white-50 small">Expense Title *</label>
                         <input type="text" name="title" class="form-control glass-input rounded-3" placeholder="e.g., Office Internet" required>

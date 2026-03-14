@@ -177,7 +177,7 @@ $pageTitle = "Service License Agreement - " . htmlspecialchars($clientName);
 require_once 'header.php';
 ?>
 
-    <a href="edit_contract.php?id=<?php echo $client_id; ?>" class="edit-btn" data-html2canvas-ignore="true">✏️ Edit Contract</a>
+    <a href="edit_contract?id=<?php echo $client_id; ?>" class="edit-btn" data-html2canvas-ignore="true">✏️ Edit Contract</a>
     <button class="download-btn" onclick="generatePDF()" data-html2canvas-ignore="true">⬇ Download PDF</button>
 
     <div id="contract-content" data-client-name="<?php echo $pdfClientName; ?>">

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../app/Config/Database.php';
 
 // --- SECURITY: ENSURE ONLY CLIENTS ACCESS THIS ---
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
-    header("Location: ../public/login.php");
+    header("Location: ../public/login");
     exit();
 }
 
@@ -169,7 +169,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
                         elseif ($app['progress_percent'] < 30) $progress_color = 'bg-warning';
                     ?>
                     <div class="col-md-6">
-                        <div class="glass-panel p-4 h-100" style="transition: transform 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="window.location.href='project-details.php?id=<?php echo $app['client_id']; ?>'">
+                        <div class="glass-panel p-4 h-100" style="transition: transform 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="window.location.href='project-details?id=<?php echo $app['client_id']; ?>'">
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <h5 class="text-white fw-bold mb-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;" title="<?php echo htmlspecialchars($app['company_name']); ?>">
@@ -193,7 +193,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
                                         <?php echo number_format($app['due_amount'], 2); ?> SAR
                                     </div>
                                 </div>
-                                <a href="project-details.php?id=<?php echo $app['client_id']; ?>" class="btn btn-sm btn-outline-light rounded-pill px-3" style="font-size: 0.8rem;">View Details <i class="bi bi-arrow-right ms-1"></i></a>
+                                <a href="project-details?id=<?php echo $app['client_id']; ?>" class="btn btn-sm btn-outline-light rounded-pill px-3" style="font-size: 0.8rem;">View Details <i class="bi bi-arrow-right ms-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -233,7 +233,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
                         <?php endforeach; ?>
                     </div>
                     <div class="p-3 text-center border-top border-light border-opacity-10 bg-dark bg-opacity-25">
-                        <a href="billing.php" class="text-gold text-decoration-none small fw-bold hover-white">View All Invoices <i class="bi bi-arrow-right ms-1"></i></a>
+                        <a href="billing" class="text-gold text-decoration-none small fw-bold hover-white">View All Invoices <i class="bi bi-arrow-right ms-1"></i></a>
                     </div>
                 <?php else: ?>
                     <div class="p-5 text-center">

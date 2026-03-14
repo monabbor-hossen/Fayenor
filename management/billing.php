@@ -5,7 +5,7 @@ require_once __DIR__ . '/../app/Config/Database.php';
 
 // --- 1. SECURITY: STRICT ACCESS CONTROL ---
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
-    header("Location: ../public/login.php");
+    header("Location: ../public/login");
     exit();
 }
 
@@ -120,7 +120,7 @@ try {
 
 <div class="container-fluid py-4">
     <div class="mb-4">
-        <a href="dashboard.php" class="text-white-50 text-decoration-none hover-white small fw-bold">
+        <a href="dashboard" class="text-white-50 text-decoration-none hover-white small fw-bold">
             <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
         </a>
     </div>
@@ -137,7 +137,7 @@ try {
 
     <div class="glass-panel p-3 mb-4">
         <h6 class="text-gold fw-bold mb-3"><i class="bi bi-funnel-fill me-2"></i>Advanced Filters</h6>
-        <form method="GET" action="billing.php" class="m-0 row g-3">
+        <form method="GET" action="billing" class="m-0 row g-3">
             
             <div class="col-md-4">
                 <label class="text-white-50 small mb-1">Project / Company</label>
@@ -179,7 +179,7 @@ try {
             
             <?php if ($filter_client_id !== 'all' || !empty($start_date) || !empty($end_date)): ?>
                 <div class="col-12 mt-2 text-end">
-                    <a href="billing.php" class="text-danger small text-decoration-none hover-white"><i class="bi bi-x-circle me-1"></i>Clear Filters</a>
+                    <a href="billing" class="text-danger small text-decoration-none hover-white"><i class="bi bi-x-circle me-1"></i>Clear Filters</a>
                 </div>
             <?php endif; ?>
         </form>
@@ -256,7 +256,7 @@ try {
                                 <div class="small text-white-50"><?php echo date('h:i A', strtotime($pay['created_at'] ?? $pay['payment_date'])); ?></div>
                             </td>
                             <td>
-                                <a href="project-details.php?id=<?php echo $pay['client_id']; ?>" class="text-white text-decoration-none hover-gold fw-bold d-flex align-items-center">
+                                <a href="project-details?id=<?php echo $pay['client_id']; ?>" class="text-white text-decoration-none hover-gold fw-bold d-flex align-items-center">
                                     <i class="bi bi-building text-white-50 me-2"></i>
                                     <?php echo htmlspecialchars($pay['company_name']); ?>
                                 </a>

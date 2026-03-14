@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 2. Prevent Self-Deletion
     if ($delete_id == $current_user_id) {
-        header("Location: users.php?error=cannot_delete_self");
+        header("Location: users?error=cannot_delete_self");
         exit();
     }
 
@@ -30,9 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Assuming you have fetched the username before deleting it for the log
         Security::logActivity("Deleted user account: " . $deleted_username);
         if ($stmt->execute()) {
-            header("Location: users.php?msg=deleted");
+            header("Location: users?msg=deleted");
         } else {
-            header("Location: users.php?error=failed");
+            header("Location: users?error=failed");
         }
     } catch (PDOException $e) {
         header("Location: users.php?error=" . urlencode($e->getMessage()));
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 } else {
     // Redirect if accessed directly via GET
-    header("Location: users.php");
+    header("Location: users");
     exit();
 }
 ?>

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../app/Config/Database.php';
 
 // Security check: Only Clients can access this specific page
 if ($_SESSION['role'] !== 'client') {
-    echo "<script>window.location.href='../portal/dashboard.php';</script>";
+    echo "<script>window.location.href='../portal/dashboard';</script>";
     exit();
 }
 if ($_SESSION['role'] === 'client') {
@@ -14,7 +14,7 @@ if ($_SESSION['role'] === 'client') {
     $stmtCheck->execute([$account_id]);
     $perm = $stmtCheck->fetch();
     if (!$perm || $perm['show_expenses'] == 0) {
-        header("Location: dashboard.php");
+        header("Location: dashboard");
         exit();
     }
 }
@@ -41,11 +41,11 @@ if (isset($_GET['delete_id'])) {
         $stmt->execute([$delete_id, $user_id]);
         
         $_SESSION['success_msg'] = "Expense deleted successfully!";
-        echo "<script>window.location.href='expenses.php';</script>";
+        echo "<script>window.location.href='expenses';</script>";
         exit();
     } catch (PDOException $e) {
         $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
-        echo "<script>window.location.href='expenses.php';</script>";
+        echo "<script>window.location.href='expenses';</script>";
         exit();
     }
 }
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
             $stmt->execute([$project_id, $title, $amount, $date, $category, $description, $user_id]);
             
             $_SESSION['success_msg'] = "Expense recorded successfully!";
-            echo "<script>window.location.href='expenses.php';</script>";
+            echo "<script>window.location.href='expenses';</script>";
             exit();
             
         } catch (PDOException $e) {
@@ -124,7 +124,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
             <div class="glass-panel p-4 h-100">
                 <h5 class="text-gold fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Record Expense</h5>
                 
-                <form action="expenses.php" method="POST">
+                <form action="expenses" method="POST">
                     
                     <div class="mb-3">
                         <label class="form-label text-white-50 small">Project / Company</label>

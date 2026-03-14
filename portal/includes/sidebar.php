@@ -33,7 +33,7 @@ if ($_SESSION['role'] === 'client') {
         <?php if ($_SESSION['role'] === 'client') :?>
         <ul class="nav flex-column mb-auto mt-3 w-100">
             <li class="nav-item mb-2">
-                <a href="dashboard.php"
+                <a href="dashboard"
                     class="nav-link <?php echo ($current_page == 'dashboard.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-grid-1x2 fs-5 me-1 text-gold"></i>
@@ -41,7 +41,7 @@ if ($_SESSION['role'] === 'client') {
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="billing.php"
+                <a href="billing"
                     class="nav-link <?= in_array($current_page, ['billing.php','project-details.php']) ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-receipt fs-5 me-1 text-gold"></i>
@@ -49,7 +49,7 @@ if ($_SESSION['role'] === 'client') {
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="chat.php"
+                <a href="chat"
                     class="nav-link <?php echo ($current_page == 'chat.php') ? 'active-glass ' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-chat-dots fs-5 me-1 text-gold"></i>
@@ -61,7 +61,7 @@ if ($_SESSION['role'] === 'client') {
             </li>
             <?php if ($can_see_expenses): ?>
             <li class="nav-item mb-2">
-                <a href="expenses.php"
+                <a href="expenses"
                     class="nav-link <?php echo ($current_page == 'expenses.php') ? 'active-glass' : ''; ?>  rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-wallet2 fs-5 me-1 text-gold"></i>
@@ -76,18 +76,18 @@ if ($_SESSION['role'] === 'client') {
         <ul class="nav flex-column gap-1">
             <li class="nav-item">
                 <a class="nav-link <?php echo ($current_page == 'dashboard.php') ? 'active-glass' : ''; ?> rounded"
-                    href="dashboard.php">
+                    href="dashboard">
                     <i class="bi bi-grid-fill me-1"></i> <?php echo $text['dashboard']; ?>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo (in_array($current_page, ['clients.php', 'client-add.php', 'client-edit.php'])) ? 'active-glass' : ''; ?> rounded"
-                    href="clients.php">
+                    href="clients">
                     <i class="bi bi-people-fill me-1"></i> <?php echo $text['clients']; ?>
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="chat.php"
+                <a href="chat"
                     class="nav-link <?php echo ($current_page == 'chat.php') ? 'active-glass active bg-rooq-primary text-white shadow-sm' : 'text-white-50 hover-white'; ?> d-flex align-items-center rounded px-3 py-2"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-chat-dots fs-5 me-1 text-gold"></i>
@@ -106,12 +106,12 @@ if ($_SESSION['role'] === 'client') {
         <ul class="nav flex-column gap-1">
             <li class="nav-item">
                 <a class="nav-link <?php echo (in_array($current_page, ['users.php', 'user-add.php', 'user-edit.php'])) ? 'active-glass' : ''; ?> rounded"
-                    href="users.php">
+                    href="users">
                     <i class="bi bi-shield-lock-fill me-1"></i> <?php echo $text['user_access']; ?>
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="payroll.php"
+                <a href="payroll"
                     class="nav-link <?php echo ($current_page == 'payroll.php' || $current_page == 'user-payroll.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-cash-coin me-1"></i>
@@ -119,7 +119,7 @@ if ($_SESSION['role'] === 'client') {
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="expenses.php"
+                <a href="expenses"
                     class="nav-link <?php echo ($current_page == 'expenses.php') ? 'active-glass' : ''; ?> rounded">
                     <i class="bi bi-wallet2 me-1"></i>
                     <span class="flex-grow-1"><?php echo $text['expenses']; ?></span>
@@ -127,7 +127,7 @@ if ($_SESSION['role'] === 'client') {
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo ($current_page == 'settings.php') ? 'active-glass' : ''; ?> rounded"
-                    href="settings.php">
+                    href="settings">
                     <i class="bi bi-gear-fill me-1"></i> <?php echo $text['settings']; ?>
                 </a>
             </li>
@@ -138,13 +138,13 @@ if ($_SESSION['role'] === 'client') {
             </div>
             <li class="nav-item mb-2">
                 <a class="nav-link <?php echo ($current_page == 'default-contract.php') ? 'active-glass' : ''; ?> rounded"
-                    href="default-contract.php">
+                    href="default-contract">
                     <i class="bi bi-file-earmark-text me-1"></i>
                     <span><?php echo $text['contract_template']; ?></span>
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="activity-logs.php"
+                <a href="activity-logs"
                     class="nav-link <?php echo ($current_page == 'activity-logs.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-activity me-1"></i>
@@ -152,7 +152,7 @@ if ($_SESSION['role'] === 'client') {
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="audit-finance.php"
+                <a href="audit-finance"
                     class="nav-link <?php echo ($current_page == 'audit-finance.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
                     <i class="bi bi-bank me-1"></i>

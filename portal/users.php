@@ -28,7 +28,7 @@ function getRoleName($roleId) {
     
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="text-white fw-bold">System Users</h3>
-        <a href="user-add.php" class="btn btn-rooq-primary btn-sm px-4 rounded-pill shadow-lg">
+        <a href="user-add" class="btn btn-rooq-primary btn-sm px-4 rounded-pill shadow-lg">
             <i class="bi bi-plus-lg me-2"></i> Add New User
         </a>
     </div>
@@ -94,20 +94,20 @@ function getRoleName($roleId) {
                             <td class="text-end pe-4">
                                 <div class="d-flex justify-content-end gap-2">
                                     
-                                    <a href="user-payroll.php?id=<?php echo $user['id']; ?>" 
+                                    <a href="user-payroll?id=<?php echo $user['id']; ?>" 
                                        class="btn btn-sm btn-outline-success border-0 opacity-75 hover-opacity-100" 
                                        title="Manage Payroll">
                                         <i class="bi bi-wallet2"></i>
                                     </a>
 
-                                    <a href="user-edit.php?id=<?php echo $user['id']; ?>" 
+                                    <a href="user-edit?id=<?php echo $user['id']; ?>" 
                                        class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100" 
                                        title="Edit User">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
 
                                     <?php if($_SESSION['user_id'] != $user['id']): ?>
-                                        <form id="deleteForm_<?php echo $user['id']; ?>" action="user-delete.php" method="POST" style="display:inline;">
+                                        <form id="deleteForm_<?php echo $user['id']; ?>" action="user-delete" method="POST" style="display:inline;">
                                             <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
                                             <input type="hidden" name="delete_id" value="<?php echo $user['id']; ?>">
                                             

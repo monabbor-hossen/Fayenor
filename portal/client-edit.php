@@ -5,11 +5,11 @@ require_once __DIR__ . '/../app/Config/Database.php';
 require_once __DIR__ . '/../app/Helpers/Security.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
-if (!isset($_SESSION['user_id'])) { header("Location: ../public/login.php"); exit(); }
+if (!isset($_SESSION['user_id'])) { header("Location: ../public/login"); exit(); }
 
 $message = "";
 $client_id = $_GET['id'] ?? null;
-if (!$client_id) { header("Location: clients.php"); exit(); }
+if (!$client_id) { header("Location: clients"); exit(); }
 
 $db = (new Database())->getConnection();
 
@@ -170,7 +170,7 @@ $workflow_steps = [
     <?php require_once 'includes/sidebar.php'; ?>
     <main class="w-100 p-4">
         <div class="container-fluid">
-            <a href="clients.php" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+            <a href="clients" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
                 <i class="bi bi-arrow-left me-2"></i> Back to Clients
             </a>
             <div class="row justify-content-center">

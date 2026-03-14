@@ -40,7 +40,7 @@ foreach ($users as $u) {
             <h3 class="text-white fw-bold mb-0">Payroll Management</h3>
             <p class="text-white-50 small mb-0">Overview of staff salaries and payment status</p>
         </div>
-        <a href="users.php" class="btn btn-outline-light btn-sm rounded-pill px-4">
+        <a href="users" class="btn btn-outline-light btn-sm rounded-pill px-4">
             <i class="bi bi-people me-2"></i> Manage Users
         </a>
     </div>
@@ -154,7 +154,7 @@ foreach ($users as $u) {
                             </td>
 
                             <td class="text-end pe-4">
-                                <a href="user-payroll.php?id=<?php echo $user['id']; ?>" class="btn btn-sm btn-outline-success opacity-75 hover-opacity-100 rounded-pill px-3 shadow-sm">
+                                <a href="user-payroll?id=<?php echo $user['id']; ?>" class="btn btn-sm btn-outline-success opacity-75 hover-opacity-100 rounded-pill px-3 shadow-sm">
                                     <i class="bi bi-wallet2 me-1"></i> Manage
                                 </a>
                             </td>

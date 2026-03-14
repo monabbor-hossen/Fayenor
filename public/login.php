@@ -18,12 +18,12 @@ if (isset($_GET['lang'])) {
 if (isset($_SESSION['user_id'])) {
     // If Admin or Staff, go to portal
     if (in_array($_SESSION['role'], ['1', '2'])) {
-        header("Location: ../portal/dashboard.php");
+        header("Location: ../portal/dashboard");
         exit();
     } 
     // If Client, go to client dashboard
     elseif ($_SESSION['role'] === 'client') {
-        header("Location: ../management/dashboard.php");
+        header("Location: ../management/dashboard");
         exit();
     }
 }
@@ -103,7 +103,7 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
                 <p class="text-muted"><?php echo ($lang == 'ar' ? 'يرجى إدخال بيانات الاعتماد الخاصة بك' : 'Please enter your credentials to access your dashboard.'); ?></p>
             </div>
 
-            <form action="auth_process.php" method="POST">
+            <form action="auth_process" method="POST">
                 
                 <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
 

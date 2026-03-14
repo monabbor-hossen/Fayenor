@@ -5,7 +5,7 @@ require_once __DIR__ . '/../app/Config/Database.php';
 
 // --- SECURITY: ENSURE ONLY ADMIN/STAFF ACCESS THIS ---
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
-    header("Location: ../public/login.php");
+    header("Location: ../public/login");
     exit();
 }
 
@@ -270,7 +270,7 @@ foreach ($all_workflows as $wf) {
             <h6 class="text-white-50 fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">
                 <i class="bi bi-diagram-3 me-2 text-gold"></i>Pending Workflows
             </h6>
-            <a href="clients.php" class="text-gold small text-decoration-none fw-bold hover-white" style="letter-spacing: 0.5px;">
+            <a href="clients" class="text-gold small text-decoration-none fw-bold hover-white" style="letter-spacing: 0.5px;">
                 View All <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
@@ -314,7 +314,7 @@ foreach ($all_workflows as $wf) {
                                         </div>
                                     </td>
                                     <td class="text-end align-middle">
-                                        <a href="client-edit.php?id=<?php echo htmlspecialchars($pc['client_id']); ?>" 
+                                        <a href="client-edit?id=<?php echo htmlspecialchars($pc['client_id']); ?>" 
                                            class="btn btn-sm text-white-50 border border-light border-opacity-10 bg-dark bg-opacity-25 rounded-pill px-3 shadow-none hover-white" 
                                            style="font-size: 0.75rem; transition: all 0.3s ease;">
                                             Manage <i class="bi bi-chevron-right ms-1" style="font-size: 0.65rem;"></i>
@@ -335,7 +335,7 @@ foreach ($all_workflows as $wf) {
         <div class="glass-panel p-4 mb-4 shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
             <div class="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-10 pb-2 mb-4">
                 <h6 class="text-white-50 small text-uppercase mb-0" style="letter-spacing: 1px;">Latest Incoming</h6>
-                <a href="audit-finance.php" class="text-gold small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
+                <a href="audit-finance" class="text-gold small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
             
             <?php if (count($recent_payments) > 0): ?>
@@ -360,7 +360,7 @@ foreach ($all_workflows as $wf) {
         <div class="glass-panel p-4 shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
             <div class="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-10 pb-2 mb-4">
                 <h6 class="text-white-50 small text-uppercase mb-0" style="letter-spacing: 1px;">Latest Outgoing</h6>
-                <a href="expenses.php" class="text-gold small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
+                <a href="expenses" class="text-gold small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
             
             <?php if (count($recent_expenses) > 0): ?>

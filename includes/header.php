@@ -61,7 +61,7 @@ $text = $translator->getTranslation($lang);
                 <?php echo ($lang == 'en' ? 'العربية' : 'English'); ?>
             </a>
             
-            <a href="<?php echo BASE_URL; ?>public/login.php" 
+            <a href="<?php echo BASE_URL; ?>public/login" 
                class="btn btn-rooq-primary rounded-pill px-3 px-md-4 py-1 py-md-2 fw-bold shadow-sm" 
                style="font-size: clamp(0.75rem, 2vw, 1rem); white-space: nowrap;">
                 <?php echo $text['login']; ?>

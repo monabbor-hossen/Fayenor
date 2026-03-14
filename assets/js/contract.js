@@ -71,10 +71,9 @@ function generatePDF() {
     pages.forEach(p => {
         p.style.marginBottom = '0px';
         p.style.boxShadow = 'none';
-        p.style.height = '296.9mm';
-        p.style.overflow = 'hidden';
+        // REMOVED the p.style.height hack! Let the CSS handle the exact size.
     });
-    element.style.overflow = 'hidden';
+
     // Fetch the client name safely from the HTML data attribute
     const clientName = element.getAttribute('data-client-name') || 'Client';
     const filename = `Service_License_Agreement_${clientName}.pdf`;
@@ -87,16 +86,19 @@ function generatePDF() {
             quality: 1
         },
         html2canvas: {
-            scale: 2,
+            scale: 2, // Scale 2 ensures high resolution text
             useCORS: true,
             scrollY: 0,
-            windowWidth: 1380
+            windowWidth: document.documentElement.offsetWidth // Better than hardcoded 1380
         },
         jsPDF: {
-            unit: 'mm',
-            format: 'a4',
-            orientation: 'portrait'
-        }
+            unit: 'px', // Changed to px to perfectly match our CSS
+            format: [794, 1123], // Explicitly defining A4 pixel sizes
+            orientation: 'portrait',
+            hotfixes: ['px_scaling']
+        },
+        // THE MAGIC FIX: Forces html2pdf to slice exactly at the end of .document-page
+        pagebreak: { mode: 'css', before: '.document-page' }
     };
 
     // 2. Generate and then return normal web view styling
@@ -104,13 +106,13 @@ function generatePDF() {
         pages.forEach(p => {
             p.style.marginBottom = '40px';
             p.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
-            p.style.height = '297mm';
         });
-        element.style.overflow = 'visible';
-        // Put the original image back so the website looks normal!
-        logoImg.src =
-            originalSrc; // Restore the original watermark image and CSS filter for the web view
-        watermarkImg.src = originalWatermarkSrc;
-        watermarkImg.style.filter = '';
+
+        // Put the original images back so the website looks normal!
+        logoImg.src = originalSrc;
+        if (typeof watermarkImg !== 'undefined' && watermarkImg) {
+            watermarkImg.src = originalWatermarkSrc;
+            watermarkImg.style.filter = '';
+        }
     });
 }

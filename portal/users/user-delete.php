@@ -1,8 +1,8 @@
 <?php
 // portal/user-delete.php
-require_once __DIR__ . '/../app/Config/Config.php';
-require_once __DIR__ . '/../app/Config/Database.php';
-require_once __DIR__ . '/../app/Helpers/Security.php';
+require_once __DIR__ . '/../../app/Config/Config.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
+require_once __DIR__ . '/../../app/Helpers/Security.php';
 
 // Ensure user is logged in
 Security::requireLogin();

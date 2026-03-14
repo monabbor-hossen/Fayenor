@@ -1,8 +1,8 @@
 <?php
 // portal/toggle_status_api.php
-require_once __DIR__ . '/../app/Config/Config.php';
-require_once __DIR__ . '/../app/Config/Database.php';
-require_once __DIR__ . '/../app/Helpers/Security.php';
+require_once __DIR__ . '/../../app/Config/Config.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
+require_once __DIR__ . '/../../app/Helpers/Security.php';
 
 header('Content-Type: application/json');
 

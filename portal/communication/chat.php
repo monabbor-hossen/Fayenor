@@ -6,9 +6,9 @@ $is_client_folder = strpos($_SERVER['SCRIPT_NAME'], '/management/') !== false;
 if ($is_client_folder) {
     require_once '../portal/includes/header.php';
 } else {
-    require_once 'includes/header.php';
+    require_once '../includes/header.php';
 }
-require_once __DIR__ . '/../app/Config/Database.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 
@@ -113,5 +113,5 @@ foreach($clients as $c) { if($c['client_id'] == $active_client) $active_name = $
 </script>
 <?php 
 if ($is_client_folder) { require_once '../portal/includes/footer.php'; } 
-else { require_once 'includes/footer.php'; }
+else { require_once '../includes/footer.php'; }
 ?>

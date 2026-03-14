@@ -111,5 +111,5 @@ foreach($clients as $c) { if($c['client_id'] == $active_client) $active_name = $
 </script>
 <?php 
 if ($is_client_folder) { require_once '../portal/includes/footer.php'; } 
-else { require_once 'includes/footer.php'; }
+else { require_once '../includes/footer.php'; }
 ?>

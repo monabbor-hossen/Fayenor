@@ -3,12 +3,12 @@ session_start();
 
 // Security Check (Admin/Staff only)
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
-    header("Location: ../public/login");
+    header("Location: ../../public/login");
     exit();
 }
 
-require_once '../app/Config/Config.php';
-require_once '../app/Config/Database.php';
+require_once '../../app/Config/Config.php';
+require_once '../../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $curr = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!empty($curr['signature_image'])) {
-        $filePath = '../assets/img/signatures/' . $curr['signature_image'];
+        $filePath = '../../assets/img/signatures/' . $curr['signature_image'];
         if (file_exists($filePath)) {
             @unlink($filePath); 
         }
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
             exit();
         }
 
-        $uploadDir = '../assets/img/signatures/';
+        $uploadDir = '../../assets/img/signatures/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
@@ -135,8 +135,8 @@ if (isset($_SESSION['contract_error'])) {
     unset($_SESSION['contract_error']);
 }
 
-require_once 'includes/header.php';
-require_once 'includes/sidebar.php';
+require_once '../includes/header.php';
+require_once '../includes/sidebar.php';
 ?>
 
 <link href="<?php echo BASE_URL; ?>assets/css/summernote-lite.min.css" rel="stylesheet">
@@ -263,7 +263,7 @@ require_once 'includes/sidebar.php';
                                         
                                         <?php 
                                             $hasSignature = !empty($defaults['signature_image']); 
-                                            $signatureUrl = $hasSignature ? '../assets/img/signatures/' . htmlspecialchars($defaults['signature_image']) : '';
+                                            $signatureUrl = $hasSignature ? '../../assets/img/signatures/' . htmlspecialchars($defaults['signature_image']) : '';
                                         ?>
                                         
                                         <div id="signaturePreviewBox" 
@@ -335,11 +335,11 @@ require_once 'includes/sidebar.php';
                                                     <td>SAR <?php echo number_format($client['contract_value'], 2); ?></td>
                                                     <td class="text-end text-nowrap">
                                                         
-                                                        <a href="../contract/edit_contract?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" title="Edit Contract">
+                                                        <a href="../../contract/edit_contract?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" title="Edit Contract">
                                                             <i class="bi bi-pencil-square"></i> Edit
                                                         </a>
                                                         
-                                                        <a href="../contract/contract?id=<?php echo $client['client_id']; ?>" class="btn btn-sm rounded-pill fw-bold text-white ms-1" style="background-color: #D4AF37; border-color: #D4AF37;" title="View Final PDF">
+                                                        <a href="../../contract/contract?id=<?php echo $client['client_id']; ?>" class="btn btn-sm rounded-pill fw-bold text-white ms-1" style="background-color: #D4AF37; border-color: #D4AF37;" title="View Final PDF">
                                                             <i class="bi bi-file-earmark-pdf-fill"></i> View
                                                         </a>
 
@@ -385,4 +385,4 @@ require_once 'includes/sidebar.php';
 <script src="<?php echo BASE_URL; ?>assets/js/summernote-lite.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/contract.js"></script>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

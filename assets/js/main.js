@@ -296,8 +296,10 @@ function setupLiveSearch(inputId, resultsId) {
             return;
         }
 
+        const baseUrlMeta = document.getElementById('base_url_meta');
+        const baseUrl = baseUrlMeta ? baseUrlMeta.content : '/rooqflow/';
         timeout = setTimeout(() => {
-            fetch(`search_api?term=${encodeURIComponent(term)}`)
+            fetch(`${baseUrl}portal/api/search_api?term=${encodeURIComponent(term)}`)
                 .then(async response => {
                     const text = await response.text(); 
                     try {
@@ -374,7 +376,10 @@ function toggleMobileSearch() {
 
 function toggleLoginStatus(type, id, checkbox) {
     const isChecked = checkbox.checked;
-    fetch('toggle_status_api', {
+    const baseUrlMeta = document.getElementById('base_url_meta');
+    const baseUrl = baseUrlMeta ? baseUrlMeta.content : '/rooqflow/';
+
+    fetch(`${baseUrl}portal/api/toggle_status_api`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: type, id: id, status: isChecked })
@@ -676,7 +681,9 @@ function loadChats() {
         if(box && box.innerHTML === "") box.innerHTML = "<div class='text-center text-white-50 mt-5'>No active projects found.</div>";
         return;
     }
-    fetch(`../app/Api/fetch_chats?client_id=${window.currentChatClientId}`)
+    const baseUrlMeta = document.getElementById('base_url_meta');
+    const baseUrl = baseUrlMeta ? baseUrlMeta.content : '/rooqflow/';
+    fetch(`${baseUrl}app/Api/fetch_chats?client_id=${window.currentChatClientId}`)
     .then(r => {
         if (!r.ok) throw new Error("Server returned " + r.status);
         return r.text();
@@ -723,7 +730,9 @@ function sendMessage() {
     box.scrollTop = box.scrollHeight; 
     lastChatHTML = "FORCE_REFRESH"; 
 
-    fetch('../app/Api/send_chat', {
+    const baseUrlMeta = document.getElementById('base_url_meta');
+    const baseUrl = baseUrlMeta ? baseUrlMeta.content : '/rooqflow/';
+    fetch(`${baseUrl}app/Api/send_chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client_id: window.currentChatClientId, message: msg })

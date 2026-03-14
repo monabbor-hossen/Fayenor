@@ -1,11 +1,11 @@
 <?php
 // portal/client-edit.php
-require_once __DIR__ . '/../app/Config/Config.php';
-require_once __DIR__ . '/../app/Config/Database.php';
-require_once __DIR__ . '/../app/Helpers/Security.php';
+require_once __DIR__ . '/../../app/Config/Config.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
+require_once __DIR__ . '/../../app/Helpers/Security.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
-if (!isset($_SESSION['user_id'])) { header("Location: ../public/login"); exit(); }
+if (!isset($_SESSION['user_id'])) { header("Location: ../../public/login"); exit(); }
 
 $message = "";
 $client_id = $_GET['id'] ?? null;
@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // --- FETCH DATA (Fixed JOIN to use account_id for proper Auto-fill) ---
-require_once 'includes/header.php';
+require_once '../includes/header.php';
 if (isset($_GET['msg']) && $_GET['msg'] == 'updated') $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'>Updated successfully!</div>";
 
 $sql_fetch = "SELECT c.*, w.*, a.username as acc_username 
@@ -167,7 +167,7 @@ $workflow_steps = [
 ?>
 
 <div class="d-flex portal-wrapper">
-    <?php require_once 'includes/sidebar.php'; ?>
+    <?php require_once '../includes/sidebar.php'; ?>
     <main class="w-100 p-4">
         <div class="container-fluid">
             <a href="clients" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
@@ -334,4 +334,4 @@ $workflow_steps = [
     </div>
 </div>
 
-<?php require_once "includes/footer.php"; ?>
+<?php require_once '../includes/footer.php'; ?>

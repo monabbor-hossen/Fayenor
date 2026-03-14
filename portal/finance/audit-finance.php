@@ -1,12 +1,12 @@
 <?php
 // portal/audit-finance.php
-require_once 'includes/header.php';
-require_once __DIR__ . '/../app/Config/Database.php';
+require_once '../includes/header.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
 
 // Only Admins should access Financial Audits
 if ($_SESSION['role'] != '2') {
     echo "<div class='container p-5 text-center text-danger'><h4><i class='bi bi-shield-lock-fill me-2'></i> Access Denied. Admins only.</h4></div>";
-    require_once 'includes/footer.php';
+    require_once '../includes/footer.php';
     exit();
 }
 
@@ -141,4 +141,4 @@ foreach ($logs as $log) {
 </div>
 </main>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

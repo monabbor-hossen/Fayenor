@@ -1,11 +1,11 @@
 <?php
 // portal/client-add.php
-require_once 'includes/header.php';
-require_once __DIR__ . '/../app/Config/Database.php';
+require_once '../includes/header.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
 
 // --- 1. SECURITY: STRICT ACCESS CONTROL ---
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
-    echo "<script>window.location.href='../public/login';</script>";
+    echo "<script>window.location.href='../../public/login';</script>";
     exit();
 }
 
@@ -282,4 +282,4 @@ $workflow_steps = [
     </div>
 </div>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

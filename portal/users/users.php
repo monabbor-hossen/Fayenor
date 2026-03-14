@@ -1,7 +1,7 @@
 <?php
 // portal/users.php
-require_once 'includes/header.php';
-require_once __DIR__ . '/../app/Config/Database.php';
+require_once '../includes/header.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 
@@ -136,4 +136,4 @@ function getRoleName($roleId) {
 </div>
 </main>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

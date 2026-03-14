@@ -1,7 +1,7 @@
 <?php
 // portal/user-edit.php
-require_once 'includes/header.php';
-require_once __DIR__ . '/../app/Config/Database.php';
+require_once '../includes/header.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
 
 $user_id = isset($_GET['id']) ? intval($_GET['id']) : null;
 if (!$user_id) {
@@ -36,12 +36,12 @@ try {
 
     if (!$user) {
         echo "<div class='alert alert-warning m-4'>User not found.</div>";
-        require_once 'includes/footer.php';
+        require_once '../includes/footer.php';
         exit();
     }
 } catch (PDOException $e) {
     echo "<div class='alert alert-danger m-4 fw-bold'>Database Error: <br><small>" . $e->getMessage() . "</small></div>";
-    require_once 'includes/footer.php';
+    require_once '../includes/footer.php';
     exit();
 }
 
@@ -222,4 +222,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     </div>
 </div>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

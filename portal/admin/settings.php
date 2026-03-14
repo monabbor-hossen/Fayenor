@@ -1,7 +1,7 @@
 <?php
 // portal/settings.php
-require_once 'includes/header.php';
-require_once __DIR__ . '/../app/Config/Database.php';
+require_once '../includes/header.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 $user_id = $_SESSION['user_id'];
@@ -176,4 +176,4 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 </style>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

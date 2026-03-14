@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once '../app/Config/Config.php';
-require_once '../app/Config/Database.php';
+require_once '../../app/Config/Config.php';
+require_once '../../app/Config/Database.php';
 
 // Security Check (Admin/Staff only)
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
-    header("Location: ../public/login");
+    header("Location: ../../public/login");
     exit();
 }
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['client_id'])) {
         }
 
         // 3. PERFECT REDIRECT: Send them directly to view the contract!
-        header("Location: ../contract/contract.php?id=" . $client_id);
+        header("Location: ../../contract/contract.php?id=" . $client_id);
         exit();
 
     } catch (Exception $e) {

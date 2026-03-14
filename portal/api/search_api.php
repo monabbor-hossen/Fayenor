@@ -10,7 +10,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 try {
     // 3. Load Dependencies
-    $appPath = dirname(__DIR__) . '/app';
+    $appPath = dirname(dirname(__DIR__)) . '/app';
     require_once $appPath . '/Config/Config.php';
     require_once $appPath . '/Config/Database.php';
 

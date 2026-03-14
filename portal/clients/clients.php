@@ -1,7 +1,7 @@
 <?php
 // portal/clients.php
-require_once 'includes/header.php';
-require_once __DIR__ . '/../app/Config/Database.php';
+require_once '../includes/header.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 // 1. Fetch Clients AND Account Info
@@ -198,7 +198,7 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                                 <a href="client-finance?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-warning border-0 opacity-75 hover-opacity-100"><i class="bi bi-cash-stack"></i></a>
                                 <a href="client-edit?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100"><i class="bi bi-pencil-square"></i></a>
                                 <button class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100" title="View Details" data-client='<?php echo $clientJson; ?>' onclick="openViewModal(this)"><i class="bi bi-eye"></i></button>
-                               <form action="generate_contract" method="POST">
+                               <form action="<?php echo BASE_URL; ?>portal/contracts/generate_contract" method="POST">
     <input type="hidden" name="client_id" value="<?php echo htmlspecialchars($client['client_id']); ?>">
     
     <button type="submit" class="btn btn-sm btn-outline-info rounded-circle border-0 shadow-none" data-bs-toggle="tooltip" 
@@ -206,7 +206,7 @@ function sortLink($key, $label, $currentSort, $nextDir) {
         <i class="bi bi-file-earmark-plus-fill"></i>
     </button>
 </form>
-<a href="../contract/edit_contract?id=<?php echo $client['client_id']; ?>" 
+<a href="../../contract/edit_contract?id=<?php echo $client['client_id']; ?>" 
    class="btn btn-sm btn-outline-warning rounded-circle border-0 shadow-none" 
    data-bs-toggle="tooltip" 
    title="Edit Contract Terms">
@@ -230,4 +230,4 @@ function sortLink($key, $label, $currentSort, $nextDir) {
 
 
 
-<?php require_once "includes/footer.php" ?>
+<?php require_once "../includes/footer.php"; ?>

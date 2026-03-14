@@ -1,9 +1,9 @@
 <?php
 // portal/client-finance.php
-require_once __DIR__ . '/../app/Config/Config.php';
-require_once __DIR__ . '/../app/Config/Database.php';
-require_once __DIR__ . '/../app/Helpers/Security.php';
-require_once 'includes/header.php';
+require_once __DIR__ . '/../../app/Config/Config.php';
+require_once __DIR__ . '/../../app/Config/Database.php';
+require_once __DIR__ . '/../../app/Helpers/Security.php';
+require_once '../includes/header.php';
 
 $client_id = isset($_GET['id']) ? intval($_GET['id']) : (isset($_GET['client_id']) ? intval($_GET['client_id']) : 0);
 if (!$client_id) { echo "<script>window.location.href='clients';</script>"; exit(); }
@@ -84,7 +84,7 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="d-flex portal-wrapper">
-    <?php require_once 'includes/sidebar.php'; ?>
+    <?php require_once '../includes/sidebar.php'; ?>
 
     <main class="w-100 p-4">
         <div class="container-fluid">
@@ -234,4 +234,4 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

@@ -1,9 +1,14 @@
 <?php
 // app/Auth/AutoLogin.php
+
+// 1. We must load Config.php FIRST so the database knows the DB_HOST, DB_USER, etc.
+require_once __DIR__ . '/../Config/Config.php'; 
 require_once __DIR__ . '/../Config/Database.php';
 
 function checkAutoLogin() {
     if (session_status() === PHP_SESSION_NONE) session_start();
+    
+    // If already logged in via session, do nothing
     if (isset($_SESSION['user_id'])) return;
 
     if (isset($_COOKIE['rooq_remember_token'])) {
@@ -31,8 +36,11 @@ function checkAutoLogin() {
                 $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
                 setcookie('rooq_remember_token', $_COOKIE['rooq_remember_token'], time() + (86400 * 30), "/", "", $isSecure, true);
             } else {
-                setcookie('rooq_remember_token', '', time() - 3600, '/'); // Clear invalid cookie
+                // Clear invalid cookie
+                setcookie('rooq_remember_token', '', time() - 3600, '/'); 
             }
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+            // Silently fail so the page still loads even if DB is down
+        }
     }
 }

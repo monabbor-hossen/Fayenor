@@ -1,10 +1,10 @@
-
 <?php
 // public/login.php
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 $root = dirname(__DIR__);
-
+require_once __DIR__ . '/../app/Auth/AutoLogin.php';
+checkAutoLogin();
 // Load configuration and the Translator class
 require_once $root . '/app/Config/Config.php';
 require_once $root . '/app/Helpers/Translator.php';
@@ -122,11 +122,17 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
                     <label for="username" class="text-muted"><i class="bi bi-person me-2"></i><?php echo ($lang == 'ar' ? 'اسم المستخدم' : 'Username'); ?></label>
                 </div>
 
-                <div class="form-floating mb-4 shadow-sm rounded-3">
+                <div class="form-floating mb-3 shadow-sm rounded-3">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password" required style="border: 1px solid rgba(0,0,0,0.1);">
                     <label for="password" class="text-muted"><i class="bi bi-key me-2"></i><?php echo ($lang == 'ar' ? 'كلمة المرور' : 'Password'); ?></label>
                 </div>
 
+                <div class="form-check mb-4 d-flex align-items-center">
+                    <input class="form-check-input mt-0 me-2 shadow-sm" type="checkbox" value="1" id="rememberMe" name="remember_me" style="cursor: pointer;">
+                    <label class="form-check-label text-muted small" for="rememberMe" style="cursor: pointer; padding-top: 2px;">
+                        <?php echo ($lang == 'ar' ? 'تذكرني' : 'Remember me'); ?>
+                    </label>
+                </div>
                 <button type="submit" class="btn btn-rooq-primary w-100 py-3 fw-bold shadow">
                     <?php echo ($lang == 'ar' ? 'دخول' : 'Sign In'); ?> <i class="bi bi-box-arrow-in-right ms-2"></i>
                 </button>

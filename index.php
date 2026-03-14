@@ -1,4 +1,4 @@
-<?php require_once '../includes/header.php'; ?>
+<?php require_once 'includes/header.php'; ?>
 
 <header id="hero-section" class="min-vh-100 d-flex align-items-center text-center position-relative overflow-hidden" style="background: radial-gradient(circle at center, #800020 0%, #3d000f 100%);">
     
@@ -15,7 +15,7 @@
             <p class="lead mb-4 text-white-50"><?php echo $text['hero_desc']; ?></p>
             <div class="nav-buttons">
                 <a href="#about" class="btn btn-outline-light rounded-pill px-4 py-2 me-2"><?php echo $text['explore_us']; ?></a>
-                <a href="login.php" class="btn btn-rooq-primary rounded-pill px-4 py-2"><?php echo $text['login']; ?></a>
+                <a href="<?php echo BASE_URL; ?>public/login.php" class="btn btn-rooq-primary rounded-pill px-4 py-2"><?php echo $text['login']; ?></a>
             </div>
         </div>
     </div>
@@ -82,4 +82,4 @@
     </div>
 </section>
 
-<?php require_once '../includes/footer.php'; ?>
+<?php require_once 'includes/footer.php'; ?>

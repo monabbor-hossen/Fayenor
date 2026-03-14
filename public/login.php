@@ -85,7 +85,7 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
     <div class="login-form-side position-relative">
         
         <div class="position-absolute top-0 start-0 p-4">
-            <a href="index.php" class="text-decoration-none btn-back-subtle d-flex align-items-center gap-2 fw-bold">
+            <a href="<?php echo BASE_URL; ?>" class="text-decoration-none btn-back-subtle d-flex align-items-center gap-2 fw-bold">
                 <i class="bi bi-arrow-<?php echo ($lang == 'ar' ? 'right' : 'left'); ?> fs-4"></i>
                 <span class="d-none d-sm-inline"><?php echo ($lang == 'ar' ? 'العودة للموقع' : 'Back to Home'); ?></span>
             </a>

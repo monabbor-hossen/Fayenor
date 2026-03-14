@@ -1,6 +1,19 @@
-# Turn on the rewrite engine
+Options -MultiViews
 RewriteEngine On
 
 # Point all 404 errors to your custom 404.php page
 # UPDATE "rooqflow" TO YOUR ACTUAL LOCALHOST FOLDER NAME
 ErrorDocument 404 /rooqflow/public/404.php
+
+# ========================================================================
+# REMOVE .PHP EXTENSION FROM URLS
+# ========================================================================
+
+# 1. External Redirect: If a user types or clicks a link ending in .php, redirect them to the clean URL
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# 2. Internal Routing: Tell Apache to silently look for the .php file when the clean URL is visited
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*?)/?$ $1.php [L]

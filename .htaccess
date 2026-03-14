@@ -1,4 +1,4 @@
-Options -MultiViews
+Options -Indexes -MultiViews
 RewriteEngine On
 
 # Point all 404 errors to your custom 404.php page

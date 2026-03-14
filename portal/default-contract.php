@@ -139,8 +139,8 @@ require_once 'includes/header.php';
 require_once 'includes/sidebar.php';
 ?>
 
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../contract/contract.css">
+<link href="<?php echo BASE_URL; ?>assets/css/summernote-lite.min.css" rel="stylesheet">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/contract.css">
 
 <main id="main" class="main">
     
@@ -381,8 +381,8 @@ require_once 'includes/sidebar.php';
 
 </main>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<script src="../contract/contract.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/jquery-3.6.0.min.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/summernote-lite.min.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/contract.js"></script>
 
 <?php require_once 'includes/footer.php'; ?>

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
      <link href="<?php echo BASE_URL; ?>assets/css/summernote-lite.min.css" rel="stylesheet">
     
-    <link rel="stylesheet" href="contract.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/contract.css">
 
     <script src="<?php echo BASE_URL; ?>assets/js/html2pdf.bundle.min.js"></script>
 </head>

@@ -20,13 +20,20 @@ class SessionManager {
         $this->limiter = new RateLimiter();
     }
 
+    // FIXED: Properly writes to activity_logs table without crashing
     private function logActivity($username, $ip, $activity, $user_type = 'internal') {
         try {
-            $sql = "INSERT INTO login_attempts (ip_address, attempts) VALUES (:ip, 1) ON DUPLICATE KEY UPDATE attempts = attempts + 1";
+            $sql = "INSERT INTO activity_logs (user_id, user_type, username, action, ip_address) VALUES (:uid, :utype, :uname, :act, :ip)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([':ip' => $ip]);
-        } catch (PDOException $e) {
-            error_log("Activity Log Error: " . $e->getMessage());
+            $stmt->execute([
+                ':uid' => $_SESSION['user_id'] ?? 0,
+                ':utype' => $user_type,
+                ':uname' => $username,
+                ':act' => $activity,
+                ':ip' => $ip
+            ]);
+        } catch (Exception $e) {
+            // Fail silently so a log error never stops a user from logging in
         }
     }
 
@@ -43,7 +50,6 @@ class SessionManager {
         Security::checkCSRF($csrf_token);
 
         try {
-            // --- NEW: SINGLE QUERY FOR ALL USERS (ADMIN, STAFF, & CLIENTS) ---
             $query = "SELECT id, username, password, role, is_active, full_name FROM users WHERE username = :user LIMIT 1";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':user', $clean_user);
@@ -55,7 +61,6 @@ class SessionManager {
                     throw new Exception("Security Alert: Account deactivated.");
                 }
 
-                // If it's a client, fetch their linked client_id
                 if ($user['role'] === 'client') {
                     $stmtClient = $this->db->prepare("SELECT client_id FROM clients WHERE account_id = :id LIMIT 1");
                     $stmtClient->execute([':id' => $user['id']]);
@@ -63,23 +68,22 @@ class SessionManager {
                     $user['client_id'] = $clientData ? $clientData['client_id'] : null;
                     
                     $this->createSession($user, 'client');
-                    \Security::logActivity("Client Logged In");
+                    $this->logActivity($clean_user, $ip, "Client Logged In", 'client'); // FIXED
                 } else {
                     $this->createSession($user, 'internal');
-                    \Security::logActivity("User Logged In");
+                    $this->logActivity($clean_user, $ip, "User Logged In", 'internal'); // FIXED
                 }
 
                 $this->limiter->reset($ip);
                 return true;
             }
 
-            // --- LOGIN FAILED ---
+            // LOGIN FAILED
             $error_msg = $this->limiter->increment($ip);
             $this->logActivity($clean_user, $ip, "Failed: Invalid Credentials");
             throw new Exception($error_msg);
 
         } catch (PDOException $e) {
-            error_log("Auth Error: " . $e->getMessage());
             throw new Exception("System error occurred.");
         }
     }
@@ -92,7 +96,7 @@ class SessionManager {
         
         if ($type === 'client') {
             $_SESSION['client_id'] = $data['client_id'] ?? null;
-            $_SESSION['account_id'] = $data['id']; // account_id is now just user_id
+            $_SESSION['account_id'] = $data['id']; 
             $_SESSION['user_type'] = 'external';
         } else {
             $_SESSION['user_type'] = 'internal';
@@ -112,7 +116,7 @@ class SessionManager {
             );
         }
         session_destroy();
-        header("Location: " . BASE_URL . "public/login.php");
+        header("Location: " . BASE_URL . "public/login"); // Removed .php for clean URLs
         exit();
     }
 

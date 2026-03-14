@@ -47,19 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Update existing master account
                 if (!empty($password)) {
                     $hash = password_hash($password, PASSWORD_DEFAULT);
-                    $stmt_acc = $db->prepare("UPDATE client_accounts SET username = ?, password_hash = ? WHERE account_id = ?");
+                    $stmt_acc = $db->prepare("UPDATE users SET username = ?, password = ? WHERE id = ?");
                     $stmt_acc->execute([$username, $hash, $curr_account_id]);
                 } else {
                     // Update Username only (Keep existing password)
-                    $stmt_acc = $db->prepare("UPDATE client_accounts SET username = ? WHERE account_id = ?");
+                    $stmt_acc = $db->prepare("UPDATE users SET username = ? WHERE id = ?");
                     $stmt_acc->execute([$username, $curr_account_id]);
                 }
             } else {
                 // If they didn't have an account, create a new one and link it
                 if (!empty($password)) {
                     $hash = password_hash($password, PASSWORD_DEFAULT);
-                    $stmt_acc = $db->prepare("INSERT INTO client_accounts (client_id, username, password_hash) VALUES (?, ?, ?)");
-                    $stmt_acc->execute([$client_id, $username, $hash]);
+                    $stmt_acc = $db->prepare("INSERT INTO users (username, password, role, full_name) VALUES (?, ?, 'client', ?)");
+                    $stmt_acc->execute([$username, $hash, $name]);
                     $new_acc_id = $db->lastInsertId();
                     
                     // Link to client
@@ -141,10 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once '../includes/header.php';
 if (isset($_GET['msg']) && $_GET['msg'] == 'updated') $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'>Updated successfully!</div>";
 
-$sql_fetch = "SELECT c.*, w.*, a.username as acc_username 
+$sql_fetch = "SELECT c.*, w.*, u.username as acc_username 
               FROM clients c 
               LEFT JOIN workflow_tracking w ON c.client_id = w.client_id 
-              LEFT JOIN client_accounts a ON c.account_id = a.account_id
+              LEFT JOIN users u ON c.account_id = u.id
               WHERE c.client_id = :id LIMIT 1";
 $stmt = $db->prepare($sql_fetch);
 $stmt->execute([':id' => $client_id]);
@@ -286,7 +286,7 @@ $workflow_steps = [
                                             <option value="Service License Processing" <?php echo ($current_val == 'Service License Processing') ? 'selected' : ''; ?>>Service License Processing</option>
                                             <option value="Service License Upgrade to Trading License" <?php echo ($current_val == 'Service License Upgrade to Trading License') ? 'selected' : ''; ?>>Service License Upgrade</option>
                                             <?php else: ?>
-                                            <option value="In Progress" <?php echo ($current_val == 'In Progress') ? 'selected' : ''; ?>>In Progress</option>
+                                            <option value="In Process" <?php echo ($current_val == 'In Process') ? 'selected' : ''; ?>>In Process</option>
                                             <option value="Applied" <?php echo ($current_val == 'Applied') ? 'selected' : ''; ?>>Applied</option>
                                             <option value="Pending Application" <?php echo ($current_val == 'Pending Application') ? 'selected' : ''; ?>>Pending Application</option>
                                             <option value="Approved" <?php echo ($current_val == 'Approved') ? 'selected' : ''; ?>>Approved</option>

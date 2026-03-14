@@ -4,7 +4,7 @@
 require_once dirname(__DIR__) . '/Config/Config.php';
 require_once dirname(__DIR__) . '/Config/Database.php';
 require_once dirname(__DIR__) . '/Helpers/Security.php';
-require_once dirname(__DIR__) . '/Helpers/RateLimiter.php'; // Load RateLimiter
+require_once dirname(__DIR__) . '/Helpers/RateLimiter.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -17,83 +17,64 @@ class SessionManager {
     public function __construct() {
         $database = new Database();
         $this->db = $database->getConnection();
-        $this->limiter = new RateLimiter(); // Initialize Limiter
+        $this->limiter = new RateLimiter();
     }
 
-    /**
-     * Secure Login with Rate Limiting
-     * Returns TRUE on success, or throws Exception with error message on failure.
-     */
-    // --- 1. ADD THIS NEW METHOD ---
-    private function logActivity($username, $ip, $activity) {
+    private function logActivity($username, $ip, $activity, $user_type = 'internal') {
         try {
-            // Insert the activity record into the database
-            $sql = "INSERT INTO login_attempts (ip_address, username, activity) VALUES (:ip, :user, :activity)";
+            $sql = "INSERT INTO login_attempts (ip_address, attempts) VALUES (:ip, 1) ON DUPLICATE KEY UPDATE attempts = attempts + 1";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-                ':ip' => $ip, 
-                ':user' => $username, 
-                ':activity' => $activity
-            ]);
+            $stmt->execute([':ip' => $ip]);
         } catch (PDOException $e) {
-            // Silently fail so a logging error doesn't stop the user from logging in
             error_log("Activity Log Error: " . $e->getMessage());
         }
     }
 
-    // --- 2. UPDATE YOUR LOGIN METHOD ---
     public function login($username, $password, $csrf_token) {
         $ip = $_SERVER['REMOTE_ADDR'];
         $clean_user = Security::clean($username);
 
         // Check Rate Limit
         if ($this->limiter->isLocked($ip)) {
-            $this->logActivity($clean_user, $ip, "Blocked: IP Locked due to too many failed attempts");
+            $this->logActivity($clean_user, $ip, "Blocked: IP Locked");
             throw new Exception("Security Alert: Too many failed attempts. Your IP is locked for 15 minutes.");
         }
 
         Security::checkCSRF($csrf_token);
 
         try {
-            // --- CHECK ADMIN / STAFF ---
+            // --- NEW: SINGLE QUERY FOR ALL USERS (ADMIN, STAFF, & CLIENTS) ---
             $query = "SELECT id, username, password, role, is_active, full_name FROM users WHERE username = :user LIMIT 1";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':user', $clean_user);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            // INTERNAL (ADMIN/STAFF) LOGIN CHECK
+
             if ($user && password_verify($password, $user['password'])) {
                 if (isset($user['is_active']) && $user['is_active'] == 0) {
                     throw new Exception("Security Alert: Account deactivated.");
                 }
-                $this->createSession($user, 'internal');
-                $this->limiter->reset($ip);
-                
-                // NEW: Record the Login
-                \Security::logActivity("User Logged In");
-                return true;
-            }
 
-            // --- CHECK CLIENT ---
-            $query2 = "SELECT account_id, client_id, username, password_hash, is_active FROM client_accounts WHERE username = :user LIMIT 1";
-            $stmt2 = $this->db->prepare($query2);
-            $stmt2->bindParam(':user', $clean_user);
-            $stmt2->execute();
-            $client = $stmt2->fetch(PDO::FETCH_ASSOC);
+                // If it's a client, fetch their linked client_id
+                if ($user['role'] === 'client') {
+                    $stmtClient = $this->db->prepare("SELECT client_id FROM clients WHERE account_id = :id LIMIT 1");
+                    $stmtClient->execute([':id' => $user['id']]);
+                    $clientData = $stmtClient->fetch(PDO::FETCH_ASSOC);
+                    $user['client_id'] = $clientData ? $clientData['client_id'] : null;
+                    
+                    $this->createSession($user, 'client');
+                    \Security::logActivity("Client Logged In");
+                } else {
+                    $this->createSession($user, 'internal');
+                    \Security::logActivity("User Logged In");
+                }
 
-            if ($client && password_verify($password, $client['password_hash'])) {
-                $this->createSession($client, 'client');
                 $this->limiter->reset($ip);
-                
-                // NEW: Record the Login
-                \Security::logActivity("Client Logged In");
                 return true;
             }
 
             // --- LOGIN FAILED ---
             $error_msg = $this->limiter->increment($ip);
-            
-            // LOG FAILURE
             $this->logActivity($clean_user, $ip, "Failed: Invalid Credentials");
             throw new Exception($error_msg);
 
@@ -104,32 +85,23 @@ class SessionManager {
     }
     
     private function createSession($data, $type) {
-        if ($type === 'internal') {
-            $_SESSION['user_id'] = $data['id'];
-            $_SESSION['role'] = $data['role'];
-            $_SESSION['user_type'] = 'internal';
-            // NEW: Save full name (fallback to username if empty)
-            $_SESSION['full_name'] = !empty($data['full_name']) ? $data['full_name'] : $data['username'];
-        } else {
-            $_SESSION['user_id'] = $data['account_id'];
-            $_SESSION['client_id'] = $data['client_id'];
-            $_SESSION['role'] = 'client';
-            $_SESSION['user_type'] = 'external';
-            // Clients might not have full_name in accounts table, so default to username
-            $_SESSION['full_name'] = $data['username'];
-        }
+        $_SESSION['user_id'] = $data['id'];
         $_SESSION['username'] = $data['username'];
+        $_SESSION['role'] = $data['role'];
+        $_SESSION['full_name'] = !empty($data['full_name']) ? $data['full_name'] : $data['username'];
+        
+        if ($type === 'client') {
+            $_SESSION['client_id'] = $data['client_id'] ?? null;
+            $_SESSION['account_id'] = $data['id']; // account_id is now just user_id
+            $_SESSION['user_type'] = 'external';
+        } else {
+            $_SESSION['user_type'] = 'internal';
+        }
+        
         $_SESSION['last_regen'] = time();
         session_regenerate_id(true);
     }
-    
-    // ... logout and other methods remain the same
 
-
-
-    /**
-     * Logout
-     */
     public function logout() {
         $_SESSION = array();
         if (ini_get("session.use_cookies")) {
@@ -144,13 +116,8 @@ class SessionManager {
         exit();
     }
 
-    /**
-     * Check Login Status
-     */
     public static function isLoggedIn() {
         return isset($_SESSION['user_id']);
     }
-
-    
 }
 ?>

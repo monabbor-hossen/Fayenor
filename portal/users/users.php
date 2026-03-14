@@ -8,7 +8,7 @@ $db = (new Database())->getConnection();
 // ADDED joining_date, resigning_date, is_active to the query
 $query = "SELECT id, full_name, role, is_active, created_at, joining_date, resigning_date 
           FROM users 
-          WHERE role IN ('1', '2') 
+          WHERE role != 'client' 
           ORDER BY role DESC, created_at DESC";
 
 $stmt = $db->prepare($query);

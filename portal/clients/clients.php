@@ -5,11 +5,11 @@ require_once __DIR__ . '/../../app/Config/Database.php';
 
 $db = (new Database())->getConnection();
 // 1. Fetch Clients AND Account Info
-$query = "SELECT c.*, c.is_active as license_status, w.*, a.account_id as master_account_id, a.username as master_username,
+$query = "SELECT c.*, c.is_active as license_status, w.*, u.id as master_account_id, u.username as master_username,
           COALESCE((SELECT SUM(amount) FROM payments WHERE client_id = c.client_id AND payment_status = 'Completed'), 0) as total_paid
           FROM clients c 
           LEFT JOIN workflow_tracking w ON c.client_id = w.client_id
-          LEFT JOIN client_accounts a ON c.account_id = a.account_id
+          LEFT JOIN users u ON c.account_id = u.id
           ORDER BY c.client_id ASC";
 
 $stmt = $db->prepare($query);

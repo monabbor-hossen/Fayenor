@@ -28,8 +28,8 @@ if (isset($_SESSION['error_msg'])) {
 
 $db = (new Database())->getConnection();
 
-// Fetch existing accounts for the dropdown
-$stmt_accs = $db->query("SELECT a.account_id, a.username, c.client_name FROM client_accounts a LEFT JOIN clients c ON a.client_id = c.client_id GROUP BY a.account_id");
+// Fetch existing client accounts from the users table
+$stmt_accs = $db->query("SELECT u.id as account_id, u.username, c.client_name FROM users u LEFT JOIN clients c ON u.id = c.account_id WHERE u.role = 'client' GROUP BY u.id");
 $existing_accounts = $stmt_accs->fetchAll(PDO::FETCH_ASSOC);
 
 // --- 3. HANDLE FORM SUBMISSION (WITH PRG REDIRECT) ---
@@ -54,21 +54,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([':company'=>$company, ':client'=>$client, ':phone'=>$phone, ':email'=>$email, ':trade_app'=>$trade, ':val'=>$value]);
         $new_client_id = $db->lastInsertId();
 
-        // B. Handle Master Account (New or Existing)
+        // B. Handle Master Account (New or Existing in USERS table)
         $account_type = $_POST['account_type'] ?? 'new';
         $account_id = null;
 
         if ($account_type === 'existing') {
             $account_id = intval($_POST['existing_account_id']);
         } else {
-            // Create New Account
+            // Create New Account in USERS table
             $username = Security::clean($_POST['account_username']);
             $password = $_POST['account_password'];
             if (!empty($username) && !empty($password)) {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $sql_acc = "INSERT INTO client_accounts (client_id, username, password_hash) VALUES (:cid, :user, :pass)";
+                // Insert into USERS table with role 'client'
+                $sql_acc = "INSERT INTO users (username, password, role, full_name) VALUES (:user, :pass, 'client', :fname)";
                 $stmt_acc = $db->prepare($sql_acc);
-                $stmt_acc->execute([':cid' => $new_client_id, ':user' => $username, ':pass' => $hashed_password]);
+                $stmt_acc->execute([':user' => $username, ':pass' => $hashed_password, ':fname' => $client]);
                 $account_id = $db->lastInsertId();
             }
         }
@@ -261,7 +262,7 @@ $workflow_steps = [
                                     <option value="Service License Upgrade to Trading License">Service License Upgrade</option>
                                     <?php else: ?>
                                     <option value="Pending Application">Pending Application</option>
-                                    <option value="In Progress">In Progress</option>
+                                    <option value="In Process">In Process</option>
                                     <option value="Applied">Applied</option>
                                     <option value="Approved">Approved</option>
                                     <?php endif; ?>

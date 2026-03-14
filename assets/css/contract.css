@@ -98,9 +98,8 @@ body.standalone-contract-page {
    ========================================= */
 .document-page {
     width: 794px;
-    /* Exact pixels instead of mm to prevent sub-pixel rounding */
-    height: 1123px;
-    /* Exact pixels for 297mm */
+    height: 1122px;
+    /* FIX: Reduced by exactly 1px to prevent micro-overflows */
     background-image: url('../img/pad.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -109,11 +108,10 @@ body.standalone-contract-page {
     position: relative;
     box-sizing: border-box;
     padding: 170px 75px 130px 75px;
-    /* Converted 45mm 20mm 35mm 20mm to pixels */
     margin: 0 auto 40px auto;
     overflow: hidden;
 
-    /* TELL HTML2PDF TO NEVER CUT THROUGH THIS ELEMENT */
+    /* Keep these! We will tell JS to exclusively listen to these CSS rules */
     page-break-after: always;
     break-after: page;
 }

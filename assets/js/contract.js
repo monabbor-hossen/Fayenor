@@ -77,7 +77,6 @@ function generatePDF() {
     // Fetch the client name safely from the HTML data attribute
     const clientName = element.getAttribute('data-client-name') || 'Client';
     const filename = `Service_License_Agreement_${clientName}.pdf`;
-
     const opt = {
         margin: 0,
         filename: filename,
@@ -86,19 +85,19 @@ function generatePDF() {
             quality: 1
         },
         html2canvas: {
-            scale: 2, // Scale 2 ensures high resolution text
+            scale: 2,
             useCORS: true,
             scrollY: 0,
-            windowWidth: document.documentElement.offsetWidth // Better than hardcoded 1380
+            windowWidth: document.documentElement.offsetWidth
         },
         jsPDF: {
-            unit: 'px', // Changed to px to perfectly match our CSS
-            format: [794, 1123], // Explicitly defining A4 pixel sizes
+            unit: 'px',
+            format: [794, 1123],
             orientation: 'portrait',
             hotfixes: ['px_scaling']
         },
-        // THE MAGIC FIX: Forces html2pdf to slice exactly at the end of .document-page
-        pagebreak: { mode: 'css', before: '.document-page' }
+        // FIX: Removed the conflicting 'before' rule. Now it ONLY listens to your CSS.
+        pagebreak: { mode: 'css' }
     };
 
     // 2. Generate and then return normal web view styling

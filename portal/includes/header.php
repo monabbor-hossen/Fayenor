@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
 // --- SMART GLOBAL LOGIN CHECK ---
 if (!isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_URL . "public/login.php");
+    header("Location: " . BASE_URL . "public/login");
     exit();
 }
 

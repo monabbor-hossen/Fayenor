@@ -34,10 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             header("Location: users?error=failed");
         }
-    } catch (Exception $e) {
-        $db->rollBack();
-        header("Location: index.php?error=" . urlencode($e->getMessage()));
-        exit();
+    } catch (PDOException $e) {
+        header("Location: users.php?error=" . urlencode($e->getMessage()));
     }
     exit();
 } else {

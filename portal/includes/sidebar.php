@@ -81,8 +81,8 @@ if ($_SESSION['role'] === 'client') {
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php echo (in_array($current_page, ['index.php', 'client-add.php', 'client-edit.php'])) ? 'active-glass' : ''; ?> rounded"
-                    href="<?php echo BASE_URL; ?>portal/clients">
+                <a class="nav-link <?php echo (in_array($current_page, ['clients.php', 'client-add.php', 'client-edit.php'])) ? 'active-glass' : ''; ?> rounded"
+                    href="<?php echo BASE_URL; ?>portal/clients/clients">
                     <i class="bi bi-people-fill me-1"></i> <?php echo $text['clients']; ?>
                 </a>
             </li>
@@ -105,8 +105,8 @@ if ($_SESSION['role'] === 'client') {
 
         <ul class="nav flex-column gap-1">
             <li class="nav-item">
-                <a class="nav-link <?php echo (in_array($current_page, ['index.php', 'user-add.php', 'user-edit.php'])) ? 'active-glass' : ''; ?> rounded"
-                    href="<?php echo BASE_URL; ?>portal/users">
+                <a class="nav-link <?php echo (in_array($current_page, ['users.php', 'user-add.php', 'user-edit.php'])) ? 'active-glass' : ''; ?> rounded"
+                    href="<?php echo BASE_URL; ?>portal/users/users">
                     <i class="bi bi-shield-lock-fill me-1"></i> <?php echo $text['user_access']; ?>
                 </a>
             </li>

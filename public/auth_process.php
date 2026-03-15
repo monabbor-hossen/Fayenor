@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $updateToken = $db->prepare("UPDATE users SET remember_token = ? WHERE id = ?");
                     $updateToken->execute([$remember_token, $_SESSION['user_id']]);
                     $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
-                    setcookie('rooq_remember_token', $remember_token, time() + (86400 * 30), "/", "", $isSecure, true); 
+                    setcookie('rooq_remember_token', '', time() - 3600, '/');
                 } catch (Exception $e) {}
             }
 

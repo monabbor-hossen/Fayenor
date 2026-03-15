@@ -103,7 +103,7 @@ class SessionManager {
         }
         
         $_SESSION['last_regen'] = time();
-        session_regenerate_id(true);
+        session_regenerate_id();
     }
 
     public function logout() {

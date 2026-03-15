@@ -10,10 +10,10 @@ $btn_text = 'Go to Login';
 
 if (isset($_SESSION['user_id'])) {
     if (isset($_SESSION['role']) && $_SESSION['role'] === 'client') {
-        $home_link = '../management/dashboard.php';
+        $home_link = '../management/dashboard';
         $btn_text = 'Return to Dashboard';
     } else {
-        $home_link = '../portal/dashboard.php';
+        $home_link = '../portal/dashboard';
         $btn_text = 'Return to Dashboard';
     }
 }

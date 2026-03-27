@@ -41,7 +41,7 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Basmat Rooq</title> 
+    <title>Login | FAYENOR</title> 
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
 
@@ -75,8 +75,8 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
     
     <div class="login-brand-side">
         <div class="text-center position-relative" style="z-index: 2;">
-            <img src="<?php echo BASE_URL; ?>assets/img/logo.png" alt="Basmat Rooq" class="brand-logo-img mb-4" style="max-width: 180px; filter: brightness(0) invert(1);">
-            <h2 class="fw-bold mb-2 text-white">BASMAT ROOQ</h2>
+            <img src="<?php echo BASE_URL; ?>assets/img/logo.png" alt="FAYENOR" class="brand-logo-img mb-4" style="max-width: 180px; filter: brightness(0) invert(1);">
+            <h2 class="fw-bold mb-2 text-white">FAYENOR</h2>
             <p class="text-white opacity-75 mb-4">Contracting Co. Ltd.</p>
             <div style="width: 50px; height: 3px; background: var(--rooq-gold); margin: 0 auto;"></div>
             <p class="mt-4 small text-white opacity-75 d-none d-md-block">

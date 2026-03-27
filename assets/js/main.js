@@ -1002,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function animate() {
             time += 0.004;
 
-            ctx.fillStyle = 'rgba(61, 0, 15, 0.2)'; 
+            ctx.fillStyle = 'rgba(2, 48, 32, 0.2)'; 
             ctx.fillRect(0, 0, width, height);
 
             ctx.globalCompositeOperation = 'lighter';

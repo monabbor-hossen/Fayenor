@@ -1,6 +1,6 @@
 <?php require_once 'includes/header.php'; ?>
 
-<header id="hero-section" class="min-vh-100 d-flex align-items-center text-center position-relative overflow-hidden" style="background: radial-gradient(circle at center, #800020 0%, #3d000f 100%);">
+<header id="hero-section" class="min-vh-100 d-flex align-items-center text-center position-relative overflow-hidden" style="background: radial-gradient(circle at center, #023020 0%, #011a11 100%);">
     
     <canvas id="hero-canvas"></canvas>
     

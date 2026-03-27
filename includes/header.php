@@ -46,7 +46,7 @@ $text = $translator->getTranslation($lang);
     <div class="rooq-spinner"></div>
 </div>
 
-<nav class="navbar py-3 shadow-sm" style="background-color: var(--rooq-burgundy); border-bottom: 3px solid var(--rooq-gold); z-index: 1050; position: relative;">
+<nav class="navbar py-3 shadow-sm" style="background-color: var(--rooq-primary); border-bottom: 3px solid var(--rooq-gold); z-index: 1050; position: relative;">
     <div class="container d-flex justify-content-between align-items-center flex-nowrap">
         
         <a class="navbar-brand m-0 p-0 d-flex align-items-center" href="<?php echo BASE_URL; ?>" style="width: 35%; max-width: 160px; min-width: 100px;">

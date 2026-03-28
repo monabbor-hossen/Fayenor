@@ -4,7 +4,7 @@ RewriteEngine On
 
 # Point all 404 errors to your custom 404.php page
 # UPDATE "rooqflow" TO YOUR ACTUAL LOCALHOST FOLDER NAME
-ErrorDocument 404 /rooqflow/public/404.php
+ErrorDocument 404 /fayenor/public/404.php
 
 # ========================================================================
 # REMOVE .PHP EXTENSION FROM URLS

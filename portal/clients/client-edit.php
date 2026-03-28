@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) { header("Location: ../../public/login"); exit
 
 $message = "";
 $client_id = $_GET['id'] ?? null;
-if (!$client_id) { header("Location: clients"); exit(); }
+if (!$client_id) { header("Location: ./"); exit(); }
 
 $db = (new Database())->getConnection();
 
@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db->commit();
             // NEW: Log the exact action
             Security::logActivity("Updated client license ID: #" . $client_id . " (" . $company . ")");
-            header("Location: client-edit.php?id=" . $client_id . "&msg=updated");
+            header("Location: client-edit?id=" . $client_id . "&msg=updated");
             exit();
         }
 
@@ -170,7 +170,7 @@ $workflow_steps = [
     <?php require_once '../includes/sidebar.php'; ?>
     <main class="w-100 p-4">
         <div class="container-fluid">
-            <a href="clients" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+            <a href="./" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
                 <i class="bi bi-arrow-left me-2"></i> Back to Clients
             </a>
             <div class="row justify-content-center">

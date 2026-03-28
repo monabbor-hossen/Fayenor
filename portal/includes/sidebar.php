@@ -1,6 +1,9 @@
 <?php
 // Get the current page name (e.g., 'dashboard.php')
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// ADD THIS NEW LINE: Get the current folder name (e.g., 'clients' or 'users')
+$current_folder = basename(dirname($_SERVER['PHP_SELF']));
 // Default to true so Admins/Staff always see it
 $can_see_expenses = true; 
 
@@ -81,7 +84,7 @@ if ($_SESSION['role'] === 'client') {
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php echo (in_array($current_page, ['index.php', 'client-add.php', 'client-edit.php'])) ? 'active-glass' : ''; ?> rounded"
+                <a class="nav-link <?php echo ($current_folder === 'clients') ? 'active-glass' : ''; ?> rounded"
                     href="<?php echo BASE_URL; ?>portal/clients">
                     <i class="bi bi-people-fill me-1"></i> <?php echo $text['clients']; ?>
                 </a>
@@ -105,7 +108,7 @@ if ($_SESSION['role'] === 'client') {
 
         <ul class="nav flex-column gap-1">
             <li class="nav-item">
-                <a class="nav-link <?php echo (in_array($current_page, ['index.php', 'user-add.php', 'user-edit.php'])) ? 'active-glass' : ''; ?> rounded"
+                <a class="nav-link <?php echo ($current_folder === 'users') ? 'active-glass' : ''; ?> rounded"
                     href="<?php echo BASE_URL; ?>portal/users">
                     <i class="bi bi-shield-lock-fill me-1"></i> <?php echo $text['user_access']; ?>
                 </a>

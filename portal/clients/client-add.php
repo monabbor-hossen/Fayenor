@@ -145,7 +145,7 @@ $workflow_steps = [
 ?>
 
 <div class="container-fluid py-4">
-    <a href="clients" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+    <a href="./" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
         <i class="bi bi-arrow-left me-2"></i> Back to Clients
     </a>
 

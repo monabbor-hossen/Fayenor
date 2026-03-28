@@ -5,15 +5,16 @@ require_once __DIR__ . '/../app/Config/Config.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 // Dynamically determine where the "Go Back" button should take the user
-$home_link = 'login.php';
+// FIXED: Use BASE_URL so the link never breaks regardless of the 404 URL path
+$home_link = BASE_URL . 'public/login';
 $btn_text = 'Go to Login';
 
 if (isset($_SESSION['user_id'])) {
     if (isset($_SESSION['role']) && $_SESSION['role'] === 'client') {
-        $home_link = '../management/dashboard';
+        $home_link = BASE_URL . 'management/dashboard';
         $btn_text = 'Return to Dashboard';
     } else {
-        $home_link = '../portal/dashboard';
+        $home_link = BASE_URL . 'portal/dashboard';
         $btn_text = 'Return to Dashboard';
     }
 }
@@ -23,7 +24,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Not Found | Basmat Rooq</title>
+    <title>404 Not Found | FAYENOR</title>
     
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">

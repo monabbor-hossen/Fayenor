@@ -1,9 +1,8 @@
-
 Options -Indexes -MultiViews
 RewriteEngine On
 
 # Point all 404 errors to your custom 404.php page
-# UPDATE "rooqflow" TO YOUR ACTUAL LOCALHOST FOLDER NAME
+# IMPORTANT: Change "Fayenor" to your exact localhost folder name if it is different!
 ErrorDocument 404 /fayenor/public/404.php
 
 # ========================================================================

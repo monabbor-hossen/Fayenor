@@ -27,7 +27,7 @@ $text = $translator->getTranslation($lang);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basmat Rooq | <?php echo $text['hero_title']; ?></title>
+    <title>FAYENOR | <?php echo $text['hero_title']; ?></title>
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     
@@ -46,11 +46,11 @@ $text = $translator->getTranslation($lang);
     <div class="rooq-spinner"></div>
 </div>
 
-<nav class="navbar py-3 shadow-sm" style="background-color: var(--rooq-primary); border-bottom: 3px solid var(--rooq-gold); z-index: 1050; position: relative;">
+<nav class="navbar py-3 shadow-sm" style="background-color: var(--rooq-primary); border-bottom: 3px solid var(--rooq-secondary); z-index: 1050; position: relative;">
     <div class="container d-flex justify-content-between align-items-center flex-nowrap">
         
         <a class="navbar-brand m-0 p-0 d-flex align-items-center" href="<?php echo BASE_URL; ?>" style="width: 35%; max-width: 160px; min-width: 100px;">
-            <img src="<?php echo BASE_URL; ?>/assets/img/logo.png" alt="Basmat Rooq" style="width: 100%; height: auto; filter: brightness(0) invert(1);">
+            <img src="<?php echo BASE_URL; ?>/assets/img/logo.png" alt="FAYENOR" style="width: 100%; height: auto; filter: brightness(0) invert(1);">
         </a>
         
         <div class="d-flex align-items-center gap-2 gap-md-3">

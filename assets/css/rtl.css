@@ -34,7 +34,7 @@ body[dir="rtl"] .bi-arrow-right::before { content: "\f12f"; } /* Mirror arrow ic
 
 [dir="rtl"] .active-glass {
     border-left-color: transparent;
-    border-right-color: var(--rooq-gold);
+    border-right-color: var(--rooq-secondary);
 }
 
 /* Flip Bootstrap margins for icons */

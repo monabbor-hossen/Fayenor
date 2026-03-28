@@ -113,7 +113,7 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
         <div class="d-flex align-items-center gap-sm-4 gap-2 ">
             
             <?php if ($_SESSION['role'] !== 'client'): ?>
-                <button class="btn btn-link text-white p-0 d-md-none opacity-75 hover-gold" onclick="toggleMobileSearch()">
+                <button class="btn btn-link text-white p-0 d-md-none opacity-75 hover-secondary" onclick="toggleMobileSearch()">
                     <i class="bi bi-search fs-5"></i>
                 </button>
             <?php endif;?>
@@ -124,12 +124,12 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
             </a>
              -->
             <!-- <a href="<?php echo $current_url; ?>?lang=<?php echo ($lang == 'en' ? 'ar' : 'en'); ?>" 
-               class="text-white opacity-75 hover-gold d-block d-sm-none text-decoration-none">
+               class="text-white opacity-75 hover-secondary d-block d-sm-none text-decoration-none">
                 <i class="bi bi-globe fs-5"></i>
             </a> -->
             <div class="dropdown">
                 <div class="position-relative d-block" style="cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-bell text-white fs-5 opacity-75 hover-gold"></i>
+                    <i class="bi bi-bell text-white fs-5 opacity-75 hover-secondary"></i>
                     
                     <span id="liveNotificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-dark <?php echo (($unread_count ?? 0) > 0) ? '' : 'd-none'; ?>" style="font-size: 0.6rem; transition: 0.3s;">
                         <?php echo ($unread_count ?? 0); ?>
@@ -138,7 +138,7 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                 
                 <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-3 shadow-lg border-0" style="background: rgba(20, 20, 20, 0.95); width: 320px;">
                     <li class="px-3 py-2 border-bottom border-secondary border-opacity-25">
-                        <span class="text-gold fw-bold small text-uppercase"><i class="bi bi-chat-dots me-2"></i>Recent Messages</span>
+                        <span class="text-secondary fw-bold small text-uppercase"><i class="bi bi-chat-dots me-2"></i>Recent Messages</span>
                     </li>
                     
                     <div id="liveNotificationList">
@@ -148,7 +148,7 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                                     <a class="dropdown-item py-3 px-3 border-bottom border-light border-opacity-10 text-white hover-white" href="<?php echo BASE_URL; ?>portal/communication/chat?client_id=<?php echo $notif['client_id']; ?>" style="white-space: normal;">
                                         <div class="d-flex justify-content-between align-items-center mb-1">
                                             <span class="fw-bold small"><?php echo htmlspecialchars($notif['sender_name']); ?></span>
-                                            <span class="text-gold" style="font-size: 0.65rem;"><?php echo date('h:i A', strtotime($notif['created_at'])); ?></span>
+                                            <span class="text-secondary" style="font-size: 0.65rem;"><?php echo date('h:i A', strtotime($notif['created_at'])); ?></span>
                                         </div>
                                         <div class="text-white-50 small text-truncate" style="max-width: 270px;">
                                             "<?php echo htmlspecialchars($notif['message']); ?>"
@@ -156,7 +156,7 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                                     </a>
                                 </li>
                             <?php endforeach; ?>
-                            <li><a class="dropdown-item text-center text-gold small py-2 fw-bold" href="<?php echo BASE_URL; ?>portal/communication/chat">View All Messages</a></li>
+                            <li><a class="dropdown-item text-center text-secondary small py-2 fw-bold" href="<?php echo BASE_URL; ?>portal/communication/chat">View All Messages</a></li>
                         <?php else: ?>
                             <li><div class="dropdown-item text-white-50 small py-4 text-center">No new messages</div></li>
                         <?php endif; ?>
@@ -178,11 +178,11 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                 <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-3 shadow-lg border-0" style="background: rgba(20, 20, 20, 0.95);">
                     <li class="d-lg-none px-3 py-2 text-white fw-bold border-bottom border-secondary border-opacity-25 mb-2">
                         <?php echo htmlspecialchars($full_name); ?> <br>
-                        <small class="text-gold"><?php echo $role_text; ?></small>
+                        <small class="text-secondary"><?php echo $role_text; ?></small>
                     </li>
                     <?php if ($_SESSION['role'] !== 'client') :?>
-                    <li><a class="dropdown-item text-white-50 hover-white" href="<?php echo BASE_URL; ?>portal/admin/settings"><i class="bi bi-person-gear me-2 text-gold"></i> <?php echo $text['settings']; ?></a></li>
-                    <li><a class="dropdown-item text-white-50 hover-white" href="<?php echo BASE_URL; ?>portal/admin/activity-logs"><i class="bi bi-activity me-2 text-gold"></i> <?php echo $text['activity_logs']; ?></a></li>
+                    <li><a class="dropdown-item text-white-50 hover-white" href="<?php echo BASE_URL; ?>portal/admin/settings"><i class="bi bi-person-gear me-2 text-secondary"></i> <?php echo $text['settings']; ?></a></li>
+                    <li><a class="dropdown-item text-white-50 hover-white" href="<?php echo BASE_URL; ?>portal/admin/activity-logs"><i class="bi bi-activity me-2 text-secondary"></i> <?php echo $text['activity_logs']; ?></a></li>
                     <li><hr class="dropdown-divider bg-light opacity-10"></li>
                     <?php endif;?>
                     <li><a class="dropdown-item text-danger fw-bold" href="<?php echo BASE_URL; ?>public/logout"><i class="bi bi-box-arrow-right me-2"></i> <?php echo $text['logout']; ?></a></li>
@@ -200,9 +200,9 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
         </div>
         <form action="<?php echo BASE_URL; ?>portal/clients/clients" method="GET" autocomplete="off">
             <div class="input-group border-bottom border-secondary">
-                <span class="input-group-text bg-transparent border-0 text-gold ps-0"><i class="bi bi-search fs-5"></i></span>
+                <span class="input-group-text bg-transparent border-0 text-secondary ps-0"><i class="bi bi-search fs-5"></i></span>
                 <input type="text" name="search" id="mobileSearchInput" class="form-control bg-transparent border-0 text-white shadow-none fs-5" placeholder="Type name..." autofocus>
-                <button class="btn btn-sm btn-gold rounded-pill px-3" type="submit">GO</button>
+                <button class="btn btn-sm btn-secondary rounded-pill px-3" type="submit">GO</button>
             </div>
         </form>
         <div id="mobileSearchResults" class="search-results-dropdown d-none" style="top: 140px; width: 88%; left: 6%;"></div>

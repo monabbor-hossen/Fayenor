@@ -25,7 +25,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-4 reveal">
-                <h2 class="text-gold display-5 fw-bold mb-4" ><?php echo $text['about_us']; ?></h2>
+                <h2 class="text-secondary display-5 fw-bold mb-4" ><?php echo $text['about_us']; ?></h2>
                 <p class="fs-5 opacity-75"><?php echo $text['about_desc']; ?></p>
             </div>
             <div class="col-lg-6 reveal">
@@ -40,23 +40,23 @@
 
 <section class="section-padding" style="background: rgba(255,255,255,0.02);">
     <div class="container">
-        <h2 class="text-center display-5 fw-bold mb-5 text-gold"><?php echo $text['what_we_do']; ?></h2>
+        <h2 class="text-center display-5 fw-bold mb-5 text-secondary"><?php echo $text['what_we_do']; ?></h2>
         <div class="row g-4">
             <div class="col-md-4 reveal">
                 <div class="glass-panel h-100 p-4">
-                    <h4 class="text-gold mb-3"><?php echo $text['service_1']; ?></h4>
+                    <h4 class="text-secondary mb-3"><?php echo $text['service_1']; ?></h4>
                     <p class="small opacity-75"><?php echo $text['service_1_desc']; ?></p>
                 </div>
             </div>
             <div class="col-md-4 reveal">
                 <div class="glass-panel h-100 p-4">
-                    <h4 class="text-gold mb-3"><?php echo $text['service_2']; ?></h4>
+                    <h4 class="text-secondary mb-3"><?php echo $text['service_2']; ?></h4>
                     <p class="small opacity-75"><?php echo $text['service_2_desc']; ?></p>
                 </div>
             </div>
             <div class="col-md-4 reveal">
                 <div class="glass-panel h-100 p-4">
-                    <h4 class="text-gold mb-3"><?php echo $text['service_3']; ?></h4>
+                    <h4 class="text-secondary mb-3"><?php echo $text['service_3']; ?></h4>
                     <p class="small opacity-75"><?php echo $text['service_3_desc']; ?></p>
                 </div>
             </div>
@@ -67,14 +67,14 @@
 <section class="section-padding text-center">
     <div class="container">
         <div class="glass-panel p-5 reveal mx-auto" style="max-width: 800px;">
-            <h2 class="text-gold mb-4 fw-bold"><?php echo $text['contact_us']; ?></h2>
+            <h2 class="text-secondary mb-4 fw-bold"><?php echo $text['contact_us']; ?></h2>
             <div class="row g-3">
                 <div class="col-md-6">
-                    <p class="mb-1 text-gold fw-bold"><?php echo $text['email_label']; ?></p>
+                    <p class="mb-1 text-secondary fw-bold"><?php echo $text['email_label']; ?></p>
                     <p>Kh70007980@gmail.com</p>
                 </div>
                 <div class="col-md-6">
-                    <p class="mb-1 text-gold fw-bold"><?php echo $text['location_label']; ?></p>
+                    <p class="mb-1 text-secondary fw-bold"><?php echo $text['location_label']; ?></p>
                     <p><?php echo $text['location_val']; ?></p>
                 </div>
             </div>

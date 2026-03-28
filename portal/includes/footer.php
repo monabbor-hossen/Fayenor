@@ -4,7 +4,7 @@
             <div class="modal-header border-bottom justify-content-between border-white border-opacity-10">
                 <div>
                     <h5 class="modal-title text-white fw-bold mb-0" id="view_company_name">Company Name</h5>
-                    <span class="badge bg-gold text-dark mt-1" id="view_client_id">#ID</span>
+                    <span class="badge bg-secondary text-dark mt-1" id="view_client_id">#ID</span>
                 </div>
                 <div class="d-flex gap-2">
                     <a href="#" id="view_edit_btn" class="btn btn-sm btn-outline-warning d-flex align-items-center">
@@ -38,7 +38,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="view-label">Contract Value</div>
-                                <div class="view-value text-gold" id="v_contract">-</div>
+                                <div class="view-value text-secondary" id="v_contract">-</div>
                             </div>
                             <div class="col-6">
                                 <div class="view-label">Paid Amount</div>
@@ -130,7 +130,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-modal rounded-4 shadow-lg">
             <div class="modal-header border-bottom border-light border-opacity-10">
-                <h5 class="modal-title text-white fw-bold"><i class="bi bi-receipt text-gold me-2"></i>Expense Details</h5>
+                <h5 class="modal-title text-white fw-bold"><i class="bi bi-receipt text-secondary me-2"></i>Expense Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
@@ -160,7 +160,7 @@
                 </div>
 
                 <div class="bg-dark bg-opacity-50 p-3 rounded-3 border border-light border-opacity-10">
-                    <div class="view-label text-white-50 small text-uppercase mb-2"><i class="bi bi-card-text me-1 text-gold"></i> Description</div>
+                    <div class="view-label text-white-50 small text-uppercase mb-2"><i class="bi bi-card-text me-1 text-secondary"></i> Description</div>
                     <div class="text-white small" id="viewDesc" style="white-space: pre-wrap; line-height: 1.6;">--</div>
                 </div>
 
@@ -192,7 +192,7 @@
 
 <div class="modal fade" id="workflowModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-modal rounded-4 border border-gold shadow-lg">
+        <div class="modal-content glass-modal rounded-4 border border-secondary shadow-lg">
             <div class="modal-header border-bottom border-light border-opacity-10">
                 <h5 class="modal-title text-white fw-bold" id="modalTitle">Update Status</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -200,11 +200,11 @@
             <div class="modal-body p-4">
                 <input type="hidden" id="current_field_key">
                 <div class="mb-4">
-                    <label class="form-label text-gold small fw-bold">Status</label>
+                    <label class="form-label text-secondary small fw-bold">Status</label>
                     <select id="modal_status_select" class="form-select glass-input"></select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label text-gold small fw-bold">Note / Remark</label>
+                    <label class="form-label text-secondary small fw-bold">Note / Remark</label>
                     <textarea id="modal_note_text" class="form-control glass-input" rows="3" placeholder="Add specific details or dates here..."></textarea>
                 </div>
             </div>

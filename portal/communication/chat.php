@@ -37,13 +37,13 @@ foreach($clients as $c) { if($c['client_id'] == $active_client) $active_name = $
 
 <div class="container-fluid py-4 h-100 chat-wrapper">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="text-white fw-bold mb-0"><i class="bi bi-chat-dots text-gold me-2"></i>Support Messages</h3>
+        <h3 class="text-white fw-bold mb-0"><i class="bi bi-chat-dots text-secondary me-2"></i>Support Messages</h3>
     </div>
     
     <div class="row g-0 rounded overflow-hidden chat-container-box" style="border: 1px solid rgba(255,255,255,0.1);">
         
         <div id="chatSidebarList" class="col-md-4 bg-dark bg-opacity-75 border-end border-light border-opacity-10 overflow-auto h-100 <?php echo $is_mobile_chat_active ? 'd-none d-md-block' : 'd-block'; ?>">
-            <div class="p-3 border-bottom border-light border-opacity-10 text-gold fw-bold position-sticky top-0 bg-dark z-1">
+            <div class="p-3 border-bottom border-light border-opacity-10 text-secondary fw-bold position-sticky top-0 bg-dark z-1">
                 Active Projects
             </div>
             <div class="list-group list-group-flush bg-transparent pb-5">
@@ -77,7 +77,7 @@ foreach($clients as $c) { if($c['client_id'] == $active_client) $active_name = $
                         </a>
                         <div>
                             <h6 class="text-white fw-bold mb-0">Conversation History</h6>
-                            <small id="chatHeaderSub" class="text-gold text-truncate d-block" style="max-width: 200px;"><?php echo htmlspecialchars($active_name); ?></small>
+                            <small id="chatHeaderSub" class="text-secondary text-truncate d-block" style="max-width: 200px;"><?php echo htmlspecialchars($active_name); ?></small>
                         </div>
                     </div>
                 </div>
@@ -97,7 +97,7 @@ foreach($clients as $c) { if($c['client_id'] == $active_client) $active_name = $
 
             <?php else: ?>
                 <div class="d-flex flex-column align-items-center justify-content-center h-100 text-white-50 p-5 text-center">
-                    <i class="bi bi-chat-square-dots text-gold mb-3" style="font-size: 4rem; opacity: 0.5;"></i>
+                    <i class="bi bi-chat-square-dots text-secondary mb-3" style="font-size: 4rem; opacity: 0.5;"></i>
                     <h5>No Conversation Selected</h5>
                     <p class="small">Choose a project from the sidebar to view or send messages.</p>
                 </div>

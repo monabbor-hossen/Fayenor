@@ -17,7 +17,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 function getRoleName($roleId) {
     return match($roleId) {
-        '2' => '<span class="badge bg-gold text-dark">Admin</span>',
+        '2' => '<span class="badge bg-secondary text-dark">Admin</span>',
         '1' => '<span class="badge bg-light text-dark opacity-75">Staff</span>',
         default => '<span class="badge bg-secondary">Unknown</span>'
     };
@@ -38,12 +38,12 @@ function getRoleName($roleId) {
             <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent;">
                 <thead>
                     <tr style="background: rgba(255,255,255,0.05);">
-                        <th class="py-3 ps-4 text-gold text-uppercase small">ID</th>
-                        <th class="py-3 text-gold text-uppercase small">User Identity</th>
-                        <th class="py-3 text-gold text-uppercase small">Access Level</th>
-                        <th class="py-3 text-center text-gold text-uppercase small">Login Status</th>
-                        <th class="py-3 text-gold text-uppercase small">Dates</th>
-                        <th class="py-3 text-end pe-4 text-gold text-uppercase small">Actions</th>
+                        <th class="py-3 ps-4 text-secondary text-uppercase small">ID</th>
+                        <th class="py-3 text-secondary text-uppercase small">User Identity</th>
+                        <th class="py-3 text-secondary text-uppercase small">Access Level</th>
+                        <th class="py-3 text-center text-secondary text-uppercase small">Login Status</th>
+                        <th class="py-3 text-secondary text-uppercase small">Dates</th>
+                        <th class="py-3 text-end pe-4 text-secondary text-uppercase small">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,7 +77,7 @@ function getRoleName($roleId) {
                             
                             <td class="text-center">
                                 <div class="form-check form-switch m-0 d-flex justify-content-center" title="Toggle Login Access">
-                                    <input class="form-check-input form-check-input-gold cursor-pointer" type="checkbox" 
+                                    <input class="form-check-input form-check-input-secondary cursor-pointer" type="checkbox" 
                                            onchange="toggleLoginStatus('user', <?php echo $user['id']; ?>, this)" 
                                            <?php echo (isset($user['is_active']) && $user['is_active'] == 1) ? 'checked' : ''; ?>
                                            <?php echo ($_SESSION['user_id'] == $user['id']) ? 'disabled' : ''; ?>>

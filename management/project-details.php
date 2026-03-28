@@ -93,7 +93,7 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
 
     <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
-            <h2 class="text-white fw-bold mb-1"><i class="bi bi-building text-gold me-3"></i><?php echo htmlspecialchars($project['company_name']); ?></h2>
+            <h2 class="text-white fw-bold mb-1"><i class="bi bi-building text-secondary me-3"></i><?php echo htmlspecialchars($project['company_name']); ?></h2>
             <div class="text-white-50 small">
                 <span class="me-3"><i class="bi bi-hash me-1"></i>Project ID: #<?php echo htmlspecialchars($project['client_id']); ?></span>
                 <span><i class="bi bi-calendar-check me-1"></i>Created: <?php echo date('M d, Y', strtotime($project['created_at'])); ?></span>
@@ -110,7 +110,7 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
         <div class="col-lg-8">
             <div class="card-box h-100">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="text-gold fw-bold mb-0"><i class="bi bi-list-check me-2"></i>Application Status</h5>
+                    <h5 class="text-secondary fw-bold mb-0"><i class="bi bi-list-check me-2"></i>Application Status</h5>
                     <div class="text-white fw-bold fs-5"><?php echo $progress_percent; ?>%</div>
                 </div>
                 
@@ -168,7 +168,7 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
         <div class="col-lg-4">
             
             <div class="card-box mb-4 p-3 rounded" style="background: linear-gradient(145deg, rgba(30,30,30,0.9) 0%, rgba(10,10,10,0.95) 100%);">
-                <h6 class="text-gold fw-bold mb-4 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-wallet2 me-2"></i>Financial Overview</h6>
+                <h6 class="text-secondary fw-bold mb-4 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-wallet2 me-2"></i>Financial Overview</h6>
                 
                 <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-light border-opacity-10">
                     <span class="text-white-50">Total Contract Value</span>
@@ -188,7 +188,7 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
 
             <div class="card-box p-0 overflow-hidden mb-4">
                 <div class="p-3 border-bottom border-light border-opacity-10 bg-dark bg-opacity-50">
-                    <h6 class="text-gold fw-bold mb-0 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-receipt me-2"></i>Payment History</h6>
+                    <h6 class="text-secondary fw-bold mb-0 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-receipt me-2"></i>Payment History</h6>
                 </div>
                 <div class="list-group list-group-flush bg-transparent">
                     <?php if (count($payments) > 0): ?>
@@ -218,7 +218,7 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
             </div>
 
             <div class="glass-panel p-4 border-top border-3 border-secondary">
-                <h6 class="text-gold fw-bold mb-3 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-info-circle me-2"></i>Registered Details</h6>
+                <h6 class="text-secondary fw-bold mb-3 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-info-circle me-2"></i>Registered Details</h6>
                 <div class="mb-2">
                     <small class="text-white-50 d-block">Contact Name</small>
                     <span class="text-white"><?php echo htmlspecialchars($project['client_name'] ?? 'N/A'); ?></span>

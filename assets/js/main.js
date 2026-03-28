@@ -1013,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ctx.beginPath();
                 
                 let opacity = 0.3 + (s * 0.1);
-                ctx.strokeStyle = s % 2 === 0 ? `rgba(212, 175, 55, ${opacity})` : `rgba(243, 213, 106, ${opacity})`;
+                ctx.strokeStyle = s % 2 === 0 ? `rgba(176, 196, 222, ${opacity})` : `rgba(143, 168, 197, ${opacity})`;
                 ctx.lineWidth = 1.5;
 
                 for (let i = 0; i <= resolution; i++) {

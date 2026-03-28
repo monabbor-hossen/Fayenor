@@ -76,7 +76,7 @@ try {
         if (!$is_me) {
             $name = ($msg['sender_type'] === 'client') ? $msg['client_name'] : ($msg['internal_name'] ?? 'Basmat Rooq Team');
             // Align the sender's name slightly with the bubble
-            $sender_name = "<div class='small text-gold fw-bold mb-1 ps-1'>{$name}</div>";
+            $sender_name = "<div class='small text-secondary fw-bold mb-1 ps-1'>{$name}</div>";
         }
 
         $html .= "

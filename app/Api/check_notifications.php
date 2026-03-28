@@ -50,13 +50,13 @@ try {
                 <a class='dropdown-item py-3 px-3 border-bottom border-light border-opacity-10 text-white hover-white' href='chat?client_id={$notif['client_id']}' style='white-space: normal;'>
                     <div class='d-flex justify-content-between align-items-center mb-1'>
                         <span class='fw-bold small'>{$sender}</span>
-                        <span class='text-gold' style='font-size: 0.65rem;'>{$time}</span>
+                        <span class='text-secondary' style='font-size: 0.65rem;'>{$time}</span>
                     </div>
                     <div class='text-white-50 small text-truncate' style='max-width: 270px;'>\"{$msg}\"</div>
                 </a>
             </li>";
         }
-        $html .= "<li><a class='dropdown-item text-center text-gold small py-2 fw-bold' href='chat'>View All Messages</a></li>";
+        $html .= "<li><a class='dropdown-item text-center text-secondary small py-2 fw-bold' href='chat'>View All Messages</a></li>";
     } else {
         $html .= "<li><div class='dropdown-item text-white-50 small py-4 text-center'>No new messages</div></li>";
     }

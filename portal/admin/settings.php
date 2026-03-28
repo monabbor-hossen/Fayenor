@@ -79,7 +79,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 <div class="container-fluid py-4">
     <div class="mb-4">
-        <h3 class="text-white fw-bold mb-0"><i class="bi bi-gear text-gold me-2"></i>Account Settings</h3>
+        <h3 class="text-white fw-bold mb-0"><i class="bi bi-gear text-secondary me-2"></i>Account Settings</h3>
         <p class="text-white-50 small mb-0">Manage your personal profile and security preferences.</p>
     </div>
 
@@ -98,10 +98,10 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 <div class="nav flex-column nav-pills" id="settings-tabs" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active text-start text-white-50 hover-white py-3 mb-2 rounded" id="profile-tab" data-bs-toggle="pill" data-bs-target="#profile" type="button" role="tab" style="transition: all 0.3s;">
-                        <i class="bi bi-person-lines-fill me-2 text-gold"></i> Personal Profile
+                        <i class="bi bi-person-lines-fill me-2 text-secondary"></i> Personal Profile
                     </button>
                     <button class="nav-link text-start text-white-50 hover-white py-3 rounded" id="security-tab" data-bs-toggle="pill" data-bs-target="#security" type="button" role="tab" style="transition: all 0.3s;">
-                        <i class="bi bi-shield-lock me-2 text-gold"></i> Security & Password
+                        <i class="bi bi-shield-lock me-2 text-secondary"></i> Security & Password
                     </button>
                 </div>
             </div>
@@ -112,7 +112,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="tab-content" id="settings-tabContent">
                     
                     <div class="tab-pane fade show active" id="profile" role="tabpanel">
-                        <h5 class="text-gold fw-bold mb-4 border-bottom border-secondary border-opacity-25 pb-2">Profile Information</h5>
+                        <h5 class="text-secondary fw-bold mb-4 border-bottom border-secondary border-opacity-25 pb-2">Profile Information</h5>
                         <form method="POST" action="settings">
                             <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
                             
@@ -139,7 +139,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
                     <div class="tab-pane fade" id="security" role="tabpanel">
-                        <h5 class="text-gold fw-bold mb-4 border-bottom border-secondary border-opacity-25 pb-2">Change Password</h5>
+                        <h5 class="text-secondary fw-bold mb-4 border-bottom border-secondary border-opacity-25 pb-2">Change Password</h5>
                         <form method="POST" action="settings">
                             <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
                             

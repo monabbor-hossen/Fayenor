@@ -179,17 +179,17 @@ $workflow_steps = [
                         <div
                             class="d-flex justify-content-between align-items-center mb-4 border-bottom border-light border-opacity-10 pb-3">
                             <div>
-                                <h4 class="text-white fw-bold mb-0">Edit Client</h4><small class="text-gold">Updated:
+                                <h4 class="text-white fw-bold mb-0">Edit Client</h4><small class="text-secondary">Updated:
                                     <?php echo $last_update; ?></small>
                             </div>
-                            <span class="badge bg-gold text-dark">ID: #<?php echo $data['client_id']; ?></span>
+                            <span class="badge bg-secondary text-dark">ID: #<?php echo $data['client_id']; ?></span>
                         </div>
                         <?php echo $message; ?>
 
                         <form method="POST" id="mainForm">
                             <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
 
-                            <h5 class="text-gold mb-3"><i class="bi bi-info-circle me-2"></i>Basic Information</h5>
+                            <h5 class="text-secondary mb-3"><i class="bi bi-info-circle me-2"></i>Basic Information</h5>
                             <div class="row g-3 mb-5">
                                 <div class="col-md-6"><label class="form-label text-white-50 small fw-bold">Company
                                         Name</label><input type="text" name="company_name"
@@ -211,16 +211,16 @@ $workflow_steps = [
                                         class="form-control glass-input"
                                         value="<?php echo htmlspecialchars($data['trade_name_application'] ?? ''); ?>">
                                 </div>
-                                <div class="col-md-6"><label class="form-label text-gold small fw-bold">Contract
+                                <div class="col-md-6"><label class="form-label text-secondary small fw-bold">Contract
                                         Value</label><input type="number" step="0.01" name="contract_value"
                                         class="form-control glass-input"
                                         value="<?php echo htmlspecialchars($data['contract_value'] ?? 0); ?>"></div>
                             </div>
 
-                            <h5 class="text-gold mb-3"><i class="bi bi-shield-lock me-2"></i>Master Portal Access</h5>
+                            <h5 class="text-secondary mb-3"><i class="bi bi-shield-lock me-2"></i>Master Portal Access</h5>
                             <div class="row g-3 mb-5 p-3 rounded" style="background: rgba(0,0,0,0.2);">
                                 <div class="col-md-6">
-                                    <label class="form-label text-white-50 small fw-bold">Username <span class="text-gold" style="font-size: 0.65rem;">(Updates all linked licenses)</span></label>
+                                    <label class="form-label text-white-50 small fw-bold">Username <span class="text-secondary" style="font-size: 0.65rem;">(Updates all linked licenses)</span></label>
                                     <input type="text" name="account_username" class="form-control glass-input"
                                         value="<?php echo htmlspecialchars($data['acc_username'] ?? ''); ?>"
                                         placeholder="No account set" autocomplete="off">
@@ -239,7 +239,7 @@ $workflow_steps = [
                                 </div>
                             </div>
 
-                            <h5 class="text-gold mb-3"><i class="bi bi-kanban me-2"></i>Workflow Status</h5>
+                            <h5 class="text-secondary mb-3"><i class="bi bi-kanban me-2"></i>Workflow Status</h5>
                             <div class="row g-3">
                                 <?php 
                                     $required_steps = ['scope', 'qiwa', 'muqeem']; 
@@ -262,7 +262,7 @@ $workflow_steps = [
                                             <div class="d-flex align-items-center gap-2">
                                                 <div class="form-check form-switch m-0 p-0 d-flex align-items-center"
                                                     title="<?php echo $is_required ? 'This step is required' : 'Toggle optional step'; ?>">
-                                                    <input class="form-check-input m-0 form-check-input-gold cursor-pointer <?php echo $is_required ? 'd-none' : ''; ?>" type="checkbox"
+                                                    <input class="form-check-input m-0 form-check-input-secondary cursor-pointer <?php echo $is_required ? 'd-none' : ''; ?>" type="checkbox"
                                                         name="enable_<?php echo $key; ?>"
                                                         id="enable_<?php echo $key; ?>" value="1"
                                                         <?php echo $is_enabled ? 'checked' : ''; ?>
@@ -270,7 +270,7 @@ $workflow_steps = [
                                                         onchange="toggleWorkflowCard('<?php echo $key; ?>')"
                                                         style="width: 2.2em; height: 1.1em;">
                                                 </div>
-                                            <button type="button" class="btn btn-sm btn-link text-gold p-0"
+                                            <button type="button" class="btn btn-sm btn-link text-secondary p-0"
                                                 id="btn_edit_<?php echo $key; ?>"
                                                 onclick="openEditModal('<?php echo $key; ?>', '<?php echo $info['label']; ?>')"
                                                 <?php echo !$is_enabled ? 'disabled' : ''; ?>><i
@@ -294,7 +294,7 @@ $workflow_steps = [
                                         </select>
 
                                         <div id="note_indicator_<?php echo $key; ?>"
-                                            class="mt-2 text-gold small fst-italic <?php echo empty($current_note) ? 'd-none' : ''; ?>">
+                                            class="mt-2 text-secondary small fst-italic <?php echo empty($current_note) ? 'd-none' : ''; ?>">
                                             <i class="bi bi-sticky-fill me-1"></i> Note added</div>
                                         <input type="hidden" name="note_<?php echo $key; ?>"
                                             id="input_note_<?php echo $key; ?>"
@@ -321,9 +321,9 @@ $workflow_steps = [
             </div>
             <div class="modal-body">
                 <input type="hidden" id="current_field_key">
-                <div class="mb-3"><label class="form-label text-gold small fw-bold">Status</label><select
+                <div class="mb-3"><label class="form-label text-secondary small fw-bold">Status</label><select
                         id="modal_status_select" class="form-select glass-input"></select></div>
-                <div class="mb-3"><label class="form-label text-gold small fw-bold">Note / Remark</label><textarea
+                <div class="mb-3"><label class="form-label text-secondary small fw-bold">Note / Remark</label><textarea
                         id="modal_note_text" class="form-control glass-input" rows="3"></textarea></div>
             </div>
             <div class="modal-footer border-top border-white border-opacity-10">

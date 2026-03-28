@@ -89,7 +89,7 @@ usort($clients, function($a, $b) use ($sort, $dir) {
 });
 
 function sortLink($key, $label, $currentSort, $nextDir) {
-    $active = ($currentSort === $key) ? 'text-white fw-bold' : 'text-gold';
+    $active = ($currentSort === $key) ? 'text-white fw-bold' : 'text-secondary';
     $icon = ($currentSort === $key) ? (($nextDir === 'asc') ? '<i class="bi bi-arrow-down-short"></i>' : '<i class="bi bi-arrow-up-short"></i>') : '';
     return "<a href='?sort=$key&dir=$nextDir' class='text-decoration-none text-uppercase small $active'>$label $icon</a>";
 }
@@ -112,11 +112,11 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                         <th class="py-3 ps-2 text-end"><?php echo sortLink('id', 'SL', $sort, $next_dir); ?></th>
                         <th class="py-3"><?php echo sortLink('company', 'Company Info', $sort, $next_dir); ?></th>
                         <th class="py-3"><?php echo sortLink('progress', 'Progress', $sort, $next_dir); ?></th>
-                        <th class="py-3 text-gold text-uppercase small">Contact Details</th>
-                        <th class="py-3 text-center text-gold text-uppercase small">Login Access</th>
-                        <th class="text-center text-gold text-uppercase small py-3">Expense Access</th>
+                        <th class="py-3 text-secondary text-uppercase small">Contact Details</th>
+                        <th class="py-3 text-center text-secondary text-uppercase small">Login Access</th>
+                        <th class="text-center text-secondary text-uppercase small py-3">Expense Access</th>
                         <th class="py-3"><?php echo sortLink('payment', 'Payment', $sort, $next_dir); ?></th>
-                        <th class="py-3 text-center pe-4 text-gold text-uppercase small">Actions</th>
+                        <th class="py-3 text-center pe-4 text-secondary text-uppercase small">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -157,15 +157,15 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                         </td>
                         <td>
                             <div class="d-flex flex-column gap-1">
-                                <div class="d-flex align-items-center text-nowrap"><i class="bi bi-envelope text-gold me-2"></i><span class="text-white-50 small"><?php echo htmlspecialchars($client['email']); ?></span></div>
-                                <div class="d-flex align-items-center text-nowrap"><i class="bi bi-telephone text-gold me-2"></i><span class="text-white-50 small"><?php echo htmlspecialchars($client['phone_number']); ?></span></div>
+                                <div class="d-flex align-items-center text-nowrap"><i class="bi bi-envelope text-secondary me-2"></i><span class="text-white-50 small"><?php echo htmlspecialchars($client['email']); ?></span></div>
+                                <div class="d-flex align-items-center text-nowrap"><i class="bi bi-telephone text-secondary me-2"></i><span class="text-white-50 small"><?php echo htmlspecialchars($client['phone_number']); ?></span></div>
                             </div>
                         </td>
                         
                         <td class="text-center">
                             <?php if (!empty($client['master_account_id'])): ?>
                                 <div class="form-check form-switch m-0 d-flex justify-content-center" title="Toggle Application Visibility & Access">
-                                    <input class="form-check-input form-check-input-gold cursor-pointer" type="checkbox" 
+                                    <input class="form-check-input form-check-input-secondary cursor-pointer" type="checkbox" 
                                            onchange="toggleLoginStatus('license', <?php echo $client['client_id']; ?>, this)" 
                                            <?php echo (!isset($client['license_status']) || $client['license_status'] == 1) ? 'checked' : ''; ?>>
                                 </div>
@@ -182,7 +182,7 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                         </td>
                         <td class="text-center">
     <div class="form-check form-switch m-0 d-flex justify-content-center" title="Allow client to see Expenses">
-        <input class="form-check-input form-check-input-gold cursor-pointer" type="checkbox" 
+        <input class="form-check-input form-check-input-secondary cursor-pointer" type="checkbox" 
                onchange="toggleLoginStatus('expense', <?php echo $client['client_id']; ?>, this)"
                <?php echo (isset($client['show_expenses']) && $client['show_expenses'] == 1) ? 'checked' : ''; ?>>
     </div>

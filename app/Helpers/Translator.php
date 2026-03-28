@@ -4,10 +4,10 @@ class Translator {
         $data = [
             'en' => [
                 // Public Pages
-                'hero_title'     => 'Basmat Rooq',
+                'hero_title'     => 'Fayenor',
                 'hero_desc'      => 'Digitizing the Saudi Investment Journey.',
                 'about_us'       => 'About Us',
-                'about_desc'     => 'Basmat Rooq Company Limited is a premier consultancy based in Unaizah, Al-Qassim. We specialize in navigating the complexities of the Saudi Ministry of Investment (MISA) landscape.',
+                'about_desc'     => 'Fayenor Company Limited is a premier consultancy based in Unaizah, Al-Qassim. We specialize in navigating the complexities of the Saudi Ministry of Investment (MISA) landscape.',
                 'what_we_do'     => 'Our Services',
                 'service_1'      => 'MISA License Processing',
                 'service_1_desc' => 'End-to-end management of service licenses and investor permits.',
@@ -39,16 +39,16 @@ class Translator {
                 'billing'           => 'Billing & Invoices',
                 'client_messages'   => 'Client Messages',
                 'contract_template' => 'Contract Template',
-'financial_audit'   => 'Financial Audit',
+                'financial_audit'   => 'Financial Audit',
                 'admin_portal'   => 'Admin Portal'
                 
             ],
             'ar' => [
                 // Public Pages
-                'hero_title'     => 'بصمة روق',
+                'hero_title'     => 'فاينور',
                 'hero_desc'      => 'رقمنة رحلة الاستثمار السعودي.',
                 'about_us'       => 'من نحن',
-                'about_desc'     => 'شركة بصمة روق المحدودة هي شركة استشارية رائدة مقرها في عنيزة، القصيم. نحن متخصصون في تتبع وتسهيل إجراءات وزارة الاستثمار السعودية (MISA).',
+                'about_desc'     => 'شركة فاينور المحدودة هي شركة استشارية رائدة مقرها في عنيزة، القصيم. نحن متخصصون في تتبع وتسهيل إجراءات وزارة الاستثمار السعودية (MISA).',
                 'what_we_do'     => 'خدماتنا',
                 'service_1'      => 'معالجة تراخيص MISA',
                 'service_1_desc' => 'إدارة شاملة لتراخيص الخدمات وتصاريح المستثمرين.',
@@ -80,7 +80,7 @@ class Translator {
                 'logout'         => 'تسجيل خروج',
                 'billing'           => 'الفواتير والمدفوعات',
                 'contract_template' => 'نموذج العقد',
-'financial_audit'   => 'التدقيق المالي',
+                'financial_audit'   => 'التدقيق المالي',
                 'admin_portal'   => 'بوابة الإدارة'
 
             ]
@@ -88,3 +88,4 @@ class Translator {
         return $data[$lang] ?? $data['en'];
     }
 }
+?>

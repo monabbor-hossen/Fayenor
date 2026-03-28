@@ -53,7 +53,7 @@ foreach ($logs as $log) {
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="text-white fw-bold mb-0"><i class="bi bi-shield-check text-gold me-2"></i>System Activity Logs</h3>
+            <h3 class="text-white fw-bold mb-0"><i class="bi bi-shield-check text-secondary me-2"></i>System Activity Logs</h3>
             <p class="text-white-50 small mb-0">Track, filter, and investigate all system activities securely.</p>
         </div>
     </div>
@@ -88,19 +88,19 @@ foreach ($logs as $log) {
     <div class="card-box p-3 mb-4">
         <form method="GET" class="row g-3 align-items-end">
             <div class="col-md-3">
-                <label class="form-label text-gold small fw-bold">Date From</label>
+                <label class="form-label text-secondary small fw-bold">Date From</label>
                 <input type="text" name="f_start" class="form-control glass-input rooq-date" data-hide-buttons="true" value="<?php echo htmlspecialchars($f_start); ?>">
             </div>
             <div class="col-md-3">
-                <label class="form-label text-gold small fw-bold">Date To</label>
+                <label class="form-label text-secondary small fw-bold">Date To</label>
                 <input type="text" name="f_end" class="form-control glass-input rooq-date" data-hide-buttons="true" value="<?php echo htmlspecialchars($f_end); ?>">
             </div>
             <div class="col-md-2">
-                <label class="form-label text-gold small fw-bold">Search Username</label>
+                <label class="form-label text-secondary small fw-bold">Search Username</label>
                 <input type="text" name="f_user" class="form-control glass-input" placeholder="e.g. johndoe" value="<?php echo htmlspecialchars($f_user); ?>">
             </div>
             <div class="col-md-2">
-                <label class="form-label text-gold small fw-bold">Action Type</label>
+                <label class="form-label text-secondary small fw-bold">Action Type</label>
                 <select name="f_action" class="form-select glass-input">
                     <option value="">All Actions</option>
                     <option value="Created" <?php echo ($f_action == 'Created') ? 'selected' : ''; ?>>Creations</option>
@@ -121,10 +121,10 @@ foreach ($logs as $log) {
             <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent;">
                 <thead>
                     <tr style="background: rgba(255,255,255,0.05);">
-                        <th class="py-3 ps-4 text-gold text-uppercase small">Date & Time</th>
-                        <th class="py-3 text-gold text-uppercase small">Target User</th>
-                        <th class="py-3 text-gold text-uppercase small">Action Performed</th>
-                        <th class="py-3 text-end pe-4 text-gold text-uppercase small">IP Trace</th>
+                        <th class="py-3 ps-4 text-secondary text-uppercase small">Date & Time</th>
+                        <th class="py-3 text-secondary text-uppercase small">Target User</th>
+                        <th class="py-3 text-secondary text-uppercase small">Action Performed</th>
+                        <th class="py-3 text-end pe-4 text-secondary text-uppercase small">IP Trace</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -96,12 +96,12 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="text-white fw-bold mb-0"><i class="bi bi-wallet2 text-gold me-2"></i>My Expenses</h3>
+            <h3 class="text-white fw-bold mb-0"><i class="bi bi-wallet2 text-secondary me-2"></i>My Expenses</h3>
             <p class="text-white-50 small mb-0">Track and manage your project costs.</p>
         </div>
-        <div class="text-end bg-dark bg-opacity-50 px-4 py-2 rounded-pill border border-gold border-opacity-25 shadow-sm d-none d-sm-block">
+        <div class="text-end bg-dark bg-opacity-50 px-4 py-2 rounded-pill border border-secondary border-opacity-25 shadow-sm d-none d-sm-block">
             <span class="text-white-50 small text-uppercase fw-bold me-2">Total Expenses:</span>
-            <span class="text-gold fw-bold fs-5">SAR <?php echo number_format($total_expenses, 2); ?></span>
+            <span class="text-secondary fw-bold fs-5">SAR <?php echo number_format($total_expenses, 2); ?></span>
         </div>
     </div>
 
@@ -122,7 +122,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
     <div class="row g-4">
         <div class="col-lg-4">
             <div class="glass-panel p-4 h-100">
-                <h5 class="text-gold fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Record Expense</h5>
+                <h5 class="text-secondary fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Record Expense</h5>
                 
                 <form action="expenses" method="POST">
                     
@@ -152,7 +152,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                             <label class="form-label text-white-50 small">Date *</label>
                             <div class="position-relative">
                                 <input type="text" name="expense_date" class="form-control glass-input rounded-3 rooq-date" value="<?php echo date('Y-m-d'); ?>" readonly style="cursor: pointer;" required>
-                                <i class="bi bi-calendar-date position-absolute text-gold" style="right: 15px; top: 10px; pointer-events: none;"></i>
+                                <i class="bi bi-calendar-date position-absolute text-secondary" style="right: 15px; top: 10px; pointer-events: none;"></i>
                             </div>
                         </div>
                     </div>
@@ -182,7 +182,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
 
         <div class="col-lg-8">
             <div class="glass-panel p-4 h-100 d-flex flex-column">
-                <h5 class="text-gold fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">My Recent Expenses</h5>
+                <h5 class="text-secondary fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">My Recent Expenses</h5>
                 
                 <div class="table-responsive flex-grow-1">
                     <table class="table table-dark table-hover align-middle bg-transparent mb-0">
@@ -244,7 +244,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                             <?php else: ?>
                                 <tr>
                                     <td colspan="5" class="text-center text-white-50 py-5 bg-transparent border-0">
-                                        <i class="bi bi-inbox fs-1 d-block mb-3 text-gold opacity-50"></i>
+                                        <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary opacity-50"></i>
                                         No expenses recorded yet.
                                     </td>
                                 </tr>

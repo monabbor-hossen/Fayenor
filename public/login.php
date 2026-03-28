@@ -78,7 +78,7 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
             <img src="<?php echo BASE_URL; ?>assets/img/logo.png" alt="FAYENOR" class="brand-logo-img mb-4" style="max-width: 180px; filter: brightness(0) invert(1);">
             <h2 class="fw-bold mb-2 text-white">FAYENOR</h2>
             <p class="text-white opacity-75 mb-4">Contracting Co. Ltd.</p>
-            <div style="width: 50px; height: 3px; background: var(--rooq-gold); margin: 0 auto;"></div>
+            <div style="width: 50px; height: 3px; background: var(--rooq-secondary); margin: 0 auto;"></div>
             <p class="mt-4 small text-white opacity-75 d-none d-md-block">
                 <?php echo ($lang == 'ar' ? 'بوابة العملاء الآمنة لخدمات الاستثمار' : 'Secure Client Portal for Investment Services'); ?>
             </p>

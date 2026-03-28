@@ -190,7 +190,7 @@ foreach ($all_workflows as $wf) {
     </div>
     <div class="text-end d-none d-md-block">
         <p class="text-white-50 small mb-0 text-uppercase" style="letter-spacing: 1px;">Date</p>
-        <div class="text-gold fw-bold fs-6"><?php echo date('F d, Y'); ?></div>
+        <div class="text-secondary fw-bold fs-6"><?php echo date('F d, Y'); ?></div>
     </div>
 </div>
 
@@ -268,9 +268,9 @@ foreach ($all_workflows as $wf) {
     <div class="col-xl-8">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h6 class="text-white-50 fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">
-                <i class="bi bi-diagram-3 me-2 text-gold"></i>Pending Workflows
+                <i class="bi bi-diagram-3 me-2 text-secondary"></i>Pending Workflows
             </h6>
-            <a href="clients/clients" class="text-gold small text-decoration-none fw-bold hover-white" style="letter-spacing: 0.5px;">
+            <a href="clients/clients" class="text-secondary small text-decoration-none fw-bold hover-white" style="letter-spacing: 0.5px;">
                 View All <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
@@ -330,12 +330,12 @@ foreach ($all_workflows as $wf) {
     </div>
 
     <div class="col-xl-4">
-        <h6 class="text-white-50 fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;"><i class="bi bi-activity me-2 text-gold"></i>Recent Ledger</h6>
+        <h6 class="text-white-50 fw-bold mb-4 text-uppercase" style="letter-spacing: 1px;"><i class="bi bi-activity me-2 text-secondary"></i>Recent Ledger</h6>
         
         <div class="glass-panel p-4 mb-4 shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
             <div class="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-10 pb-2 mb-4">
                 <h6 class="text-white-50 small text-uppercase mb-0" style="letter-spacing: 1px;">Latest Incoming</h6>
-                <a href="finance/audit-finance" class="text-gold small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
+                <a href="finance/audit-finance" class="text-secondary small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
             
             <?php if (count($recent_payments) > 0): ?>
@@ -360,7 +360,7 @@ foreach ($all_workflows as $wf) {
         <div class="glass-panel p-4 shadow-sm" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.15);">
             <div class="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-10 pb-2 mb-4">
                 <h6 class="text-white-50 small text-uppercase mb-0" style="letter-spacing: 1px;">Latest Outgoing</h6>
-                <a href="finance/expenses" class="text-gold small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
+                <a href="finance/expenses" class="text-secondary small text-decoration-none hover-white" style="font-size: 0.75rem;">View All <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
             
             <?php if (count($recent_expenses) > 0): ?>

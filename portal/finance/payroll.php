@@ -61,7 +61,7 @@ foreach ($users as $u) {
             <div class="glass-panel p-3 d-flex align-items-center justify-content-between">
                 <div>
                     <h6 class="text-white-50 text-uppercase small fw-bold mb-1">Est. Monthly Liability</h6>
-                    <h2 class="text-gold fw-bold mb-0"><?php echo number_format($total_monthly_liability, 2); ?> <small class="fs-6 text-white-50">SAR</small></h2>
+                    <h2 class="text-secondary fw-bold mb-0"><?php echo number_format($total_monthly_liability, 2); ?> <small class="fs-6 text-white-50">SAR</small></h2>
                 </div>
                 <div class="icon-box bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                     <i class="bi bi-cash-stack fs-4"></i>
@@ -75,11 +75,11 @@ foreach ($users as $u) {
             <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent;">
                 <thead>
                     <tr style="background: rgba(255,255,255,0.05);">
-                        <th class="py-3 ps-4 text-gold text-uppercase small">Employee</th>
-                        <th class="py-3 text-gold text-uppercase small">Basic Salary</th>
-                        <th class="py-3 text-gold text-uppercase small">Last Payment</th>
-                        <th class="py-3 text-center text-gold text-uppercase small">Status (<?php echo date('M Y'); ?>)</th>
-                        <th class="py-3 text-end pe-4 text-gold text-uppercase small">Action</th>
+                        <th class="py-3 ps-4 text-secondary text-uppercase small">Employee</th>
+                        <th class="py-3 text-secondary text-uppercase small">Basic Salary</th>
+                        <th class="py-3 text-secondary text-uppercase small">Last Payment</th>
+                        <th class="py-3 text-center text-secondary text-uppercase small">Status (<?php echo date('M Y'); ?>)</th>
+                        <th class="py-3 text-end pe-4 text-secondary text-uppercase small">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -143,7 +143,7 @@ foreach ($users as $u) {
 
                             <td>
                                 <?php if ($user['last_payment_date']): ?>
-                                    <div class="text-white small"><i class="bi bi-calendar-check me-1 text-gold"></i> <?php echo date('M d, Y', strtotime($user['last_payment_date'])); ?></div>
+                                    <div class="text-white small"><i class="bi bi-calendar-check me-1 text-secondary"></i> <?php echo date('M d, Y', strtotime($user['last_payment_date'])); ?></div>
                                 <?php else: ?>
                                     <span class="text-white-50 small fst-italic">Never Paid</span>
                                 <?php endif; ?>

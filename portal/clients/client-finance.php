@@ -100,7 +100,7 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <div class="card-box text-center border-warning">
-                        <small class="text-gold text-uppercase fw-bold">Contract Value</small>
+                        <small class="text-secondary text-uppercase fw-bold">Contract Value</small>
                         <h2 class="text-white mt-2"><?php echo number_format($contract_value, 2); ?> SAR</h2>
                     </div>
                 </div>
@@ -131,7 +131,7 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         <?php else: ?>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="text-gold mb-0"><i class="bi bi-plus-circle me-2"></i>Add Payment</h5>
+                                <h5 class="text-secondary mb-0"><i class="bi bi-plus-circle me-2"></i>Add Payment</h5>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="unlockPaymentForm">
                                     <label class="form-check-label text-white-50 small" for="unlockPaymentForm">Enable Edit</label>
@@ -145,7 +145,7 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between">
                                         <label class="text-white-50 small mb-1">Amount</label>
-                                        <small class="text-gold">Max: <?php echo number_format($due_amount, 2); ?></small>
+                                        <small class="text-secondary">Max: <?php echo number_format($due_amount, 2); ?></small>
                                     </div>
                                     <input type="number" step="0.01" max="<?php echo $due_amount; ?>" name="amount" class="form-control glass-input" required placeholder="0.00" disabled>
                                 </div>
@@ -205,7 +205,7 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                                         <td>
                                             <?php echo htmlspecialchars($p['payment_method']); ?>
                                             <?php if($p['notes']): ?>
-                                                <i class="bi bi-info-circle ms-1 text-gold" data-bs-toggle="tooltip" title="<?php echo htmlspecialchars($p['notes']); ?>"></i>
+                                                <i class="bi bi-info-circle ms-1 text-secondary" data-bs-toggle="tooltip" title="<?php echo htmlspecialchars($p['notes']); ?>"></i>
                                             <?php endif; ?>
                                         </td>
                                         <td>

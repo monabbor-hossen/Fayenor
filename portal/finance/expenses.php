@@ -89,12 +89,12 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="text-white fw-bold mb-0"><i class="bi bi-wallet2 text-gold me-2"></i>Company Expenses</h3>
+            <h3 class="text-white fw-bold mb-0"><i class="bi bi-wallet2 text-secondary me-2"></i>Company Expenses</h3>
             <p class="text-white-50 small mb-0">Track and manage your operational costs.</p>
         </div>
-        <div class="text-end bg-dark bg-opacity-50 px-4 py-2 rounded-pill border border-gold border-opacity-25 shadow-sm d-none d-sm-block">
+        <div class="text-end bg-dark bg-opacity-50 px-4 py-2 rounded-pill border border-secondary border-opacity-25 shadow-sm d-none d-sm-block">
             <span class="text-white-50 small text-uppercase fw-bold me-2">Total Expenses:</span>
-            <span class="text-gold fw-bold fs-5">SAR <?php echo number_format($total_expenses, 2); ?></span>
+            <span class="text-secondary fw-bold fs-5">SAR <?php echo number_format($total_expenses, 2); ?></span>
         </div>
     </div>
 
@@ -115,7 +115,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
     <div class="row g-4">
         <div class="col-lg-4">
             <div class="glass-panel p-4 h-100">
-                <h5 class="text-gold fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Add New Expense</h5>
+                <h5 class="text-secondary fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Add New Expense</h5>
                 
                 <form action="expenses" method="POST">
                     <div class="mb-3">
@@ -160,7 +160,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
 
         <div class="col-lg-8">
             <div class="glass-panel p-4 h-100 d-flex flex-column">
-                <h5 class="text-gold fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Recent Expenses</h5>
+                <h5 class="text-secondary fw-bold mb-4 border-bottom border-light border-opacity-10 pb-2">Recent Expenses</h5>
                 
                 <div class="table-responsive flex-grow-1">
                     <table class="table table-dark table-hover align-middle bg-transparent mb-0">
@@ -182,7 +182,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                                         <td class="bg-transparent border-light border-opacity-10">
                                             <div class="fw-bold text-white"><?php echo htmlspecialchars($exp['title']); ?></div>
                                             <div class="small text-white-50">
-                                                <span class="text-gold me-1">[<?php echo htmlspecialchars($exp['category']); ?>]</span>
+                                                <span class="text-secondary me-1">[<?php echo htmlspecialchars($exp['category']); ?>]</span>
                                                 By <?php echo htmlspecialchars($exp['full_name']); ?>
                                             </div>
                                         </td>
@@ -215,7 +215,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                             <?php else: ?>
                                 <tr>
                                     <td colspan="4" class="text-center text-white-50 py-5 bg-transparent border-0">
-                                        <i class="bi bi-inbox fs-1 d-block mb-3 text-gold opacity-50"></i>
+                                        <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary opacity-50"></i>
                                         No expenses recorded yet.
                                     </td>
                                 </tr>
@@ -232,7 +232,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-modal rounded-4 shadow-lg">
             <div class="modal-header border-bottom border-light border-opacity-10">
-                <h5 class="modal-title text-white fw-bold"><i class="bi bi-receipt text-gold me-2"></i>Expense Details</h5>
+                <h5 class="modal-title text-white fw-bold"><i class="bi bi-receipt text-secondary me-2"></i>Expense Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
@@ -246,7 +246,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                     </div>
                     <div class="col-6">
                         <div class="view-label">Category</div>
-                        <div class="view-value"><span id="viewCategory" class="badge bg-dark border border-gold text-gold px-3 py-2">--</span></div>
+                        <div class="view-value"><span id="viewCategory" class="badge bg-dark border border-secondary text-secondary px-3 py-2">--</span></div>
                     </div>
                 </div>
 
@@ -262,7 +262,7 @@ $total_expenses = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0.00;
                 </div>
 
                 <div class="bg-dark bg-opacity-50 p-3 rounded-3 border border-light border-opacity-10">
-                    <div class="view-label mb-2"><i class="bi bi-card-text me-1 text-gold"></i> Description</div>
+                    <div class="view-label mb-2"><i class="bi bi-card-text me-1 text-secondary"></i> Description</div>
                     <div class="text-white-50 small" id="viewDesc" style="white-space: pre-wrap; line-height: 1.6;">--</div>
                 </div>
 

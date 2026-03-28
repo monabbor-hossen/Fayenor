@@ -99,7 +99,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
         </div>
         <div class="text-end d-none d-md-block">
             <div class="text-white-50 small">Current Date</div>
-            <div class="text-gold fw-bold"><i class="bi bi-calendar3 me-2"></i><?php echo date('F d, Y'); ?></div>
+            <div class="text-secondary fw-bold"><i class="bi bi-calendar3 me-2"></i><?php echo date('F d, Y'); ?></div>
         </div>
     </div>
 
@@ -159,7 +159,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <h5 class="text-gold fw-bold mb-3"><i class="bi bi-building me-2"></i>Your Applications</h5>
+            <h5 class="text-secondary fw-bold mb-3"><i class="bi bi-building me-2"></i>Your Applications</h5>
             
             <?php if (count($applications) > 0): ?>
                 <div class="row g-3">
@@ -178,7 +178,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
                                     <span class="badge bg-secondary bg-opacity-50 text-white-50 small">ID: #<?php echo $app['client_id']; ?></span>
                                 </div>
                                 <div class="text-end">
-                                    <div class="text-gold fw-bold fs-5"><?php echo $app['progress_percent']; ?>%</div>
+                                    <div class="text-secondary fw-bold fs-5"><?php echo $app['progress_percent']; ?>%</div>
                                 </div>
                             </div>
                             
@@ -209,7 +209,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
         </div>
 
         <div class="col-lg-4">
-            <h5 class="text-gold fw-bold mb-3"><i class="bi bi-receipt me-2"></i>Recent Payments</h5>
+            <h5 class="text-secondary fw-bold mb-3"><i class="bi bi-receipt me-2"></i>Recent Payments</h5>
             
             <div class="card-box p-0 overflow-hidden">
                 <?php if (count($recent_payments) > 0): ?>
@@ -221,7 +221,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
                                     <small class="text-white-50"><i class="bi bi-calendar-event me-1"></i><?php echo date('M d, Y', strtotime($pay['payment_date'])); ?></small>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <small class="text-gold text-truncate" style="max-width: 150px;"><?php echo htmlspecialchars($pay['company_name']); ?></small>
+                                    <small class="text-secondary text-truncate" style="max-width: 150px;"><?php echo htmlspecialchars($pay['company_name']); ?></small>
                                     <?php 
                                         $badge = 'bg-warning';
                                         if ($pay['payment_status'] == 'Completed') $badge = 'bg-success';
@@ -233,7 +233,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
                         <?php endforeach; ?>
                     </div>
                     <div class="p-3 text-center border-top border-light border-opacity-10 bg-dark bg-opacity-25">
-                        <a href="billing" class="text-gold text-decoration-none small fw-bold hover-white">View All Invoices <i class="bi bi-arrow-right ms-1"></i></a>
+                        <a href="billing" class="text-secondary text-decoration-none small fw-bold hover-white">View All Invoices <i class="bi bi-arrow-right ms-1"></i></a>
                     </div>
                 <?php else: ?>
                     <div class="p-5 text-center">
@@ -244,7 +244,7 @@ $overall_progress = ($total_active_steps > 0) ? round(($total_approved_steps / $
             </div>
             
             <div class="glass-panel p-4 mt-4 text-center" style="background: linear-gradient(145deg, rgba(212,175,55,0.1) 0%, rgba(0,0,0,0.4) 100%); border-color: rgba(212,175,55,0.3);">
-                <i class="bi bi-headset fs-1 text-gold mb-2 d-block"></i>
+                <i class="bi bi-headset fs-1 text-secondary mb-2 d-block"></i>
                 <h6 class="text-white fw-bold">Need Assistance?</h6>
                 <p class="text-white-50 small mb-3">Our support team is here to help with your applications.</p>
                 <a href="mailto:support@rooqflow.com" class="btn btn-rooq-primary btn-sm rounded-pill w-100 fw-bold">Contact Support</a>

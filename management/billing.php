@@ -127,7 +127,7 @@ try {
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="text-white fw-bold mb-1"><i class="bi bi-receipt text-gold me-3"></i>Billing & Financials</h2>
+            <h2 class="text-white fw-bold mb-1"><i class="bi bi-receipt text-secondary me-3"></i>Billing & Financials</h2>
             <p class="text-white-50 small mb-0">Overview of all your project financials, payments, and expenses.</p>
         </div>
         <button class="btn btn-outline-light btn-sm rounded-pill px-4 d-none d-md-block" onclick="window.print()">
@@ -136,7 +136,7 @@ try {
     </div>
 
     <div class="glass-panel p-3 mb-4">
-        <h6 class="text-gold fw-bold mb-3"><i class="bi bi-funnel-fill me-2"></i>Advanced Filters</h6>
+        <h6 class="text-secondary fw-bold mb-3"><i class="bi bi-funnel-fill me-2"></i>Advanced Filters</h6>
         <form method="GET" action="billing" class="m-0 row g-3">
             
             <div class="col-md-4">
@@ -157,7 +157,7 @@ try {
                            placeholder="YYYY-MM-DD" 
                            value="<?php echo htmlspecialchars($start_date); ?>" 
                            readonly style="cursor: pointer;">
-                    <i class="bi bi-calendar-date position-absolute text-gold" style="right: 15px; top: 10px; pointer-events: none;"></i>
+                    <i class="bi bi-calendar-date position-absolute text-secondary" style="right: 15px; top: 10px; pointer-events: none;"></i>
                 </div>
             </div>
 
@@ -168,7 +168,7 @@ try {
                            placeholder="YYYY-MM-DD" 
                            value="<?php echo htmlspecialchars($end_date); ?>" 
                            readonly style="cursor: pointer;">
-                    <i class="bi bi-calendar-date position-absolute text-gold" style="right: 15px; top: 10px; pointer-events: none;"></i>
+                    <i class="bi bi-calendar-date position-absolute text-secondary" style="right: 15px; top: 10px; pointer-events: none;"></i>
                 </div>
             </div>
             <div class="col-md-2 d-flex align-items-end">
@@ -233,18 +233,18 @@ try {
 
     <div class="card-box p-0 overflow-hidden">
         <div class="p-4 border-bottom border-light border-opacity-10 d-flex justify-content-between align-items-center bg-dark bg-opacity-50">
-            <h5 class="text-gold fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Filtered Transactions</h5>
+            <h5 class="text-secondary fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Filtered Transactions</h5>
         </div>
         
         <div class="table-responsive">
             <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent;">
                 <thead>
                     <tr style="background: rgba(255,255,255,0.05);">
-                        <th class="py-3 ps-4 text-gold text-uppercase small">Date</th>
-                        <th class="py-3 text-gold text-uppercase small">Application / Project</th>
-                        <th class="py-3 text-gold text-uppercase small">Amount (SAR)</th>
-                        <th class="py-3 text-gold text-uppercase small">Method</th>
-                        <th class="py-3 text-center text-gold text-uppercase small">Status</th>
+                        <th class="py-3 ps-4 text-secondary text-uppercase small">Date</th>
+                        <th class="py-3 text-secondary text-uppercase small">Application / Project</th>
+                        <th class="py-3 text-secondary text-uppercase small">Amount (SAR)</th>
+                        <th class="py-3 text-secondary text-uppercase small">Method</th>
+                        <th class="py-3 text-center text-secondary text-uppercase small">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -256,7 +256,7 @@ try {
                                 <div class="small text-white-50"><?php echo date('h:i A', strtotime($pay['created_at'] ?? $pay['payment_date'])); ?></div>
                             </td>
                             <td>
-                                <a href="project-details?id=<?php echo $pay['client_id']; ?>" class="text-white text-decoration-none hover-gold fw-bold d-flex align-items-center">
+                                <a href="project-details?id=<?php echo $pay['client_id']; ?>" class="text-white text-decoration-none hover-secondary fw-bold d-flex align-items-center">
                                     <i class="bi bi-building text-white-50 me-2"></i>
                                     <?php echo htmlspecialchars($pay['company_name']); ?>
                                 </a>

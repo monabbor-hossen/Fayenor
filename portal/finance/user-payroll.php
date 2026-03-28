@@ -166,7 +166,7 @@ if ($is_pre_join) {
                 <i class="bi bi-arrow-left me-2"></i> Back to Users
             </a>
             <h3 class="text-white fw-bold mb-0">Payroll: <?php echo htmlspecialchars($display_name); ?></h3>
-            <p class="text-gold small mb-0"><?php echo htmlspecialchars($user['job_title'] ?? 'Staff'); ?></p>
+            <p class="text-secondary small mb-0"><?php echo htmlspecialchars($user['job_title'] ?? 'Staff'); ?></p>
         </div>
         <button class="btn btn-rooq-primary rounded-pill px-4 shadow-lg" data-bs-toggle="modal" data-bs-target="#payModal">
             <i class="bi bi-wallet2 me-2"></i> Record Payment
@@ -212,14 +212,14 @@ if ($is_pre_join) {
     </div>
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 mt-4">
-        <h6 class="text-gold m-0 text-uppercase fw-bold mb-3 mb-md-0" style="font-size: 0.85rem; letter-spacing: 1px;">
+        <h6 class="text-secondary m-0 text-uppercase fw-bold mb-3 mb-md-0" style="font-size: 0.85rem; letter-spacing: 1px;">
             <i class="bi bi-clock-history me-2"></i>Payment History
         </h6>
         
         <form method="GET" id="payrollFilterForm" style="width: 100%; max-width: 380px;">
             <input type="hidden" name="id" value="<?php echo $user_id; ?>">
             <div class="input-group align-items-center" style="background: var(--glass-10); border: 1px solid var(--glass-20); border-radius: 50px; overflow: hidden; transition: all 0.3s ease;">
-                <span class="input-group-text bg-transparent border-0 text-gold ps-3 pe-2"><i class="bi bi-calendar2-range"></i></span>
+                <span class="input-group-text bg-transparent border-0 text-secondary ps-3 pe-2"><i class="bi bi-calendar2-range"></i></span>
                 <input type="text" name="f_period" id="f_period" class="form-control bg-transparent border-0 text-white shadow-none rooq-date auto-filter py-2 px-1" 
                        value="<?php echo htmlspecialchars($f_period); ?>" placeholder="Filter by date, month, or year..." style="font-size: 0.85rem;">
                 <button type="button" onclick="clearPayrollFilters(this.form)" class="btn bg-transparent border-0 text-white-50 pe-3 shadow-none" 
@@ -236,11 +236,11 @@ if ($is_pre_join) {
             <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent;">
                 <thead>
                     <tr style="background: rgba(255,255,255,0.05);">
-                        <th class="py-3 ps-4 text-gold text-uppercase small">Month / Year</th>
-                        <th class="py-3 text-gold text-uppercase small">Payment Date</th>
-                        <th class="py-3 text-gold text-uppercase small">Method</th>
-                        <th class="py-3 text-gold text-uppercase small">Amount Paid</th>
-                        <th class="py-3 text-gold text-uppercase small">Notes</th>
+                        <th class="py-3 ps-4 text-secondary text-uppercase small">Month / Year</th>
+                        <th class="py-3 text-secondary text-uppercase small">Payment Date</th>
+                        <th class="py-3 text-secondary text-uppercase small">Method</th>
+                        <th class="py-3 text-secondary text-uppercase small">Amount Paid</th>
+                        <th class="py-3 text-secondary text-uppercase small">Notes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -268,7 +268,7 @@ if ($is_pre_join) {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-modal">
             <div class="modal-header border-bottom border-secondary border-opacity-25">
-                <h5 class="modal-title text-white fw-bold"><i class="bi bi-wallet2 me-2 text-gold"></i>Record Salary Payment</h5>
+                <h5 class="modal-title text-white fw-bold"><i class="bi bi-wallet2 me-2 text-secondary"></i>Record Salary Payment</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             
@@ -295,7 +295,7 @@ if ($is_pre_join) {
                             <input type="number" name="pay_year" class="form-control glass-input" value="<?php echo htmlspecialchars($f_year ?: date('Y')); ?>" required>
                         </div>
                         <div class="col-12">
-                            <label class="form-label text-gold small fw-bold">Amount to Pay (SAR)</label>
+                            <label class="form-label text-secondary small fw-bold">Amount to Pay (SAR)</label>
                             <input type="number" step="0.01" name="amount" class="form-control glass-input fw-bold text-success" 
                                    value="<?php echo $modal_default_amount; ?>" required>
                         </div>

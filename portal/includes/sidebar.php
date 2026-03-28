@@ -36,7 +36,7 @@ if ($_SESSION['role'] === 'client') {
                 <a href="<?php echo BASE_URL; ?>management/dashboard"
                     class="nav-link <?php echo ($current_page == 'dashboard.php') ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
-                    <i class="bi bi-grid-1x2 fs-5 me-1 text-gold"></i>
+                    <i class="bi bi-grid-1x2 fs-5 me-1 text-secondary"></i>
                     <span class="fw-bold"><?php echo $text['dashboard']; ?></span>
                 </a>
             </li>
@@ -44,7 +44,7 @@ if ($_SESSION['role'] === 'client') {
                 <a href="<?php echo BASE_URL; ?>management/billing"
                     class="nav-link <?= in_array($current_page, ['billing.php','project-details.php']) ? 'active-glass' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
-                    <i class="bi bi-receipt fs-5 me-1 text-gold"></i>
+                    <i class="bi bi-receipt fs-5 me-1 text-secondary"></i>
                     <span class="fw-bold"><?php echo $text['billing']; ?></span>
                 </a>
             </li>
@@ -52,7 +52,7 @@ if ($_SESSION['role'] === 'client') {
                 <a href="<?php echo BASE_URL; ?>management/chat"
                     class="nav-link <?php echo ($current_page == 'chat.php') ? 'active-glass ' : ''; ?> rounded"
                     style="transition: all 0.3s ease;">
-                    <i class="bi bi-chat-dots fs-5 me-1 text-gold"></i>
+                    <i class="bi bi-chat-dots fs-5 me-1 text-secondary"></i>
                     <span class="fw-bold flex-grow-1"><?php echo $text['support_chat']; ?></span>
                     <?php if (($unread_count ?? 0) > 0): ?>
                     <span class="badge bg-danger rounded-pill shadow-sm"><?php echo $unread_count; ?></span>
@@ -64,7 +64,7 @@ if ($_SESSION['role'] === 'client') {
                 <a href="<?php echo BASE_URL; ?>management/expenses"
                     class="nav-link <?php echo ($current_page == 'expenses.php') ? 'active-glass' : ''; ?>  rounded"
                     style="transition: all 0.3s ease;">
-                    <i class="bi bi-wallet2 fs-5 me-1 text-gold"></i>
+                    <i class="bi bi-wallet2 fs-5 me-1 text-secondary"></i>
                     <span class="flex-grow-1"><?php echo $text['expenses']; ?></span>
                 </a>
             </li>
@@ -90,7 +90,7 @@ if ($_SESSION['role'] === 'client') {
                 <a href="<?php echo BASE_URL; ?>portal/communication/chat"
                     class="nav-link <?php echo ($current_page == 'chat.php') ? 'active-glass active bg-rooq-primary text-white shadow-sm' : 'text-white-50 hover-white'; ?> d-flex align-items-center rounded px-3 py-2"
                     style="transition: all 0.3s ease;">
-                    <i class="bi bi-chat-dots fs-5 me-1 text-gold"></i>
+                    <i class="bi bi-chat-dots fs-5 me-1 text-secondary"></i>
                     <span class="fw-bold flex-grow-1"><?php echo $text['client_messages']; ?></span>
                     <?php if (($unread_count ?? 0) > 0): ?>
                     <span class="badge bg-danger rounded-pill shadow-sm"><?php echo $unread_count; ?></span>

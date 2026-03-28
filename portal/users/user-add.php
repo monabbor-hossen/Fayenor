@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form method="POST" autocomplete="off">
                     <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
 
-                    <h6 class="text-gold mb-3 text-uppercase fw-bold" style="font-size: 0.8rem;"><i class="bi bi-person-lines-fill me-2"></i>Personal Information</h6>
+                    <h6 class="text-secondary mb-3 text-uppercase fw-bold" style="font-size: 0.8rem;"><i class="bi bi-person-lines-fill me-2"></i>Personal Information</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label class="form-label text-white-50 small fw-bold">Full Name</label>
@@ -111,21 +111,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="tel" name="phone" class="form-control glass-input" placeholder="+966 5X XXX XXXX">
                         </div>
                         <div class="col-md-6 border-top border-secondary border-opacity-25 pt-3 mt-3">
-                            <label class="form-label text-gold small fw-bold"><i class="bi bi-cash-stack me-2"></i>Basic Salary (Monthly)</label>
+                            <label class="form-label text-secondary small fw-bold"><i class="bi bi-cash-stack me-2"></i>Basic Salary (Monthly)</label>
                             <div class="input-group">
                                 <span class="input-group-text glass-input border-end-0 text-white-50">SAR</span>
                                 <input type="number" step="0.01" name="basic_salary" class="form-control glass-input border-start-0 ps-2" placeholder="0.00" required>
                             </div>
                         </div>
                         <div class="col-md-6 border-top border-secondary border-opacity-25 pt-3 mt-3">
-                            <label class="form-label text-gold small fw-bold"><i class="bi bi-calendar-check me-2"></i>Joining Date</label>
+                            <label class="form-label text-secondary small fw-bold"><i class="bi bi-calendar-check me-2"></i>Joining Date</label>
                             <div class="input-group">
                                 <input type="text" name="joining_date" class="form-control glass-input rooq-date" data-hide-buttons="true" value="<?php echo date('Y-m-d'); ?>" required>
                             </div>
                         </div>
                     </div>
 
-                    <h6 class="text-gold mb-3 text-uppercase fw-bold mt-4" style="font-size: 0.8rem;"><i class="bi bi-shield-lock me-2"></i>Account Security</h6>
+                    <h6 class="text-secondary mb-3 text-uppercase fw-bold mt-4" style="font-size: 0.8rem;"><i class="bi bi-shield-lock me-2"></i>Account Security</h6>
                     <div class="row g-3 mb-4 p-3 rounded" style="background: rgba(0,0,0,0.2);">
                         <div class="col-md-6">
                             <label class="form-label text-white-50 small fw-bold">System Username</label>

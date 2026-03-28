@@ -159,7 +159,7 @@ $workflow_steps = [
                 <form method="POST">
                     <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
 
-                    <h5 class="text-gold mb-3"><i class="bi bi-info-circle me-2"></i>Project / License Information</h5>
+                    <h5 class="text-secondary mb-3"><i class="bi bi-info-circle me-2"></i>Project / License Information</h5>
                     <div class="row g-3 mb-5">
                         <div class="col-md-6">
                             <label class="form-label text-white-50 small fw-bold">Company Name</label>
@@ -182,21 +182,21 @@ $workflow_steps = [
                             <input type="text" name="trade_name_application" class="form-control glass-input">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label text-gold small fw-bold">Total Contract Value (SAR)</label>
+                            <label class="form-label text-secondary small fw-bold">Total Contract Value (SAR)</label>
                             <input type="number" step="0.01" name="contract_value" class="form-control glass-input" placeholder="0.00" required>
                         </div>
                     </div>
 
-                    <h5 class="text-gold mb-3"><i class="bi bi-shield-lock me-2"></i>Client Portal Access</h5>
+                    <h5 class="text-secondary mb-3"><i class="bi bi-shield-lock me-2"></i>Client Portal Access</h5>
                     <div class="row g-3 mb-5 p-3 rounded" style="background: rgba(0,0,0,0.2);">
                         
                         <div class="col-12 mb-3">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input form-check-input-gold" type="radio" name="account_type" id="acc_new" value="new" checked onchange="toggleAccountFields()">
+                                <input class="form-check-input form-check-input-secondary" type="radio" name="account_type" id="acc_new" value="new" checked onchange="toggleAccountFields()">
                                 <label class="form-check-label text-white" for="acc_new">Create New Login Account</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input form-check-input-gold" type="radio" name="account_type" id="acc_existing" value="existing" onchange="toggleAccountFields()">
+                                <input class="form-check-input form-check-input-secondary" type="radio" name="account_type" id="acc_existing" value="existing" onchange="toggleAccountFields()">
                                 <label class="form-check-label text-white" for="acc_existing">Link to Existing Account</label>
                             </div>
                         </div>
@@ -233,7 +233,7 @@ $workflow_steps = [
                     </div>
 
 
-                    <h5 class="text-gold mb-3"><i class="bi bi-kanban me-2"></i>Initial Workflow Status</h5>
+                    <h5 class="text-secondary mb-3"><i class="bi bi-kanban me-2"></i>Initial Workflow Status</h5>
                     <div class="row g-3">
                         <?php 
                             $required_steps = ['scope', 'qiwa', 'muqeem']; 
@@ -246,13 +246,13 @@ $workflow_steps = [
                                         <label class="text-white fw-bold small text-uppercase mb-0"><?php echo $label; ?></label>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="form-check form-switch m-0 p-0 d-flex align-items-center">
-                                            <input class="form-check-input m-0 form-check-input-gold cursor-pointer <?php echo $is_required ? 'd-none' : ''; ?>" type="checkbox"
+                                            <input class="form-check-input m-0 form-check-input-secondary cursor-pointer <?php echo $is_required ? 'd-none' : ''; ?>" type="checkbox"
                                                 name="enable_<?php echo $key; ?>" id="enable_<?php echo $key; ?>"
                                                 value="1" checked onchange="toggleWorkflowCard('<?php echo $key; ?>')"
                                                 style="width: 2.2em; height: 1.1em;"
                                                 <?php echo $is_required ? 'disabled' : ''; ?>>
                                         </div>
-                                    <button type="button" class="btn btn-sm btn-link text-gold p-0" onclick="openEditModal('<?php echo $key; ?>', '<?php echo htmlspecialchars($label, ENT_QUOTES); ?>')"><i class="bi bi-pencil-square fs-6"></i></button>
+                                    <button type="button" class="btn btn-sm btn-link text-secondary p-0" onclick="openEditModal('<?php echo $key; ?>', '<?php echo htmlspecialchars($label, ENT_QUOTES); ?>')"><i class="bi bi-pencil-square fs-6"></i></button>
                                     </div>
                                 </div>
                                 <select name="status_<?php echo $key; ?>" id="select_<?php echo $key; ?>" class="form-select glass-input glass-select-sm">
@@ -267,7 +267,7 @@ $workflow_steps = [
                                     <option value="Approved">Approved</option>
                                     <?php endif; ?>
                                 </select>
-                                <div id="note_indicator_<?php echo $key; ?>" class="mt-2 text-gold small fst-italic d-none"><i class="bi bi-sticky-fill me-1"></i> Note added</div>
+                                <div id="note_indicator_<?php echo $key; ?>" class="mt-2 text-secondary small fst-italic d-none"><i class="bi bi-sticky-fill me-1"></i> Note added</div>
                                 <input type="hidden" name="note_<?php echo $key; ?>" id="input_note_<?php echo $key; ?>" value="">
                             </div>
                         </div>

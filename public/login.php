@@ -60,7 +60,7 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
             transition: all 0.3s ease;
         }
         .btn-back-subtle:hover {
-            color: var(--rooq-burgundy);
+            color: var(--rooq-primary);
             transform: translateX(<?php echo ($lang == 'ar' ? '5px' : '-5px'); ?>);
         }
     </style>

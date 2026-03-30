@@ -1,19 +1,22 @@
 Options -Indexes -MultiViews
 RewriteEngine On
 
-# Point all 404 errors to your custom 404.php page
-# IMPORTANT: Change "Fayenor" to your exact localhost folder name if it is different!
+# 1. Point BOTH 404 (Not Found) and 403 (Forbidden) errors to your custom theme page
+ErrorDocument 403 /fayenor/public/404.php
 ErrorDocument 404 /fayenor/public/404.php
+
+# 2. If someone types just "/public/", automatically send them to the login page!
+RewriteRule ^public/?$ /fayenor/public/login [R=301,L]
 
 # ========================================================================
 # REMOVE .PHP EXTENSION FROM URLS
 # ========================================================================
 
-# 1. External Redirect: If a user types or clicks a link ending in .php, redirect them to the clean URL
+# External Redirect: If a user types a link ending in .php, redirect them to the clean URL
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php [NC]
 RewriteRule ^ %1 [R=301,L]
 
-# 2. Internal Routing: Tell Apache to silently look for the .php file when the clean URL is visited
+# Internal Routing: Tell Apache to silently look for the .php file
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*?)/?$ $1.php [L]

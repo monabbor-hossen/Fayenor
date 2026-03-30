@@ -198,7 +198,7 @@ require_once 'header.php';
                 <path d="M 0,450 C 100,1050 550,800 794,880 L 794,1025 C 500,960 200,1123 0,1123 Z"
                     style="fill: var(--theme-primary);"></path>
             </svg>
-            <img src="../assets/img/logo_transparent.png" class="watermark" alt="">
+            <img src="../assets/img/logo-icon.png" class="watermark" alt="">
 
             <div class="cover-content-layer">
 

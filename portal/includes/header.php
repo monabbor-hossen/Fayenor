@@ -69,8 +69,8 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
     <meta id="base_url_meta" content="<?php echo BASE_URL; ?>">
     <title>Dashboard | Basmat Rooq</title>
     
-    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
-    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
     
     <?php if($dir == 'rtl'): ?>

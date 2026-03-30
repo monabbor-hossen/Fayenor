@@ -30,7 +30,7 @@ $db = (new Database())->getConnection();
 
 // Fetch existing client accounts from the users table
 // $stmt_accs = $db->query("SELECT u.id as account_id, u.username, c.client_name FROM users u LEFT JOIN clients c ON u.id = c.account_id WHERE u.role = 'client' GROUP BY u.id");
-$stmt_accs = $db->query("SELECT u.id as account_id, u.username, c.client_name FROM users u LEFT JOIN clients c ON u.id = c.account_id WHERE u.role = '3' GROUP BY u.id");
+$stmt_accs = $db->query("SELECT u.id as account_id, u.username, c.client_name FROM users u LEFT JOIN clients c ON u.id = c.account_id WHERE u.role = 'client' GROUP BY u.id");
 $existing_accounts = $stmt_accs->fetchAll(PDO::FETCH_ASSOC);
 
 // --- 3. HANDLE FORM SUBMISSION (WITH PRG REDIRECT) ---
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($username) && !empty($password)) {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 // Insert into USERS table with role 'client'
-                $sql_acc = "INSERT INTO users (username, password, role, full_name) VALUES (:user, :pass, '3', :fname)";
+                $sql_acc = "INSERT INTO users (username, password, role, full_name) VALUES (:user, :pass, 'client', :fname)";
                 $stmt_acc = $db->prepare($sql_acc);
                 $stmt_acc->execute([':user' => $username, ':pass' => $hashed_password, ':fname' => $client]);
                 $account_id = $db->lastInsertId();

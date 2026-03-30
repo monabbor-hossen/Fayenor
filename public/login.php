@@ -42,8 +42,8 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | FAYENOR</title> 
-    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
-    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon.png" type="image/x-icon" />
+    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon.png" type="image/x-icon" />
 
     
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
@@ -53,7 +53,13 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
     
     <style>
         body { margin: 0; padding: 0; font-family: <?php echo ($lang == 'ar' ? "'Cairo', sans-serif" : "'Segoe UI', sans-serif"); ?>; }
-        
+        /* Default (Light Theme) Styles */
+
+
+        /* Dark Theme Styles */
+        @media (prefers-color-scheme: dark) {
+            
+        }
         /* Subtle hover effect for the back button */
         .btn-back-subtle {
             color: #555;

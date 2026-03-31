@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAYENOR | Saudi Investment Journey</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#023020', // Primary Dark Green
+                            dark: '#01150e',    // Deeper shade for background
+                            light: '#034d33'    
+                        },
+                        accent: {
+                            DEFAULT: '#B0C4DE', // Secondary Light Steel Blue
+                            light: '#D8E4F0',   // Lighter node color
+                            dark: '#8FA8C5'     // Dark Secondary
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #01150e; 
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* * ==========================================
+         * REQUIRED CSS FOR CANVAS EXTRACTION
+         * ========================================== */
+        #hero-section {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            /* Background gradient using the Primary Dark Green */
+            background: radial-gradient(circle at center, #023020 0%, #01150e 100%);
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; 
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10; 
+            pointer-events: none; 
+        }
+        
+        .hero-content > * {
+            pointer-events: auto; 
+        }
+        /* ========================================== */
+
+        /* UI Styles */
+        .accent-glow { text-shadow: 0 0 25px rgba(176, 196, 222, 0.6); }
+        
+        .glass-panel {
+            background: rgba(1, 21, 14, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(176, 196, 222, 0.2);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, #B0C4DE 0%, #8FA8C5 100%);
+            color: #01150e;
+            transition: all 0.3s ease;
+        }
+
+        .btn-accent:hover {
+            box-shadow: 0 0 30px rgba(176, 196, 222, 0.5);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent selection:text-brand-dark">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 transition-all duration-500 bg-transparent border-b border-transparent" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-24">
+                <div class="flex items-center gap-4 cursor-pointer">
+                    <!-- Geometric 8-point star Logo mark for KSA relevance -->
+                    <div class="w-10 h-10 border border-accent flex items-center justify-center rounded-sm relative transform rotate-45">
+                        <div class="absolute w-full h-full border border-accent transform rotate-45"></div>
+                        <span class="font-serif font-bold text-xl text-accent transform -rotate-45">F</span>
+                    </div>
+                    <span class="font-sans font-bold text-xl tracking-widest text-white ml-2">FAYENOR</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-300 hover:text-accent text-sm uppercase tracking-widest font-semibold transition">MISA Licensing</a>
+                    <a href="#" class="text-gray-300 hover:text-accent text-sm uppercase tracking-widest font-semibold transition">Saudi Compliance</a>
+                    <a href="#" class="btn-accent px-6 py-2 rounded-sm text-sm font-bold uppercase tracking-widest">Client Portal</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero-section">
+        <canvas id="hero-canvas"></canvas>
+        
+        <div class="hero-content max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+            <!-- Vision 2030 Logo -->
+            <img src="https://misa.gov.sa/app/themes/niu-theme/public/foundationday-images/vision-logo.png" 
+                 alt="Vision 2030 Kingdom of Saudi Arabia" 
+                 class="h-20 md:h-24 mb-6"
+                 style="filter: brightness(0) invert(1); opacity: 0.95;">
+            
+            <h1 class="text-6xl md:text-[5.5rem] font-bold font-sans text-white mb-4 tracking-wider uppercase"
+                style="text-shadow: 0 0 35px rgba(255,255,255,0.4), 0 0 15px rgba(176,196,222,0.3);">
+                FAYENOR
+            </h1>
+            
+            <p class="mt-2 text-xl md:text-2xl text-gray-200 mb-10 font-light tracking-wide opacity-90">
+                Digitizing the Saudi Investment Journey.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-5">
+                <button class="border border-white/80 text-white px-8 py-2.5 rounded-full font-medium text-base hover:bg-white/10 transition-all duration-300">
+                    Get to know us
+                </button>
+                <button class="bg-[#D8E4F0] text-[#01150e] px-8 py-2.5 rounded-full font-semibold text-base hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                    Access Portal
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+    ========================================================================
+    TUTORIAL: HOW TO EXTRACT THIS ANIMATION FOR ANOTHER APP
+    ========================================================================
+
+    To use this 3D Geometric MISA Matrix in another project (React, Vue, HTML):
+
+    STEP 1: THE HTML STRUCTURE
+    You must wrap the canvas in a container with relative positioning.
+    <div id="animation-container" style="position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #01150e;">
+        <canvas id="my-canvas" style="position: absolute; top: 0; left: 0;"></canvas>
+        <div style="position: relative; z-index: 10;">Your UI Content</div>
+    </div>
+
+    STEP 2: THE JAVASCRIPT (Vanilla JS)
+    Copy everything from `// --- START OF CANVAS LOGIC ---` to 
+    `// --- END OF CANVAS LOGIC ---`. Change `document.getElementById('hero-canvas')` 
+    to match your specific canvas ID.
+
+    STEP 3: FOR REACT (Functional Component)
+    Wrap the logic inside a `useEffect` hook and use a `useRef` for the canvas.
+
+    import React, { useEffect, useRef } from 'react';
+
+    const MisaMatrixBackground = () => {
+        const canvasRef = useRef(null);
+
+        useEffect(() => {
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d');
+            let animationFrameId;
+            let time = 0;
+
+            // ... paste variables, initGeometricMatrix(), resize logic here ...
+
+            const render = () => {
+                // ... paste the animate() loop contents here ...
+                animationFrameId = requestAnimationFrame(render);
+            };
+            
+            initGeometricMatrix(); // Setup points
+            render();    // Start loop
+
+            // Cleanup on unmount
+            return () => cancelAnimationFrame(animationFrameId); 
+        }, []);
+
+        return <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />;
+    };
+    export default MisaMatrixBackground;
+    
+    ========================================================================
+    -->
+
+    <script>
+        window.addEventListener('load', () => {
+            
+            // --- START OF CANVAS LOGIC ---
+
+            const canvas = document.getElementById('hero-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let width, height, centerX, centerY;
+            let baseRadius;
+            
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = document.getElementById('hero-section').offsetHeight;
+                centerX = width / 2;
+                centerY = height / 2;
+                // Scale the matrix based on screen size
+                baseRadius = width < 868 ? 340 : 480; 
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // 3D Projection Config
+            const fov = 900; 
+            let nodes = [];
+            let connections = []; // Store explicit connections
+            let time = 0;
+
+            /**
+             * Generates a 3D architectural wireframe based on stacked 8-pointed stars (Rub el Hizb).
+             * Highly relevant to KSA / Islamic geometry, symbolizing structure and authority.
+             */
+            function initGeometricMatrix() {
+                nodes = [];
+                connections = [];
+                
+                const layers = 11; // Number of stacked stars
+                const pointsPerLayer = 16; // 8 outer points, 8 inner corners forms the 8-pointed star
+                let nodeId = 0;
+
+                for (let l = 0; l < layers; l++) {
+                    // Normalize layer position from -1 (bottom) to 1 (top)
+                    let normalizedY = (l / (layers - 1)) * 2 - 1; 
+                    
+                    // Height of the entire structure (y goes from -250 to +250)
+                    let yOffset = normalizedY * (width < 768 ? 180 : 300); 
+                    
+                    // Creates a spherical/barrel curve for the overall matrix shape
+                    let rFactor = Math.sqrt(1.1 - Math.pow(normalizedY, 2));
+                    let layerRadius = baseRadius * rFactor;
+
+                    for (let p = 0; p < pointsPerLayer; p++) {
+                        let angle = (p / pointsPerLayer) * Math.PI * 2;
+                        
+                        // Add a slight structural twist to each layer
+                        angle += normalizedY * 0.4; 
+                        
+                        // Alternate between outer radius and inner radius to form the star
+                        let isOuter = p % 2 === 0;
+                        let r = isOuter ? layerRadius : layerRadius * 0.65;
+                        
+                        nodes.push({
+                            id: nodeId++,
+                            layer: l,
+                            index: p,
+                            isOuter: isOuter,
+                            baseX: Math.cos(angle) * r,
+                            baseY: yOffset,
+                            baseZ: Math.sin(angle) * r,
+                            size: isOuter ? (Math.random() * 1.5 + 1.5) : 1, // Outer corners are thicker
+                            pulseOffset: Math.random() * Math.PI * 2
+                        });
+                    }
+                }
+
+                // Pre-calculate structural connections
+                nodes.forEach(n1 => {
+                    nodes.forEach(n2 => {
+                        // Only draw connections in one direction to prevent duplicates
+                        if (n1.id >= n2.id) return;
+
+                        // 1. Horizontal connections: Connect adjacent nodes in the SAME layer to draw the 8-pointed star
+                        if (n1.layer === n2.layer && 
+                           (n1.index === (n2.index + 1) % pointsPerLayer || 
+                            n1.index === (n2.index - 1 + pointsPerLayer) % pointsPerLayer)) {
+                            connections.push({a: n1, b: n2, type: 'horizontal'});
+                        }
+
+                        // 2. Vertical connections: Connect corresponding nodes in ADJACENT layers
+                        if (Math.abs(n1.layer - n2.layer) === 1 && n1.index === n2.index) {
+                            connections.push({a: n1, b: n2, type: 'vertical'});
+                        }
+                    });
+                });
+            }
+
+            // Function to rotate a 3D coordinate around X and Y axes
+            function rotate3D(x, y, z, rotX, rotY) {
+                // Y-axis rotation (spin around vertical axis)
+                let x1 = x * Math.cos(rotY) - z * Math.sin(rotY);
+                let z1 = x * Math.sin(rotY) + z * Math.cos(rotY);
+                
+                // X-axis rotation (tilt forward/backward)
+                let y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+                let z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX);
+                
+                return { x: x1, y: y2, z: z2 };
+            }
+
+            function animate() {
+                // Clear background with deep primary green
+                ctx.fillStyle = '#01150e'; 
+                ctx.fillRect(0, 0, width, height);
+
+                time += 1;
+                
+                // Elegant rotation: Constant slow spin, slight structural tilt
+                let rotY = time * 0.003; 
+                let rotX = 0.2 + Math.sin(time * 0.005) * 0.15; // Nods slightly
+
+                ctx.globalCompositeOperation = 'lighter';
+
+                let projectedNodes = [];
+
+                // 1. Process and Project all nodes
+                nodes.forEach(node => {
+                    let rotated = rotate3D(node.baseX, node.baseY, node.baseZ, rotX, rotY);
+
+                    // Perspective projection
+                    let scale = fov / (fov + rotated.z);
+                    let screenX = centerX + rotated.x * scale;
+                    let screenY = centerY + rotated.y * scale;
+
+                    // Calculate depth opacity
+                    let depthAlpha = 1 - ((rotated.z + baseRadius) / (baseRadius * 2.5));
+                    depthAlpha = Math.max(0.05, Math.min(1, depthAlpha));
+
+                    // Dynamic pulsing size for data visualization effect
+                    let currentSize = node.size + Math.sin(time * 0.05 + node.pulseOffset) * 0.5;
+
+                    projectedNodes.push({
+                        id: node.id,
+                        sx: screenX,
+                        sy: screenY,
+                        sz: rotated.z, 
+                        scale: scale,
+                        alpha: depthAlpha,
+                        size: currentSize * scale,
+                        isOuter: node.isOuter
+                    });
+                });
+
+                // Helper to find projected node by ID
+                const getProjected = (id) => projectedNodes[id];
+
+                // 2. Draw Connections (The Geometric Wireframe)
+                ctx.lineWidth = 0.8;
+                connections.forEach(conn => {
+                    let pA = getProjected(conn.a.id);
+                    let pB = getProjected(conn.b.id);
+                    
+                    // Optimize: Don't draw lines deeply in the background
+                    if (pA.sz > baseRadius * 0.5 && pB.sz > baseRadius * 0.5) return;
+
+                    let lineAlpha = (pA.alpha + pB.alpha) / 2;
+                    
+                    // Vertical structural lines are slightly dimmer than the star outlines
+                    let strength = conn.type === 'horizontal' ? 0.6 : 0.25;
+                    
+                    ctx.strokeStyle = `rgba(176, 196, 222, ${lineAlpha * strength})`;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(pA.sx, pA.sy);
+                    ctx.lineTo(pB.sx, pB.sy);
+                    ctx.stroke();
+                });
+
+                // 3. Draw a Central "Core" Beam (Representing the solid foundation of KSA/MISA)
+                let topCore = rotate3D(0, -350, 0, rotX, rotY);
+                let botCore = rotate3D(0, 350, 0, rotX, rotY);
+                let pTop = {
+                    sx: centerX + topCore.x * (fov / (fov + topCore.z)),
+                    sy: centerY + topCore.y * (fov / (fov + topCore.z))
+                };
+                let pBot = {
+                    sx: centerX + botCore.x * (fov / (fov + botCore.z)),
+                    sy: centerY + botCore.y * (fov / (fov + botCore.z))
+                };
+                
+                let gradient = ctx.createLinearGradient(pTop.sx, pTop.sy, pBot.sx, pBot.sy);
+                gradient.addColorStop(0, 'rgba(176, 196, 222, 0)');
+                gradient.addColorStop(0.5, 'rgba(176, 196, 222, 0.15)');
+                gradient.addColorStop(1, 'rgba(176, 196, 222, 0)');
+                
+                ctx.lineWidth = width < 768 ? 40 : 80;
+                ctx.strokeStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(pTop.sx, pTop.sy);
+                ctx.lineTo(pBot.sx, pBot.sy);
+                ctx.stroke();
+
+                // 4. Draw the Nodes
+                // Sort by Z depth to draw front nodes last
+                projectedNodes.sort((a, b) => b.sz - a.sz);
+                
+                projectedNodes.forEach(pNode => {
+                    if (pNode.sz > baseRadius * 0.8) return; // Cull distant nodes
+
+                    ctx.beginPath();
+                    ctx.fillStyle = `rgba(216, 228, 240, ${pNode.alpha})`; 
+                    ctx.arc(pNode.sx, pNode.sy, pNode.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Extra glow for outer star points in the foreground
+                    if (pNode.isOuter && pNode.sz < -baseRadius * 0.3) {
+                        ctx.beginPath();
+                        ctx.fillStyle = `rgba(176, 196, 222, ${pNode.alpha * 0.4})`;
+                        ctx.arc(pNode.sx, pNode.sy, pNode.size * 3.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                ctx.globalCompositeOperation = 'source-over';
+                requestAnimationFrame(animate);
+            }
+
+            initGeometricMatrix();
+            animate();
+
+            // --- END OF CANVAS LOGIC ---
+
+            // UI Logic: Navbar solid background on scroll
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-brand-dark/95', 'backdrop-blur-md', 'shadow-xl', 'border-accent/20');
+                    navbar.classList.remove('bg-transparent', 'border-transparent');
+                } else {
+                    navbar.classList.remove('bg-brand-dark/95', 'backdrop-blur-md', 'shadow-xl', 'border-accent/20');
+                    navbar.classList.add('bg-transparent', 'border-transparent');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

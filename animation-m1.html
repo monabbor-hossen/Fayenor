@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura | Global Infrastructure</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#023020', // Primary Dark Green
+                            dark: '#01150e',    // Deeper shade for background
+                            light: '#034d33'    
+                        },
+                        accent: {
+                            DEFAULT: '#B0C4DE', // Secondary Light Steel Blue
+                            light: '#D8E4F0',   // Lighter node color
+                            dark: '#8FA8C5'     // Dark Secondary
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #01150e; 
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* * ==========================================
+         * REQUIRED CSS FOR CANVAS EXTRACTION
+         * ========================================== */
+        #hero-section {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #023020 0%, #01150e 100%);
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; 
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10; 
+            pointer-events: none; 
+        }
+        
+        .hero-content > * {
+            pointer-events: auto; 
+        }
+        /* ========================================== */
+
+        /* UI Styles */
+        .accent-glow { text-shadow: 0 0 25px rgba(176, 196, 222, 0.6); }
+        
+        .glass-panel {
+            background: rgba(1, 21, 14, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(176, 196, 222, 0.2);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, #B0C4DE 0%, #8FA8C5 100%);
+            color: #01150e;
+            transition: all 0.3s ease;
+        }
+
+        .btn-accent:hover {
+            box-shadow: 0 0 30px rgba(176, 196, 222, 0.5);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent selection:text-brand-dark">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 transition-all duration-500 bg-transparent border-b border-transparent" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-24">
+                <div class="flex items-center gap-4 cursor-pointer">
+                    <div class="w-10 h-10 border border-accent flex items-center justify-center rounded-sm">
+                        <span class="font-serif font-bold text-xl text-accent">A</span>
+                    </div>
+                    <span class="font-serif font-bold text-xl tracking-widest text-white">AURA</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-300 hover:text-accent text-sm uppercase tracking-widest font-semibold transition">Licenses</a>
+                    <a href="#" class="text-gray-300 hover:text-accent text-sm uppercase tracking-widest font-semibold transition">Compliance</a>
+                    <a href="#" class="btn-accent px-6 py-2 rounded-sm text-sm font-bold uppercase tracking-widest">Client Portal</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero-section">
+        <canvas id="hero-canvas"></canvas>
+        
+        <div class="hero-content max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+            <div class="glass-panel px-6 py-2 rounded-full text-accent text-xs font-bold tracking-[0.2em] uppercase mb-8 shadow-2xl flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                Global Astrolabe Active
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-serif text-white mb-6 leading-tight">
+                Worldwide <br/>
+                <span class="text-accent accent-glow italic">Regulatory Sphere</span>
+            </h1>
+            
+            <p class="mt-4 text-lg text-gray-300 max-w-2xl mb-10 font-light leading-relaxed">
+                Seamlessly connecting global jurisdictions. Our infrastructure maps perfectly across international financial regulations to safeguard your capital.
+            </p>
+            
+            <button class="glass-panel text-white hover:bg-accent hover:text-brand-dark border border-accent px-10 py-4 rounded font-bold text-sm tracking-widest uppercase transition-all duration-300">
+                View Network
+            </button>
+        </div>
+    </section>
+
+    <!-- 
+    ========================================================================
+    TUTORIAL: HOW TO EXTRACT THIS ANIMATION FOR ANOTHER APP
+    ========================================================================
+
+    To use this 3D Global Astrolabe in another project (React, Vue, HTML):
+
+    STEP 1: THE HTML STRUCTURE
+    You must wrap the canvas in a container with relative positioning.
+    <div id="animation-container" style="position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #01150e;">
+        <canvas id="my-canvas" style="position: absolute; top: 0; left: 0;"></canvas>
+        <div style="position: relative; z-index: 10;">Your UI Content</div>
+    </div>
+
+    STEP 2: THE JAVASCRIPT (Vanilla JS)
+    Copy everything from `// --- START OF CANVAS LOGIC ---` to 
+    `// --- END OF CANVAS LOGIC ---`. Change `document.getElementById('hero-canvas')` 
+    to match your specific canvas ID.
+
+    STEP 3: FOR REACT (Functional Component)
+    Wrap the logic inside a `useEffect` hook and use a `useRef` for the canvas.
+
+    import React, { useEffect, useRef } from 'react';
+
+    const GlobeBackground = () => {
+        const canvasRef = useRef(null);
+
+        useEffect(() => {
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d');
+            let animationFrameId;
+            let time = 0;
+
+            // ... paste variables, initGlobe(), resize logic here ...
+
+            const render = () => {
+                // ... paste the animate() loop contents here ...
+                animationFrameId = requestAnimationFrame(render);
+            };
+            
+            initGlobe(); // Setup points
+            render();    // Start loop
+
+            // Cleanup on unmount
+            return () => cancelAnimationFrame(animationFrameId); 
+        }, []);
+
+        return <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />;
+    };
+    export default GlobeBackground;
+    
+    ========================================================================
+    -->
+
+    <script>
+        window.addEventListener('load', () => {
+            
+            // --- START OF CANVAS LOGIC ---
+
+            const canvas = document.getElementById('hero-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let width, height, centerX, centerY;
+            let globeRadius;
+            
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = document.getElementById('hero-section').offsetHeight;
+                centerX = width / 2;
+                centerY = height / 2;
+                // Scale globe based on screen size
+                globeRadius = width < 768 ? 160 : 320; 
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // 3D Projection Config
+            const fov = 800; 
+            let nodes = [];
+            let time = 0;
+
+            // Generate points on a sphere using Fibonacci lattice for even distribution
+            function initGlobe() {
+                nodes = [];
+                const numNodes = 250; // Number of jurisdiction nodes
+                
+                for (let i = 0; i < numNodes; i++) {
+                    // Fibonacci sphere math
+                    let phi = Math.acos(1 - 2 * (i + 0.5) / numNodes);
+                    let theta = Math.PI * (1 + Math.sqrt(5)) * i;
+                    
+                    // Original 3D coordinates on a unit sphere (radius 1)
+                    let x = Math.sin(phi) * Math.cos(theta);
+                    let y = Math.sin(phi) * Math.sin(theta);
+                    let z = Math.cos(phi);
+                    
+                    nodes.push({
+                        baseX: x, baseY: y, baseZ: z,
+                        size: Math.random() * 2 + 1, // Node radius
+                        pulseSpeed: Math.random() * 0.05 + 0.02,
+                        pulseOffset: Math.random() * Math.PI * 2
+                    });
+                }
+
+                // Pre-calculate connections to optimize performance
+                // Connect nodes that are close to each other on the unit sphere
+                nodes.forEach(n1 => {
+                    n1.connections = [];
+                    nodes.forEach(n2 => {
+                        if (n1 !== n2) {
+                            let dist = Math.sqrt(
+                                Math.pow(n1.baseX - n2.baseX, 2) + 
+                                Math.pow(n1.baseY - n2.baseY, 2) + 
+                                Math.pow(n1.baseZ - n2.baseZ, 2)
+                            );
+                            if (dist < 0.35) { // Connection threshold
+                                n1.connections.push(n2);
+                            }
+                        }
+                    });
+                });
+            }
+
+            // Function to rotate a 3D coordinate around X and Y axes
+            function rotate3D(x, y, z, rotX, rotY) {
+                // Y-axis rotation
+                let x1 = x * Math.cos(rotY) - z * Math.sin(rotY);
+                let z1 = x * Math.sin(rotY) + z * Math.cos(rotY);
+                // X-axis rotation
+                let y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+                let z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX);
+                
+                return { x: x1, y: y2, z: z2 };
+            }
+
+            // Draw structural orbital rings around the globe
+            function drawOrbitalRings(rotX, rotY) {
+                const ringSegments = 60;
+                const ringRadius = globeRadius * 1.15; // Slightly larger than globe
+
+                // Define 3 rings on different axes
+                const rings = [
+                    { axis: 'x' }, { axis: 'y' }, { axis: 'z' }
+                ];
+
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'rgba(176, 196, 222, 0.15)'; // Very subtle secondary blue
+
+                rings.forEach(ring => {
+                    ctx.beginPath();
+                    for (let i = 0; i <= ringSegments; i++) {
+                        let angle = (i / ringSegments) * Math.PI * 2;
+                        
+                        let x = 0, y = 0, z = 0;
+                        if (ring.axis === 'x') { y = Math.cos(angle); z = Math.sin(angle); }
+                        if (ring.axis === 'y') { x = Math.cos(angle); z = Math.sin(angle); }
+                        if (ring.axis === 'z') { x = Math.cos(angle); y = Math.sin(angle); }
+
+                        // Apply base rotation plus specific ring tilt
+                        let rotated = rotate3D(x, y, z, rotX, rotY);
+                        
+                        // Scale to radius
+                        let rx = rotated.x * ringRadius;
+                        let ry = rotated.y * ringRadius;
+                        let rz = rotated.z * ringRadius;
+
+                        // Project
+                        let scale = fov / (fov + rz);
+                        let sx = centerX + rx * scale;
+                        let sy = centerY + ry * scale;
+
+                        if (i === 0) ctx.moveTo(sx, sy);
+                        else ctx.lineTo(sx, sy);
+                    }
+                    ctx.stroke();
+                });
+            }
+
+            function animate() {
+                // Clear background
+                ctx.fillStyle = '#01150e'; 
+                ctx.fillRect(0, 0, width, height);
+
+                time += 1;
+                
+                // Autonomous Rotation Speeds
+                let rotX = time * 0.002;
+                let rotY = time * 0.003;
+
+                // 1. Draw the outer structural rings first (Astrolabe effect)
+                drawOrbitalRings(rotX, rotY);
+
+                // Additive blending for glowing lights
+                ctx.globalCompositeOperation = 'lighter';
+
+                // Array to hold 2D projected data for sorting and drawing
+                let projectedNodes = [];
+
+                // 2. Process all nodes (Rotate and Project)
+                nodes.forEach(node => {
+                    // Scale unit sphere to actual radius
+                    let x = node.baseX * globeRadius;
+                    let y = node.baseY * globeRadius;
+                    let z = node.baseZ * globeRadius;
+
+                    // Rotate
+                    let rotated = rotate3D(x, y, z, rotX, rotY);
+
+                    // Project to 2D
+                    let scale = fov / (fov + rotated.z);
+                    let screenX = centerX + rotated.x * scale;
+                    let screenY = centerY + rotated.y * scale;
+
+                    // Calculate depth opacity (fade out nodes in the back)
+                    // rotated.z goes from -globeRadius (front) to +globeRadius (back)
+                    let depthAlpha = 1 - ((rotated.z + globeRadius) / (globeRadius * 2));
+                    // Clamp alpha
+                    depthAlpha = Math.max(0.05, Math.min(1, depthAlpha));
+
+                    // Dynamic pulsing size
+                    let currentSize = node.size + Math.sin(time * node.pulseSpeed + node.pulseOffset) * 0.5;
+
+                    projectedNodes.push({
+                        original: node,
+                        sx: screenX,
+                        sy: screenY,
+                        sz: rotated.z, // Keep Z for sorting
+                        scale: scale,
+                        alpha: depthAlpha,
+                        size: currentSize * scale
+                    });
+                });
+
+                // Sort nodes by Z depth so front nodes draw on top of connections
+                projectedNodes.sort((a, b) => b.sz - a.sz);
+
+                // 3. Draw Connections (Network links)
+                ctx.lineWidth = 0.5;
+                projectedNodes.forEach(pNode => {
+                    pNode.original.connections.forEach(targetOriginal => {
+                        // Find the target node in our projected list to get its screen coords
+                        let pTarget = projectedNodes.find(pn => pn.original === targetOriginal);
+                        if (pTarget) {
+                            // Only draw lines if they are mostly in front to save performance & look cleaner
+                            if (pNode.sz < 50 || pTarget.sz < 50) {
+                                // Average alpha of the two points
+                                let lineAlpha = (pNode.alpha + pTarget.alpha) / 2;
+                                ctx.strokeStyle = `rgba(176, 196, 222, ${lineAlpha * 0.4})`;
+                                
+                                ctx.beginPath();
+                                ctx.moveTo(pNode.sx, pNode.sy);
+                                ctx.lineTo(pTarget.sx, pTarget.sy);
+                                ctx.stroke();
+                            }
+                        }
+                    });
+                });
+
+                // 4. Draw the Nodes
+                projectedNodes.forEach(pNode => {
+                    // Draw node point
+                    ctx.beginPath();
+                    ctx.fillStyle = `rgba(216, 228, 240, ${pNode.alpha})`; // Bright secondary
+                    ctx.arc(pNode.sx, pNode.sy, pNode.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Add glow to front nodes
+                    if (pNode.sz < -globeRadius * 0.5) {
+                        ctx.beginPath();
+                        ctx.fillStyle = `rgba(176, 196, 222, ${pNode.alpha * 0.3})`;
+                        ctx.arc(pNode.sx, pNode.sy, pNode.size * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                ctx.globalCompositeOperation = 'source-over';
+                requestAnimationFrame(animate);
+            }
+
+            initGlobe();
+            animate();
+
+            // --- END OF CANVAS LOGIC ---
+
+            // UI Logic: Navbar solid background on scroll
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-brand-dark/90', 'backdrop-blur-md', 'shadow-xl', 'border-accent/20');
+                    navbar.classList.remove('bg-transparent', 'border-transparent');
+                } else {
+                    navbar.classList.remove('bg-brand-dark/90', 'backdrop-blur-md', 'shadow-xl', 'border-accent/20');
+                    navbar.classList.add('bg-transparent', 'border-transparent');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

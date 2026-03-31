@@ -1,11 +1,11 @@
 <?php require_once 'includes/header.php'; ?>
 
-<header id="hero-section" class="min-vh-100 d-flex align-items-center text-center position-relative overflow-hidden" style="background: radial-gradient(circle at center, #023020 0%, #011a11 100%);">
+<header id="hero-section" class="d-flex align-items-center text-center position-relative overflow-hidden" style="min-height: calc(100vh - 100px); background: radial-gradient(circle at center, #023020 0%, #011a11 100%);">
     
     <canvas id="hero-canvas"></canvas>
     
     <div class="container hero-content">
-        <div class="glass-panel p-5 reveal mx-auto interactive-layer">
+        <div class="glass-panel p-5 reveal mx-auto interactive-layer" style="backdrop-filter: blur(3px);">
             
             <div class="mb-4">
                 <img src="<?php echo BASE_URL; ?>assets/img/Saudi_Vision_2030_logo.svg" alt="Saudi Vision 2030" style="height: 90px; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.2));">

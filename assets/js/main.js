@@ -16,13 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (viewEl) {
         viewModalElement = new bootstrap.Modal(viewEl);
     }
-    
+
     // 3. Global Bootstrap Tooltip Initialization
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
-    
+
     // 4. Initialize Live Search
     setupLiveSearch('desktopSearchInput', 'desktopSearchResults');
     setupLiveSearch('mobileSearchInput', 'mobileSearchResults');
@@ -38,11 +38,11 @@ function triggerFormModal(formId, customMessage) {
     let oldBtn = document.getElementById('rooqConfirmActionBtn');
     let newBtn = oldBtn.cloneNode(true);
     oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-    
-    newBtn.addEventListener('click', function() {
+
+    newBtn.addEventListener('click', function () {
         document.getElementById(formId).submit();
     });
-    
+
     var myModal = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
     myModal.show();
 }
@@ -53,11 +53,11 @@ function triggerLinkModal(url, customMessage) {
     let oldBtn = document.getElementById('rooqConfirmActionBtn');
     let newBtn = oldBtn.cloneNode(true);
     oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-    
-    newBtn.addEventListener('click', function() {
+
+    newBtn.addEventListener('click', function () {
         window.location.href = url;
     });
-    
+
     var myModal = new bootstrap.Modal(document.getElementById('rooqConfirmModal'));
     myModal.show();
 }
@@ -70,7 +70,7 @@ function toggleAccountFields() {
     let accNew = document.getElementById('acc_new');
     let newFields = document.getElementById('new_account_fields');
     let existFields = document.getElementById('existing_account_fields');
-    
+
     if (accNew && newFields && existFields) {
         if (accNew.checked) {
             newFields.classList.remove('d-none');
@@ -88,17 +88,17 @@ function toggleWorkflowCard(key) {
     const select = document.getElementById('select_' + key);
     const editBtn = document.querySelector(`#card_${key} .btn-link`);
 
-    if(checkbox && card) {
+    if (checkbox && card) {
         if (checkbox.checked) {
             card.style.opacity = '1';
             card.style.filter = 'none';
-            if(select) select.disabled = false;
-            if(editBtn) editBtn.disabled = false;
+            if (select) select.disabled = false;
+            if (editBtn) editBtn.disabled = false;
         } else {
             card.style.opacity = '0.5';
             card.style.filter = 'grayscale(100%)';
-            if(select) select.disabled = true;
-            if(editBtn) editBtn.disabled = true;
+            if (select) select.disabled = true;
+            if (editBtn) editBtn.disabled = true;
         }
     }
 }
@@ -111,10 +111,10 @@ function openEditModal(key, label) {
     const cardNote = document.getElementById('input_note_' + key);
 
     const modalSelect = document.getElementById('modal_status_select');
-    modalSelect.innerHTML = cardSelect.innerHTML; 
-    modalSelect.value = cardSelect.value; 
-    
-    if(document.getElementById('modal_note_text')) {
+    modalSelect.innerHTML = cardSelect.innerHTML;
+    modalSelect.value = cardSelect.value;
+
+    if (document.getElementById('modal_note_text')) {
         document.getElementById('modal_note_text').value = cardNote ? cardNote.value : '';
     }
 
@@ -186,16 +186,16 @@ function openViewModal(button) {
     setVal('v_name', client.client_name);
     setVal('v_phone', client.phone_number);
     setVal('v_email', client.email);
-    setVal('v_trade', client.trade_name_application); 
-    
+    setVal('v_trade', client.trade_name_application);
+
     // --- LICENSE SCOPE SECTION ---
     var scopeStatus = client.license_scope_status || 'Pending';
-    var scopeNote = client.license_scope_note || ''; 
+    var scopeNote = client.license_scope_note || '';
 
     var scopeBadge = document.getElementById('badge_scope');
     if (scopeBadge) {
         scopeBadge.innerText = scopeStatus;
-        scopeBadge.className = 'view-badge'; 
+        scopeBadge.className = 'view-badge';
         if (scopeStatus === 'Approved' || scopeStatus.includes('Done')) {
             scopeBadge.classList.add('badge-approved');
         } else if (scopeStatus === 'Pending' || scopeStatus === 'Applied') {
@@ -209,12 +209,12 @@ function openViewModal(button) {
     if (scopeNoteEl) {
         if (scopeNote && scopeNote !== '-') {
             scopeNoteEl.innerText = scopeNote;
-            scopeNoteEl.style.display = 'block'; 
+            scopeNoteEl.style.display = 'block';
         } else {
-            scopeNoteEl.style.display = 'none'; 
+            scopeNoteEl.style.display = 'none';
         }
     }
-    
+
     // Financials
     var totalPaid = parseFloat(client.total_paid || 0);
     var contract = parseFloat(client.contract_value || 0);
@@ -227,7 +227,7 @@ function openViewModal(button) {
     // GENERATE WORKFLOW CARDS
     var grid = document.getElementById('workflow_grid');
     if (grid) {
-        grid.innerHTML = ''; 
+        grid.innerHTML = '';
         var steps = [
             { key: 'hire', label: 'Foreign Hire', icon: 'bi-briefcase', status: client.hire_foreign_company, note: client.hire_foreign_company_note },
             { key: 'misa', label: 'MISA License', icon: 'bi-award', status: client.misa_application, note: client.misa_application_note },
@@ -238,7 +238,7 @@ function openViewModal(button) {
             { key: 'gosi', label: 'GOSI', icon: 'bi-shield-check', status: client.gosi, note: client.gosi_note },
             { key: 'coc', label: 'Chamber', icon: 'bi-bank', status: client.chamber_commerce, note: client.chamber_commerce_note }
         ];
-        
+
         steps.forEach(step => {
             var status = step.status || 'Pending';
             if (status === 'Not Required') return;
@@ -301,7 +301,7 @@ function setupLiveSearch(inputId, resultsId) {
         timeout = setTimeout(() => {
             fetch(`${baseUrl}portal/api/search_api?term=${encodeURIComponent(term)}`)
                 .then(async response => {
-                    const text = await response.text(); 
+                    const text = await response.text();
                     try {
                         const data = JSON.parse(text);
                         if (!response.ok) throw new Error(data.message || "Server Error " + response.status);
@@ -320,7 +320,7 @@ function setupLiveSearch(inputId, resultsId) {
                             item.style.cursor = 'pointer';
                             item.innerHTML = `<div class="d-flex align-items-center">
                                             <div class="avatar-small me-2" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:rgba(212,175,55,0.2);color:#D4AF37;border-radius:50%;font-weight:bold;">
-                                                ${client.company_name.substring(0,1).toUpperCase()}
+                                                ${client.company_name.substring(0, 1).toUpperCase()}
                                             </div>
                                             <div>
                                                 <div class="text-white small fw-bold">${client.company_name}</div>
@@ -380,21 +380,21 @@ function toggleLoginStatus(type, id, checkbox) {
     const baseUrl = baseUrlMeta ? baseUrlMeta.content : '/rooqflow/';
 
     fetch(`${baseUrl}portal/api/toggle_status_api`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: type, id: id, status: isChecked })
-        })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: type, id: id, status: isChecked })
+    })
         .then(response => response.json())
         .then(data => {
             if (!data.success) {
                 alert("Error: " + data.message);
-                checkbox.checked = !isChecked; 
+                checkbox.checked = !isChecked;
             }
         })
         .catch(err => {
             console.error("Fetch Error:", err);
             alert("Failed to update status. Check connection.");
-            checkbox.checked = !isChecked; 
+            checkbox.checked = !isChecked;
         });
 }
 
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!datePicker) return;
 
     let activeInput = null;
-    let viewingDate = new Date(); 
+    let viewingDate = new Date();
 
     function closeAndSubmit() {
         datePicker.classList.remove('show');
@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dayDiv.addEventListener('click', function (e) {
                 e.stopPropagation();
                 if (activeInput) {
-                    activeInput.value = `${year}-${String(month+1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                    activeInput.value = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                     closeAndSubmit();
                 }
             });
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.stopPropagation();
             if (activeInput) {
                 const today = new Date();
-                activeInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                activeInput.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
                 closeAndSubmit();
             }
         });
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btnMonth.addEventListener('click', (e) => {
             e.stopPropagation();
             if (activeInput) {
-                activeInput.value = `${viewingDate.getFullYear()}-${String(viewingDate.getMonth()+1).padStart(2, '0')}`;
+                activeInput.value = `${viewingDate.getFullYear()}-${String(viewingDate.getMonth() + 1).padStart(2, '0')}`;
                 closeAndSubmit();
             }
         });
@@ -586,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const dateInputs = document.querySelectorAll('.rooq-date');
-    const actionButtonsContainer = document.getElementById('dpActionButtons'); 
+    const actionButtonsContainer = document.getElementById('dpActionButtons');
 
     dateInputs.forEach(input => {
         input.setAttribute('readonly', true);
@@ -634,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function () {
 /* =========================================
    CHAT APPLICATION LOGIC
    ========================================= */
-let lastChatHTML = "INITIAL_LOAD"; 
+let lastChatHTML = "INITIAL_LOAD";
 
 function switchChat(e, id, name, element) {
     e.preventDefault();
@@ -644,26 +644,26 @@ function switchChat(e, id, name, element) {
         document.getElementById('chatMainBox').classList.remove('d-none');
         document.getElementById('chatMainBox').classList.add('d-flex');
         const box = document.getElementById('chatBox');
-        if(box) box.scrollTop = box.scrollHeight;
+        if (box) box.scrollTop = box.scrollHeight;
     }
-    if(window.currentChatClientId === id) return;
-    
+    if (window.currentChatClientId === id) return;
+
     window.currentChatClientId = id;
     lastChatHTML = "FORCE_REFRESH";
-    
+
     document.querySelectorAll('.client-chat-link').forEach(el => {
         el.classList.remove('bg-rooq-primary', 'text-white');
         el.classList.add('text-white-50', 'hover-white');
     });
     element.classList.remove('text-white-50', 'hover-white');
     element.classList.add('bg-rooq-primary', 'text-white');
-    
+
     const headerSub = document.getElementById('chatHeaderSub');
-    if(headerSub) headerSub.innerText = name;
-    
+    if (headerSub) headerSub.innerText = name;
+
     const box = document.getElementById('chatBox');
-    if(box) box.innerHTML = "<div class='text-center text-white-50 mt-5'><div class='spinner-border spinner-border-sm me-2'></div> Loading messages...</div>";
-    
+    if (box) box.innerHTML = "<div class='text-center text-white-50 mt-5'><div class='spinner-border spinner-border-sm me-2'></div> Loading messages...</div>";
+
     loadChats();
 }
 
@@ -678,31 +678,31 @@ function closeMobileChat(e) {
 function loadChats() {
     if (!window.currentChatClientId || window.currentChatClientId === 0) {
         const box = document.getElementById('chatBox');
-        if(box && box.innerHTML === "") box.innerHTML = "<div class='text-center text-white-50 mt-5'>No active projects found.</div>";
+        if (box && box.innerHTML === "") box.innerHTML = "<div class='text-center text-white-50 mt-5'>No active projects found.</div>";
         return;
     }
     const baseUrlMeta = document.getElementById('base_url_meta');
     const baseUrl = baseUrlMeta ? baseUrlMeta.content : '/rooqflow/';
     fetch(`${baseUrl}app/Api/fetch_chats?client_id=${window.currentChatClientId}`)
-    .then(r => {
-        if (!r.ok) throw new Error("Server returned " + r.status);
-        return r.text();
-    })
-    .then(html => {
-        let content = html.trim();
-        if (content === "") content = "<div class='text-center text-white-50 mt-5'>No messages yet. Start the conversation!</div>";
-        
-        if (content !== lastChatHTML) {
-            const box = document.getElementById('chatBox');
-            if(!box) return;
-            const isScrolledToBottom = box.scrollHeight - box.clientHeight <= box.scrollTop + 100;
-            box.innerHTML = content;
-            if (isScrolledToBottom) box.scrollTop = box.scrollHeight;
-            lastChatHTML = content;
-        }
-    }).catch(err => {
-        console.error("Error loading chat:", err);
-    });
+        .then(r => {
+            if (!r.ok) throw new Error("Server returned " + r.status);
+            return r.text();
+        })
+        .then(html => {
+            let content = html.trim();
+            if (content === "") content = "<div class='text-center text-white-50 mt-5'>No messages yet. Start the conversation!</div>";
+
+            if (content !== lastChatHTML) {
+                const box = document.getElementById('chatBox');
+                if (!box) return;
+                const isScrolledToBottom = box.scrollHeight - box.clientHeight <= box.scrollTop + 100;
+                box.innerHTML = content;
+                if (isScrolledToBottom) box.scrollTop = box.scrollHeight;
+                lastChatHTML = content;
+            }
+        }).catch(err => {
+            console.error("Error loading chat:", err);
+        });
 }
 
 function sendMessage() {
@@ -710,9 +710,9 @@ function sendMessage() {
     if (!input) return;
     const msg = input.value.trim();
     if (!msg || !window.currentChatClientId || window.currentChatClientId === 0) return;
-    
-    input.value = ''; 
-    input.style.height = '48px'; 
+
+    input.value = '';
+    input.style.height = '48px';
 
     const box = document.getElementById('chatBox');
     if (box.innerHTML.includes("No messages yet")) box.innerHTML = '';
@@ -725,10 +725,10 @@ function sendMessage() {
                 </div>
             </div>
         </div>`;
-    
+
     box.insertAdjacentHTML('beforeend', tempBubble);
-    box.scrollTop = box.scrollHeight; 
-    lastChatHTML = "FORCE_REFRESH"; 
+    box.scrollTop = box.scrollHeight;
+    lastChatHTML = "FORCE_REFRESH";
 
     const baseUrlMeta = document.getElementById('base_url_meta');
     const baseUrl = baseUrlMeta ? baseUrlMeta.content : '/rooqflow/';
@@ -741,14 +741,14 @@ function sendMessage() {
 
 document.addEventListener("DOMContentLoaded", () => {
     const chatBox = document.getElementById('chatBox');
-    if (chatBox) { 
+    if (chatBox) {
         if (window.currentChatClientId && window.currentChatClientId !== 0) {
-            loadChats(); 
-            setInterval(loadChats, 3000); 
-            
+            loadChats();
+            setInterval(loadChats, 3000);
+
             const chatInputBox = document.getElementById('chatInput');
-            if(chatInputBox) {
-                chatInputBox.addEventListener('keydown', function(e) {
+            if (chatInputBox) {
+                chatInputBox.addEventListener('keydown', function (e) {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         sendMessage();
@@ -766,7 +766,7 @@ document.addEventListener("DOMContentLoaded", () => {
    ========================================= */
 function viewExpense(title, amount, date, category, desc, user) {
     const titleEl = document.getElementById('viewTitle');
-    if (!titleEl) return; 
+    if (!titleEl) return;
 
     titleEl.innerText = title;
     document.getElementById('viewAmount').innerText = amount;
@@ -782,13 +782,13 @@ function viewExpense(title, amount, date, category, desc, user) {
 /* ==========================================================================
    FINANCE PAGE: PAYMENT FORM UNLOCK 
    ========================================================================== */
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const toggleSwitch = document.getElementById('unlockPaymentForm');
-    if(toggleSwitch) {
+    if (toggleSwitch) {
         const form = document.getElementById('paymentForm');
         const inputs = form.querySelectorAll('input, select, textarea, button');
 
-        toggleSwitch.addEventListener('change', function() {
+        toggleSwitch.addEventListener('change', function () {
             const isEnabled = this.checked;
             inputs.forEach(input => {
                 if (input.type !== 'hidden') {
@@ -809,8 +809,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (toggleBtn && sidebar) {
         toggleBtn.addEventListener("click", function (e) {
-            e.preventDefault(); 
-            sidebar.classList.toggle("show"); 
+            e.preventDefault();
+            sidebar.classList.toggle("show");
         });
 
         // Close sidebar if clicking outside on mobile
@@ -835,29 +835,29 @@ function checkLiveNotifications() {
     if (!baseUrl) return; // Safety check
 
     fetch(baseUrl + 'app/Api/check_notifications')
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) return;
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) return;
 
-        const badge = document.getElementById('liveNotificationBadge');
-        const list = document.getElementById('liveNotificationList');
+            const badge = document.getElementById('liveNotificationBadge');
+            const list = document.getElementById('liveNotificationList');
 
-        // Update the Dropdown HTML
-        if (list && data.html) {
-            list.innerHTML = data.html;
-        }
-
-        // Update the Red Dot
-        if (badge) {
-            if (data.count > 0) {
-                badge.innerText = data.count;
-                badge.classList.remove('d-none');
-            } else {
-                badge.classList.add('d-none');
+            // Update the Dropdown HTML
+            if (list && data.html) {
+                list.innerHTML = data.html;
             }
-        }
-    })
-    .catch(err => console.error("Notification check failed:", err));
+
+            // Update the Red Dot
+            if (badge) {
+                if (data.count > 0) {
+                    badge.innerText = data.count;
+                    badge.classList.remove('d-none');
+                } else {
+                    badge.classList.add('d-none');
+                }
+            }
+        })
+        .catch(err => console.error("Notification check failed:", err));
 }
 
 setInterval(checkLiveNotifications, 10000);
@@ -874,33 +874,33 @@ function toggleClientExpense(clientId, checkbox) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client_id: clientId, show_expenses: isChecked })
     })
-    .then(async response => {
-        if (!response.ok) throw new Error("API File Not Found (404)");
-        return response.json(); 
-    })
-    .then(data => {
-        checkbox.style.opacity = '1';
-        if (!data.success) {
-            alert("Database Error: " + data.message);
+        .then(async response => {
+            if (!response.ok) throw new Error("API File Not Found (404)");
+            return response.json();
+        })
+        .then(data => {
+            checkbox.style.opacity = '1';
+            if (!data.success) {
+                alert("Database Error: " + data.message);
+                checkbox.checked = !isChecked; // Revert switch
+            }
+        })
+        .catch(err => {
+            console.error("Network Error:", err);
+            checkbox.style.opacity = '1';
+            alert("Failed to save. Make sure app/Api/toggle_expense_api.php exists!");
             checkbox.checked = !isChecked; // Revert switch
-        }
-    })
-    .catch(err => {
-        console.error("Network Error:", err);
-        checkbox.style.opacity = '1';
-        alert("Failed to save. Make sure app/Api/toggle_expense_api.php exists!");
-        checkbox.checked = !isChecked; // Revert switch
-    });
+        });
 }
 
 /* ==========================================================================
    CONTRACT SIGNATURE PREVIEW & VALIDATION (default-contract.php)
    ========================================================================== */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const fileInput = document.getElementById('signatureFileInput');
-    
+
     // Safety check: Only run this script if the file input actually exists on the page
-    if (!fileInput) return; 
+    if (!fileInput) return;
 
     const previewBox = document.getElementById('signaturePreviewBox');
     const previewImg = document.getElementById('signaturePreviewImg');
@@ -908,33 +908,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnCancelUpload = document.getElementById('btnCancelUpload');
     const sizeError = document.getElementById('fileSizeError');
     const btnDeleteServer = document.getElementById('btnDeleteServer');
-    
+
     const originalImgSrc = previewBox.getAttribute('data-original-url');
     const hasOriginal = previewBox.getAttribute('data-has-original') === "1";
     const maxFileSize = 2 * 1024 * 1024; // 2MB
 
     // 1. When user selects a file
-    fileInput.addEventListener('change', function(event) {
+    fileInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
         sizeError.style.display = 'none';
-        
+
         if (file) {
             if (file.size > maxFileSize) {
-                fileInput.value = ''; 
-                sizeError.style.display = 'block'; 
-                return; 
+                fileInput.value = '';
+                sizeError.style.display = 'block';
+                return;
             }
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 previewImg.src = e.target.result;
                 previewLabel.innerText = "New Signature Preview:";
                 previewBox.classList.remove('d-none');
                 previewBox.classList.add('d-flex');
-                
+
                 // Hide the delete button if they are previewing a new file
-                if(btnDeleteServer) btnDeleteServer.style.display = 'none';
-                
+                if (btnDeleteServer) btnDeleteServer.style.display = 'none';
+
                 btnCancelUpload.style.display = 'inline-block';
             }
             reader.readAsDataURL(file);
@@ -942,14 +942,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 2. Cancel upload
-    btnCancelUpload.addEventListener('click', function() {
-        fileInput.value = ''; 
-        sizeError.style.display = 'none'; 
-        
+    btnCancelUpload.addEventListener('click', function () {
+        fileInput.value = '';
+        sizeError.style.display = 'none';
+
         if (hasOriginal) {
             previewImg.src = originalImgSrc;
             previewLabel.innerText = "Current Signature:";
-            if(btnDeleteServer) btnDeleteServer.style.display = 'inline-block';
+            if (btnDeleteServer) btnDeleteServer.style.display = 'inline-block';
             btnCancelUpload.style.display = 'none';
         } else {
             previewBox.classList.remove('d-flex');
@@ -961,8 +961,8 @@ document.addEventListener('DOMContentLoaded', function() {
 /* ==========================================================================
    PUBLIC INDEX PAGE: SCROLL REVEAL & 3D CANVAS ANIMATION
    ========================================================================== */
-document.addEventListener('DOMContentLoaded', function() {
-    
+document.addEventListener('DOMContentLoaded', function () {
+
     // 1. SCROLL REVEAL ANIMATION
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -972,15 +972,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
-    // 2. 3D TORUS KNOT CANVAS ANIMATION
+    // 2. MISA GEOMETRIC MATRIX CANVAS ANIMATION
     const canvas = document.getElementById('hero-canvas');
-    
-    // Safety check: Only run animation if canvas exists (so it doesn't break other pages)
     if (canvas) {
         const ctx = canvas.getContext('2d');
-        
+
         let width, height, centerX, centerY;
-        
+        let baseRadius;
+
         function resizeCanvas() {
             const heroSection = document.getElementById('hero-section');
             if (!heroSection) return;
@@ -988,72 +987,218 @@ document.addEventListener('DOMContentLoaded', function() {
             height = canvas.height = heroSection.offsetHeight;
             centerX = width / 2;
             centerY = height / 2;
+            // Scale the matrix based on screen size
+            baseRadius = width < 768 ? 340 : 480;
         }
-        
+
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
+        // 3D Projection Config
+        const fov = 900;
+        let nodes = [];
+        let connections = []; // Store explicit connections
         let time = 0;
-        const fov = 400; 
-        const p = 3; 
-        const q = 7; 
-        const resolution = 600; 
+
+        /**
+         * Generates a 3D architectural wireframe based on stacked 8-pointed stars (Rub el Hizb).
+         * Highly relevant to KSA / Islamic geometry, symbolizing structure and authority.
+         */
+        function initGeometricMatrix() {
+            nodes = [];
+            connections = [];
+
+            const layers = 11; // Number of stacked stars
+            const pointsPerLayer = 16; // 8 outer points, 8 inner corners forms the 8-pointed star
+            let nodeId = 0;
+
+            for (let l = 0; l < layers; l++) {
+                // Normalize layer position from -1 (bottom) to 1 (top)
+                let normalizedY = (l / (layers - 1)) * 2 - 1;
+
+                // Height of the entire structure (y goes from -250 to +250)
+                let yOffset = normalizedY * (width < 768 ? 180 : 300);
+
+                // Creates a spherical/barrel curve for the overall matrix shape
+                let rFactor = Math.sqrt(1.1 - Math.pow(normalizedY, 2));
+                let layerRadius = baseRadius * rFactor;
+
+                for (let p = 0; p < pointsPerLayer; p++) {
+                    let angle = (p / pointsPerLayer) * Math.PI * 2;
+
+                    // Add a slight structural twist to each layer
+                    angle += normalizedY * 0.4;
+
+                    // Alternate between outer radius and inner radius to form the star
+                    let isOuter = p % 2 === 0;
+                    let r = isOuter ? layerRadius : layerRadius * 0.65;
+
+                    nodes.push({
+                        id: nodeId++,
+                        layer: l,
+                        index: p,
+                        isOuter: isOuter,
+                        baseX: Math.cos(angle) * r,
+                        baseY: yOffset,
+                        baseZ: Math.sin(angle) * r,
+                        size: isOuter ? (Math.random() * 1.5 + 1.5) : 1, // Outer corners are thicker
+                        pulseOffset: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // Pre-calculate structural connections
+            nodes.forEach(n1 => {
+                nodes.forEach(n2 => {
+                    // Only draw connections in one direction to prevent duplicates
+                    if (n1.id >= n2.id) return;
+
+                    // 1. Horizontal connections: Connect adjacent nodes in the SAME layer to draw the 8-pointed star
+                    if (n1.layer === n2.layer &&
+                        (n1.index === (n2.index + 1) % pointsPerLayer ||
+                            n1.index === (n2.index - 1 + pointsPerLayer) % pointsPerLayer)) {
+                        connections.push({ a: n1, b: n2, type: 'horizontal' });
+                    }
+
+                    // 2. Vertical connections: Connect corresponding nodes in ADJACENT layers
+                    if (Math.abs(n1.layer - n2.layer) === 1 && n1.index === n2.index) {
+                        connections.push({ a: n1, b: n2, type: 'vertical' });
+                    }
+                });
+            });
+        }
+
+        // Function to rotate a 3D coordinate around X and Y axes
+        function rotate3D(x, y, z, rotX, rotY) {
+            // Y-axis rotation (spin around vertical axis)
+            let x1 = x * Math.cos(rotY) - z * Math.sin(rotY);
+            let z1 = x * Math.sin(rotY) + z * Math.cos(rotY);
+
+            // X-axis rotation (tilt forward/backward)
+            let y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+            let z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX);
+
+            return { x: x1, y: y2, z: z2 };
+        }
 
         function animate() {
-            time += 0.004;
-
-            ctx.fillStyle = 'rgba(2, 48, 32, 0.2)'; 
+            // Clear background with deep primary green
+            ctx.fillStyle = '#01150e';
             ctx.fillRect(0, 0, width, height);
+
+            time += 1;
+
+            // Elegant rotation: Constant slow spin, slight structural tilt
+            let rotY = time * 0.003;
+            let rotX = 0.2 + Math.sin(time * 0.005) * 0.15; // Nods slightly
 
             ctx.globalCompositeOperation = 'lighter';
 
-            const strands = 5; 
+            let projectedNodes = [];
 
-            for (let s = 0; s < strands; s++) {
+            // 1. Process and Project all nodes
+            nodes.forEach(node => {
+                let rotated = rotate3D(node.baseX, node.baseY, node.baseZ, rotX, rotY);
+
+                // Perspective projection
+                let scale = fov / (fov + rotated.z);
+                let screenX = centerX + rotated.x * scale;
+                let screenY = centerY + rotated.y * scale;
+
+                // Calculate depth opacity
+                let depthAlpha = 1 - ((rotated.z + baseRadius) / (baseRadius * 2.5));
+                depthAlpha = Math.max(0.05, Math.min(1, depthAlpha));
+
+                // Dynamic pulsing size for data visualization effect
+                let currentSize = node.size + Math.sin(time * 0.05 + node.pulseOffset) * 0.5;
+
+                projectedNodes.push({
+                    id: node.id,
+                    sx: screenX,
+                    sy: screenY,
+                    sz: rotated.z,
+                    scale: scale,
+                    alpha: depthAlpha,
+                    size: currentSize * scale,
+                    isOuter: node.isOuter
+                });
+            });
+
+            // Helper to find projected node by ID
+            const getProjected = (id) => projectedNodes[id];
+
+            // 2. Draw Connections (The Geometric Wireframe)
+            ctx.lineWidth = 0.8;
+            connections.forEach(conn => {
+                let pA = getProjected(conn.a.id);
+                let pB = getProjected(conn.b.id);
+
+                // Optimize: Don't draw lines deeply in the background
+                if (pA.sz > baseRadius * 0.5 && pB.sz > baseRadius * 0.5) return;
+
+                let lineAlpha = (pA.alpha + pB.alpha) / 2;
+
+                // Vertical structural lines are slightly dimmer than the star outlines
+                let strength = conn.type === 'horizontal' ? 0.6 : 0.25;
+
+                ctx.strokeStyle = `rgba(176, 196, 222, ${lineAlpha * strength})`;
+
                 ctx.beginPath();
-                
-                let opacity = 0.3 + (s * 0.1);
-                ctx.strokeStyle = s % 2 === 0 ? `rgba(176, 196, 222, ${opacity})` : `rgba(143, 168, 197, ${opacity})`;
-                ctx.lineWidth = 1.5;
-
-                for (let i = 0; i <= resolution; i++) {
-                    let t = (i / resolution) * Math.PI * 2;
-                    let angle = t + time; 
-                    let strandOffset = (s * 0.2); 
-
-                    let radius = (width < 768 ? 100 : 200) + Math.sin(time * 2) * 20;
-                    let r = radius * (2 + Math.cos(q * angle + strandOffset));
-                    
-                    let x3d = r * Math.cos(p * angle);
-                    let y3d = r * Math.sin(p * angle);
-                    let z3d = radius * Math.sin(q * angle + strandOffset);
-
-                    let rotX = time * 0.5;
-                    let rotY = time * 0.3;
-
-                    let xRotY = x3d * Math.cos(rotY) - z3d * Math.sin(rotY);
-                    let zRotY = x3d * Math.sin(rotY) + z3d * Math.cos(rotY);
-
-                    let yRotX = y3d * Math.cos(rotX) - zRotY * Math.sin(rotX);
-                    let zRotX = y3d * Math.sin(rotX) + zRotY * Math.cos(rotX);
-
-                    let scale = fov / (fov + zRotX); 
-                    let screenX = centerX + xRotY * scale;
-                    let screenY = centerY + yRotX * scale;
-
-                    if (i === 0) {
-                        ctx.moveTo(screenX, screenY);
-                    } else {
-                        ctx.lineTo(screenX, screenY);
-                    }
-                }
+                ctx.moveTo(pA.sx, pA.sy);
+                ctx.lineTo(pB.sx, pB.sy);
                 ctx.stroke();
-            }
+            });
+
+            // 3. Draw a Central "Core" Beam (Representing the solid foundation of KSA/MISA)
+            let topCore = rotate3D(0, -350, 0, rotX, rotY);
+            let botCore = rotate3D(0, 350, 0, rotX, rotY);
+            let pTop = {
+                sx: centerX + topCore.x * (fov / (fov + topCore.z)),
+                sy: centerY + topCore.y * (fov / (fov + topCore.z))
+            };
+            let pBot = {
+                sx: centerX + botCore.x * (fov / (fov + botCore.z)),
+                sy: centerY + botCore.y * (fov / (fov + botCore.z))
+            };
+
+            let gradient = ctx.createLinearGradient(pTop.sx, pTop.sy, pBot.sx, pBot.sy);
+            gradient.addColorStop(0, 'rgba(176, 196, 222, 0)');
+            gradient.addColorStop(0.5, 'rgba(176, 196, 222, 0.15)');
+            gradient.addColorStop(1, 'rgba(176, 196, 222, 0)');
+
+            ctx.lineWidth = width < 768 ? 40 : 80;
+            ctx.strokeStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(pTop.sx, pTop.sy);
+            ctx.lineTo(pBot.sx, pBot.sy);
+            ctx.stroke();
+
+            // 4. Draw the Nodes
+            // Sort by Z depth to draw front nodes last
+            projectedNodes.sort((a, b) => b.sz - a.sz);
+
+            projectedNodes.forEach(pNode => {
+                if (pNode.sz > baseRadius * 0.8) return; // Cull distant nodes
+
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(216, 228, 240, ${pNode.alpha})`;
+                ctx.arc(pNode.sx, pNode.sy, pNode.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Extra glow for outer star points in the foreground
+                if (pNode.isOuter && pNode.sz < -baseRadius * 0.3) {
+                    ctx.beginPath();
+                    ctx.fillStyle = `rgba(176, 196, 222, ${pNode.alpha * 0.4})`;
+                    ctx.arc(pNode.sx, pNode.sy, pNode.size * 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
 
             ctx.globalCompositeOperation = 'source-over';
             requestAnimationFrame(animate);
         }
 
+        initGeometricMatrix();
         animate();
     }
 });
@@ -1071,9 +1216,9 @@ document.addEventListener('DOMContentLoaded', function () {
         listTabBtn.addEventListener('shown.bs.tab', function () {
             floatingSaveBtn.style.display = 'none';
         });
-        
+
         templateTabBtn.addEventListener('shown.bs.tab', function () {
-            floatingSaveBtn.style.display = 'flex'; 
+            floatingSaveBtn.style.display = 'flex';
         });
     }
 });

@@ -170,7 +170,7 @@ $workflow_steps = [
     <?php require_once '../includes/sidebar.php'; ?>
     <main class="w-100 p-4">
         <div class="container-fluid">
-            <a href="javascript:void(0);" onclick="history.length > 1 ? history.back() : window.location.href='./';" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+            <a href="./" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
                 <i class="bi bi-arrow-left me-2"></i> Back to Clients
             </a>
             <div class="row justify-content-center">

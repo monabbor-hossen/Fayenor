@@ -89,7 +89,7 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
     <main class="w-100 p-4">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <a href="javascript:void(0);" onclick="history.length > 1 ? history.back() : window.location.href='./';" class="text-white-50 text-decoration-none hover-white">
+                <a href="./" class="text-white-50 text-decoration-none hover-white">
                     <i class="bi bi-arrow-left me-2"></i> Back to Clients
                 </a>
                 <h4 class="text-white fw-bold mb-0">Finance: <?php echo htmlspecialchars($client['company_name'] ?? 'Unknown'); ?></h4>

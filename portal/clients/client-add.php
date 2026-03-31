@@ -146,7 +146,7 @@ $workflow_steps = [
 ?>
 
 <div class="container-fluid py-4">
-    <a href="javascript:void(0);" onclick="history.length > 1 ? history.back() : window.location.href='./';" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+    <a href="./" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
         <i class="bi bi-arrow-left me-2"></i> Back to Clients
     </a>
 

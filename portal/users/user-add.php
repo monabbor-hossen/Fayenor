@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
              // Save message and safely redirect using JavaScript
             $_SESSION['success_msg'] = "Expense added successfully!";
-            echo "<script>window.location.href='user-add';</script>";
+            header("Location: user-add");
             exit();
 
             $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'>User account created successfully!</div>";
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="container-fluid">
-    <a href="./" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+    <a href="javascript:void(0);" onclick="history.length > 1 ? history.back() : window.location.href='./';" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
         <i class="bi bi-arrow-left me-2"></i> Back to Users
     </a>
 

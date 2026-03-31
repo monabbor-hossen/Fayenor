@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../app/Config/Database.php';
 
 $user_id = isset($_GET['id']) ? intval($_GET['id']) : null;
 if (!$user_id) {
-    echo "<script>window.location.href='users';</script>";
+    header("Location: users");
     exit();
 }
 
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
         if (!empty($password)) {
             if (strlen($password) < 6) {
                 $_SESSION['error_msg'] = "Password must be at least 6 characters.";
-                echo "<script>window.location.href='user-edit?id=" . $user_id . "';</script>";
+                header("Location: user-edit?id=" . $user_id);
                 exit();
             } else {
                 $sql .= ", password = :pass";
@@ -110,20 +110,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
             Security::logActivity("Updated user profile: " . $username);
             
             $_SESSION['success_msg'] = "User profile updated successfully!";
-            echo "<script>window.location.href='user-edit?id=" . $user_id . "';</script>";
+            header("Location: user-edit?id=" . $user_id);
             exit();
         }
 
     } catch (PDOException $e) {
         $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
-        echo "<script>window.location.href='user-edit?id=" . $user_id . "';</script>";
+        header("Location: user-edit?id=" . $user_id);
         exit();
     }
 }
 ?>
 
 <div class="container-fluid py-4">
-    <a href="./" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+    <a href="javascript:void(0);" onclick="history.length > 1 ? history.back() : window.location.href='./';" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
         <i class="bi bi-arrow-left me-2"></i> Back to Users
     </a>
 

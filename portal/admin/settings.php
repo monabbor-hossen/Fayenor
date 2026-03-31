@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['full_name'] = $full_name;
                  // Save message and safely redirect using JavaScript
                 $_SESSION['success_msg'] = "Expense added successfully!";
-                echo "<script>window.location.href='settings';</script>";
+                header("Location: settings");
                 exit();
             }
         } catch (PDOException $e) {
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Security::logActivity("Changed account password");
                 // Save message and safely redirect using JavaScript
                 $_SESSION['success_msg'] = "Expense added successfully!";
-                echo "<script>window.location.href='settings';</script>";
+                header("Location: settings");
                 exit();
             }
         }

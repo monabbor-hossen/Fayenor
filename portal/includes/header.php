@@ -1,4 +1,5 @@
 <?php
+ob_start(); // Enable output buffering to prevent 'headers already sent' during PRG redirects
 // portal/includes/header.php
 require_once __DIR__ . '/../../app/Config/Config.php';
 require_once __DIR__ . '/../../app/Helpers/Security.php';

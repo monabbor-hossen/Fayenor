@@ -40,7 +40,7 @@ foreach ($users as $u) {
             <h3 class="text-white fw-bold mb-0">Payroll Management</h3>
             <p class="text-white-50 small mb-0">Overview of staff salaries and payment status</p>
         </div>
-        <a href="users" class="btn btn-outline-light btn-sm rounded-pill px-4">
+        <a href="../users/" class="btn btn-outline-light btn-sm rounded-pill px-4">
             <i class="bi bi-people me-2"></i> Manage Users
         </a>
     </div>

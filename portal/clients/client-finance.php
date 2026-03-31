@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../app/Helpers/Security.php';
 require_once '../includes/header.php';
 
 $client_id = isset($_GET['id']) ? intval($_GET['id']) : (isset($_GET['client_id']) ? intval($_GET['client_id']) : 0);
-if (!$client_id) { echo "<script>window.location.href='clients';</script>"; exit(); }
+if (!$client_id) { header("Location: clients"); exit(); }
 
 $db = (new Database())->getConnection();
 
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_payment'])) {
     // SECURITY CHECK: Ensure amount does not exceed due amount
     if ($amount > $due_amount) {
         $_SESSION['error_msg'] = "Error: Payment amount (" . number_format($amount, 2) . ") cannot exceed the remaining balance (" . number_format($due_amount, 2) . ").";
-        echo "<script>window.location.href='client-finance?id=" . $client_id . "';</script>";
+        header("Location: client-finance?id=" . $client_id);
         exit();
     }
 
@@ -67,12 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_payment'])) {
             Security::logActivity("Recorded client payment of " . number_format($amount, 2) . " SAR for: " . $company_name);
             
             $_SESSION['success_msg'] = "Payment recorded successfully!";
-            echo "<script>window.location.href='client-finance?id=" . $client_id . "';</script>";
+            header("Location: client-finance?id=" . $client_id);
             exit();
         }
     } catch (PDOException $e) {
         $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
-        echo "<script>window.location.href='client-finance?id=" . $client_id . "';</script>";
+        header("Location: client-finance?id=" . $client_id);
         exit();
     }
 }
@@ -89,7 +89,7 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
     <main class="w-100 p-4">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <a href="clients" class="text-white-50 text-decoration-none hover-white">
+                <a href="javascript:void(0);" onclick="history.length > 1 ? history.back() : window.location.href='./';" class="text-white-50 text-decoration-none hover-white">
                     <i class="bi bi-arrow-left me-2"></i> Back to Clients
                 </a>
                 <h4 class="text-white fw-bold mb-0">Finance: <?php echo htmlspecialchars($client['company_name'] ?? 'Unknown'); ?></h4>

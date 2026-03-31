@@ -5,7 +5,7 @@ require_once __DIR__ . '/../app/Config/Database.php';
 
 // Security check: Only Clients can access this specific page
 if ($_SESSION['role'] !== 'client') {
-    echo "<script>window.location.href='../portal/dashboard';</script>";
+    header("Location: ../portal/dashboard");
     exit();
 }
 if ($_SESSION['role'] === 'client') {
@@ -41,11 +41,11 @@ if (isset($_GET['delete_id'])) {
         $stmt->execute([$delete_id, $user_id]);
         
         $_SESSION['success_msg'] = "Expense deleted successfully!";
-        echo "<script>window.location.href='expenses';</script>";
+        header("Location: expenses");
         exit();
     } catch (PDOException $e) {
         $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
-        echo "<script>window.location.href='expenses';</script>";
+        header("Location: expenses");
         exit();
     }
 }
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
             $stmt->execute([$project_id, $title, $amount, $date, $category, $description, $user_id]);
             
             $_SESSION['success_msg'] = "Expense recorded successfully!";
-            echo "<script>window.location.href='expenses';</script>";
+            header("Location: expenses");
             exit();
             
         } catch (PDOException $e) {

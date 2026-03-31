@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../app/Config/Database.php';
 
 // Security check: Only Admin/Staff can see expenses
 if ($_SESSION['role'] === 'client') {
-    echo "<script>window.location.href='../../management/dashboard';</script>";
+    header("Location: ../../management/dashboard");
     exit();
 }
 
@@ -25,11 +25,11 @@ if (isset($_GET['delete_id'])) {
         
         // Save message and safely redirect using JavaScript
         $_SESSION['success_msg'] = "Expense deleted successfully!";
-        echo "<script>window.location.href='expenses';</script>";
+        header("Location: expenses");
         exit();
     } catch (PDOException $e) {
         $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
-        echo "<script>window.location.href='expenses';</script>";
+        header("Location: expenses");
         exit();
     }
 }
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_expense'])) {
             
             // Save message and safely redirect using JavaScript
             $_SESSION['success_msg'] = "Expense added successfully!";
-            echo "<script>window.location.href='expenses';</script>";
+            header("Location: expenses");
             exit();
             
         } catch (PDOException $e) {

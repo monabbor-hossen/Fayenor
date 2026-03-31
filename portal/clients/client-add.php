@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../app/Config/Database.php';
 
 // --- 1. SECURITY: STRICT ACCESS CONTROL ---
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
-    echo "<script>window.location.href='../../public/login';</script>";
+    header("Location: ../../public/login");
     exit();
 }
 
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // REDIRECT ON SUCCESS
         $_SESSION['success_msg'] = "Client License created and linked successfully!";
-        echo "<script>window.location.href='./';</script>"; // Redirecting back to the clients list is best UX here!
+        header("Location: ./"); // Redirecting back to the clients list is best UX here!
         exit();
 
     } catch (PDOException $e) {
@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              $_SESSION['error_msg'] = "Database Error: " . $e->getMessage();
         }
         // REDIRECT ON ERROR
-        echo "<script>window.location.href='client-add';</script>";
+        header("Location: client-add");
         exit();
     }
 }
@@ -146,7 +146,7 @@ $workflow_steps = [
 ?>
 
 <div class="container-fluid py-4">
-    <a href="./" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+    <a href="javascript:void(0);" onclick="history.length > 1 ? history.back() : window.location.href='./';" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
         <i class="bi bi-arrow-left me-2"></i> Back to Clients
     </a>
 

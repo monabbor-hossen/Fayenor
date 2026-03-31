@@ -162,7 +162,7 @@ if ($is_pre_join) {
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <a href="../users/users" class="text-white-50 text-decoration-none mb-2 d-inline-block hover-white">
+            <a href="javascript:void(0);" onclick="history.length > 1 ? history.back() : window.location.href='../users/';" class="text-white-50 text-decoration-none mb-2 d-inline-block hover-white">
                 <i class="bi bi-arrow-left me-2"></i> Back to Users
             </a>
             <h3 class="text-white fw-bold mb-0">Payroll: <?php echo htmlspecialchars($display_name); ?></h3>

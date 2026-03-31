@@ -94,7 +94,7 @@ function getRoleName($roleId) {
                             <td class="text-end pe-4">
                                 <div class="d-flex justify-content-end gap-2">
                                     
-                                    <a href="user-payroll?id=<?php echo $user['id']; ?>" 
+                                    <a href="../finance/user-payroll?id=<?php echo $user['id']; ?>" 
                                        class="btn btn-sm btn-outline-success border-0 opacity-75 hover-opacity-100" 
                                        title="Manage Payroll">
                                         <i class="bi bi-wallet2"></i>

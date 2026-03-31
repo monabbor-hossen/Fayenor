@@ -2,6 +2,7 @@
 session_start();
 require_once __DIR__ . '/../app/Config/Config.php';
 require_once __DIR__ . '/../app/Config/Database.php';
+require_once __DIR__ . '/../app/Helpers/Security.php';
 
 // Security Check
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
@@ -33,9 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $stmtUpdate = $db->prepare($sql);
     $stmtUpdate->execute([
-        $client_id, $_POST['objective'], $_POST['permitted'], $_POST['docs'], 
-        $_POST['payment'], $_POST['obligations'], intval($_POST['timeline_days']), $_POST['timeline_text'],
-        $_POST['bank_name'], $_POST['account_number'], $_POST['iban_number'], $_POST['account_name'], $_POST['additional_scope']
+        $client_id, Security::clean($_POST['objective']), Security::clean($_POST['permitted']), Security::clean($_POST['docs']), 
+        Security::clean($_POST['payment']), Security::clean($_POST['obligations']), intval($_POST['timeline_days']), Security::clean($_POST['timeline_text']),
+        Security::clean($_POST['bank_name']), Security::clean($_POST['account_number']), Security::clean($_POST['iban_number']), Security::clean($_POST['account_name']), Security::clean($_POST['additional_scope'])
     ]);
     
     $_SESSION['contract_success'] = "Contract Terms Saved Successfully!";

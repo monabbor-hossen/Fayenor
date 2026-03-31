@@ -46,6 +46,7 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
     <link rel="icon" href="<hp echo BASE_URL; ?>assets/img/favicon.png" type="image/png" /> -->
 
     <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>assets/img/favicon.svg">
+
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/theme.css">
@@ -152,24 +153,6 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
 <script src="<?php echo BASE_URL; ?>assets/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
-<script>
-    const favicon = document.getElementById("favicon");
-    const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-    // Function to swap the favicon
-    function updateFavicon(e) {
-        if (e.matches) {
-            favicon.href = "assets/img/favicon-white.png"; // Dark theme
-        } else {
-            favicon.href = "assets/img/favicon.png"; // Light theme
-        }
-    }
-
-    // 1. Check the theme immediately when the page loads
-    updateFavicon(darkModeMediaQuery);
-
-    // 2. Listen for theme changes (if the user changes their PC theme while the site is open)
-    darkModeMediaQuery.addEventListener("change", updateFavicon);
-</script>
 </body>
 </html>

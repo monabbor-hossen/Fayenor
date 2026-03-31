@@ -6,7 +6,7 @@ require_once __DIR__ . '/../Config/Database.php';
 class RateLimiter {
     private $db;
     private $max_attempts = 5; // Lock after 5 fails
-    private $lockout_time = 15; // Lock for 15 minutes
+    private $lockout_time = 5; // Lock for 5 minutes
 
     public function __construct() {
         $this->db = (new Database())->getConnection();

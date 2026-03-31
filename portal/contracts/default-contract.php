@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] === 'client') {
 
 require_once '../../app/Config/Config.php';
 require_once '../../app/Config/Database.php';
+require_once '../../app/Helpers/Security.php';
 
 $db = (new Database())->getConnection();
 
@@ -98,10 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
             WHERE id=1";
     $stmt = $db->prepare($sql);
     $stmt->execute([
-        $_POST['service_provider'], $_POST['provider_email'], $_POST['signatory_name'], $signature_image,
-        $_POST['objective'], $_POST['permitted'], $_POST['docs'], 
-        $_POST['payment'], $_POST['obligations'], intval($_POST['timeline_days']), $_POST['timeline_text'],
-        $_POST['bank_name'], $_POST['account_number'], $_POST['iban_number'], $_POST['account_name']
+        Security::clean($_POST['service_provider']), Security::clean($_POST['provider_email']), Security::clean($_POST['signatory_name']), $signature_image,
+        Security::clean($_POST['objective']), Security::clean($_POST['permitted']), Security::clean($_POST['docs']), 
+        Security::clean($_POST['payment']), Security::clean($_POST['obligations']), intval($_POST['timeline_days']), Security::clean($_POST['timeline_text']),
+        Security::clean($_POST['bank_name']), Security::clean($_POST['account_number']), Security::clean($_POST['iban_number']), Security::clean($_POST['account_name'])
     ]);
     
     $_SESSION['contract_success'] = "Global Default Settings Saved Successfully!";

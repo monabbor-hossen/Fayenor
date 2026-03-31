@@ -20,15 +20,7 @@ class SessionManager {
         $this->limiter = new RateLimiter();
     }
 
-    private function logActivity($username, $ip, $activity, $user_type = 'internal') {
-        try {
-            $sql = "INSERT INTO login_attempts (ip_address, attempts) VALUES (:ip, 1) ON DUPLICATE KEY UPDATE attempts = attempts + 1";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([':ip' => $ip]);
-        } catch (PDOException $e) {
-            error_log("Activity Log Error: " . $e->getMessage());
-        }
-    }
+
 
     public function login($username, $password, $csrf_token) {
         $ip = $_SERVER['REMOTE_ADDR'];
@@ -36,8 +28,8 @@ class SessionManager {
 
         // Check Rate Limit
         if ($this->limiter->isLocked($ip)) {
-            $this->logActivity($clean_user, $ip, "Blocked: IP Locked");
-            throw new Exception("Security Alert: Too many failed attempts. Your IP is locked for 15 minutes.");
+            \Security::logActivity("Blocked: IP Locked for user " . $clean_user);
+            throw new Exception("Security Alert: Too many failed attempts. Your IP is locked for 5 minutes.");
         }
 
         Security::checkCSRF($csrf_token);
@@ -75,7 +67,7 @@ class SessionManager {
 
             // --- LOGIN FAILED ---
             $error_msg = $this->limiter->increment($ip);
-            $this->logActivity($clean_user, $ip, "Failed: Invalid Credentials");
+            \Security::logActivity("Failed Login: Invalid Credentials for user " . $clean_user);
             throw new Exception($error_msg);
 
         } catch (PDOException $e) {

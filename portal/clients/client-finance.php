@@ -222,11 +222,11 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                                         <td class="text-end fw-bold text-success">
                                             <?php echo number_format($p['amount'], 2); ?> SAR
                                         </td>
-                                        <td>
-        <a href="<?php echo BASE_URL; ?>public/invoice?payment_id=<?php echo $pay['id'] ?? $pay['payment_id']; ?>" target="_blank" class="btn btn-sm btn-outline-dark">
-            <i class="bi bi-receipt"></i>
-        </a>
-    </td>
+                                        <td class="text-end pe-2">
+                                            <a href="<?php echo BASE_URL; ?>public/invoice?payment_id=<?php echo $p['id'] ?? $p['payment_id']; ?>" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                                                <i class="bi bi-receipt me-1"></i> Invoice
+                                            </a>
+                                        </td>
                                     </tr>
                                     <?php endforeach; ?>
                                     <?php if(empty($payments)): ?>

@@ -17,7 +17,7 @@ if (!$client_id) {
 }
 
 $db = (new Database())->getConnection();
-$account_id = $_SESSION['account_id'] ?? $_SESSION['user_id']; 
+$account_id = $_SESSION['account_id'] ?? $_SESSION['user_id'];
 
 // --- 1. SECURELY FETCH PROJECT DATA ---
 // We strictly enforce that the account_id must match the logged-in client
@@ -33,7 +33,7 @@ if (!$project) {
                 <i class='bi bi-shield-lock text-danger fs-1 mb-3 d-block'></i>
                 <h4 class='text-white'>Access Denied or Project Not Found</h4>
                 <p class='text-white-50'>You do not have permission to view this project or it has been deactivated.</p>
-                <a href="dashboard" class='btn btn-outline-light mt-3'>Return to Dashboard</a>
+                <a href='dashboard' class='btn btn-outline-light mt-3'>Return to Dashboard</a>
             </div>
           </div>";
     require_once 'includes/footer.php';
@@ -58,14 +58,14 @@ $due_amount = $contract_value - $total_paid;
 // Define Workflow Steps
 $workflow_steps = [
     'hire_foreign_company' => 'Hire Foreign Company',
-    'misa_application'     => 'MISA Application',
-    'cr_application'       => 'CR Application',
-    't_n_reservation'      => 'Trade Name Reservation',
-    'article_association'  => 'Article of Association',
-    'qiwa'                 => 'Qiwa Registration',
-    'muqeem'               => 'Muqeem Portal',
-    'gosi'                 => 'GOSI Registration',
-    'chamber_commerce'     => 'Chamber of Commerce'
+    'misa_application' => 'MISA Application',
+    'cr_application' => 'CR Application',
+    't_n_reservation' => 'Trade Name Reservation',
+    'article_association' => 'Article of Association',
+    'qiwa' => 'Qiwa Registration',
+    'muqeem' => 'Muqeem Portal',
+    'gosi' => 'GOSI Registration',
+    'chamber_commerce' => 'Chamber of Commerce'
 ];
 
 $approved_count = 0;
@@ -94,14 +94,19 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
 
     <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
-            <h2 class="text-white fw-bold mb-1"><i class="bi bi-building text-secondary me-3"></i><?php echo htmlspecialchars($project['company_name']); ?></h2>
+            <h2 class="text-white fw-bold mb-1"><i
+                    class="bi bi-building text-secondary me-3"></i><?php echo htmlspecialchars($project['company_name']); ?>
+            </h2>
             <div class="text-white-50 small">
-                <span class="me-3"><i class="bi bi-hash me-1"></i>Project ID: #<?php echo htmlspecialchars($project['client_id']); ?></span>
-                <span><i class="bi bi-calendar-check me-1"></i>Created: <?php echo date('M d, Y', strtotime($project['created_at'])); ?></span>
+                <span class="me-3"><i class="bi bi-hash me-1"></i>Project ID:
+                    #<?php echo htmlspecialchars($project['client_id']); ?></span>
+                <span><i class="bi bi-calendar-check me-1"></i>Created:
+                    <?php echo date('M d, Y', strtotime($project['created_at'])); ?></span>
             </div>
         </div>
         <div>
-            <span class="badge <?php echo ($progress_percent == 100) ? 'bg-success' : 'bg-primary'; ?> fs-6 px-3 py-2 rounded-pill shadow-sm">
+            <span
+                class="badge <?php echo ($progress_percent == 100) ? 'bg-success' : 'bg-primary'; ?> fs-6 px-3 py-2 rounded-pill shadow-sm">
                 <?php echo ($progress_percent == 100) ? 'Completed' : 'In Progress'; ?>
             </span>
         </div>
@@ -114,16 +119,19 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
                     <h5 class="text-secondary fw-bold mb-0"><i class="bi bi-list-check me-2"></i>Application Status</h5>
                     <div class="text-white fw-bold fs-5"><?php echo $progress_percent; ?>%</div>
                 </div>
-                
-                <div class="progress mb-5" style="height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                    <div class="progress-bar <?php echo $progress_color; ?> progress-bar-striped progress-bar-animated rounded-pill" role="progressbar" style="width: <?php echo $progress_percent; ?>%;"></div>
+
+                <div class="progress mb-5"
+                    style="height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <div class="progress-bar <?php echo $progress_color; ?> progress-bar-striped progress-bar-animated rounded-pill"
+                        role="progressbar" style="width: <?php echo $progress_percent; ?>%;"></div>
                 </div>
 
                 <div class="row g-3">
-                    <?php foreach ($workflow_steps as $db_col => $title): 
+                    <?php foreach ($workflow_steps as $db_col => $title):
                         $status = $project[$db_col] ?? 'Pending';
-                        if (empty($status)) $status = 'Pending';
-                        
+                        if (empty($status))
+                            $status = 'Pending';
+
                         // Theme Mapping for Statuses
                         $icon = 'bi-circle text-white-50';
                         $border = 'border-secondary border-opacity-25';
@@ -145,32 +153,36 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
                             $icon = 'bi-dash-circle text-secondary';
                             $opacity = 'opacity: 0.5;';
                         }
-                    ?>
-                    <div class="col-md-6">
-                        <div class="p-3 border rounded <?php echo $border; ?> <?php echo $bg; ?>" style="transition: all 0.3s ease; <?php echo $opacity; ?>">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi <?php echo $icon; ?> fs-4 me-3"></i>
-                                    <div>
-                                        <div class="text-white fw-bold small"><?php echo $title; ?></div>
+                        ?>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded <?php echo $border; ?> <?php echo $bg; ?>"
+                                style="transition: all 0.3s ease; <?php echo $opacity; ?>">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi <?php echo $icon; ?> fs-4 me-3"></i>
+                                        <div>
+                                            <div class="text-white fw-bold small"><?php echo $title; ?></div>
+                                        </div>
                                     </div>
+                                    <span
+                                        class="badge bg-dark border border-light border-opacity-10 <?php echo $text_class; ?> rounded-pill">
+                                        <?php echo htmlspecialchars($status); ?>
+                                    </span>
                                 </div>
-                                <span class="badge bg-dark border border-light border-opacity-10 <?php echo $text_class; ?> rounded-pill">
-                                    <?php echo htmlspecialchars($status); ?>
-                                </span>
                             </div>
                         </div>
-                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4">
-            
-            <div class="card-box mb-4 p-3 rounded" style="background: linear-gradient(145deg, rgba(30,30,30,0.9) 0%, rgba(10,10,10,0.95) 100%);">
-                <h6 class="text-secondary fw-bold mb-4 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-wallet2 me-2"></i>Financial Overview</h6>
-                
+
+            <div class="card-box mb-4 p-3 rounded"
+                style="background: linear-gradient(145deg, rgba(30,30,30,0.9) 0%, rgba(10,10,10,0.95) 100%);">
+                <h6 class="text-secondary fw-bold mb-4 text-uppercase" style="font-size: 0.8rem;"><i
+                        class="bi bi-wallet2 me-2"></i>Financial Overview</h6>
+
                 <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-light border-opacity-10">
                     <span class="text-white-50">Total Contract Value</span>
                     <span class="text-white fw-bold"><?php echo number_format($contract_value, 2); ?> SAR</span>
@@ -189,7 +201,8 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
 
             <div class="card-box p-0 overflow-hidden mb-4">
                 <div class="p-3 border-bottom border-light border-opacity-10 bg-dark bg-opacity-50">
-                    <h6 class="text-secondary fw-bold mb-0 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-receipt me-2"></i>Payment History</h6>
+                    <h6 class="text-secondary fw-bold mb-0 text-uppercase" style="font-size: 0.8rem;"><i
+                            class="bi bi-receipt me-2"></i>Payment History</h6>
                 </div>
                 <div class="list-group list-group-flush bg-transparent">
                     <?php if (count($payments) > 0): ?>
@@ -197,15 +210,19 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
                             <div class="list-group-item bg-transparent border-bottom border-light border-opacity-10 p-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <div class="fw-bold text-white"><?php echo number_format($pay['amount'], 2); ?> SAR</div>
-                                    <?php 
-                                        $badge = 'bg-warning';
-                                        if ($pay['payment_status'] == 'Completed') $badge = 'bg-success';
-                                        elseif ($pay['payment_status'] == 'Failed') $badge = 'bg-danger';
+                                    <?php
+                                    $badge = 'bg-warning';
+                                    if ($pay['payment_status'] == 'Completed')
+                                        $badge = 'bg-success';
+                                    elseif ($pay['payment_status'] == 'Failed')
+                                        $badge = 'bg-danger';
                                     ?>
-                                    <span class="badge <?php echo $badge; ?> rounded-pill" style="font-size: 0.65rem;"><?php echo htmlspecialchars($pay['payment_status']); ?></span>
+                                    <span class="badge <?php echo $badge; ?> rounded-pill"
+                                        style="font-size: 0.65rem;"><?php echo htmlspecialchars($pay['payment_status']); ?></span>
                                 </div>
                                 <div class="d-flex justify-content-between text-white-50 small">
-                                    <span><i class="bi bi-calendar-event me-1"></i><?php echo date('M d, Y', strtotime($pay['payment_date'])); ?></span>
+                                    <span><i
+                                            class="bi bi-calendar-event me-1"></i><?php echo date('M d, Y', strtotime($pay['payment_date'])); ?></span>
                                     <span><?php echo htmlspecialchars($pay['payment_method']); ?></span>
                                 </div>
                             </div>
@@ -219,7 +236,8 @@ $progress_color = ($progress_percent == 100) ? 'bg-success' : (($progress_percen
             </div>
 
             <div class="glass-panel p-4 border-top border-3 border-secondary">
-                <h6 class="text-secondary fw-bold mb-3 text-uppercase" style="font-size: 0.8rem;"><i class="bi bi-info-circle me-2"></i>Registered Details</h6>
+                <h6 class="text-secondary fw-bold mb-3 text-uppercase" style="font-size: 0.8rem;"><i
+                        class="bi bi-info-circle me-2"></i>Registered Details</h6>
                 <div class="mb-2">
                     <small class="text-white-50 d-block">Contact Name</small>
                     <span class="text-white"><?php echo htmlspecialchars($project['client_name'] ?? 'N/A'); ?></span>

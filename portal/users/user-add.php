@@ -53,11 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':basic_salary' => $basic_salary,
                 ':joining_date' => $joining_date
             ]);
-             // Log and safely redirect (close tab)
+             // Log and safely redirect
             Security::logActivity("Created new user account: " . $username);
-            $_SESSION['success_msg'] = "User account created successfully!";
-            $_SESSION['close_tab'] = true;
-            header("Location: user-add");
+            $_SESSION['success_msg'] = "User added successfully!";
+            header("Location: index.php");
             exit();
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {

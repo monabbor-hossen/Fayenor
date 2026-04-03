@@ -66,9 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_payment'])) {
             
             Security::logActivity("Recorded client payment of " . number_format($amount, 2) . " SAR for: " . $company_name);
             
-            $_SESSION['success_msg'] = "Payment recorded successfully!";
-            $_SESSION['close_tab'] = true;
-            header("Location: client-finance?id=" . $client_id);
+            $_SESSION['success_msg'] = "Payment added successfully!";
+            header("Location: client-finance?id=" . $client_id . "&msg=added");
             exit();
         }
     } catch (PDOException $e) {

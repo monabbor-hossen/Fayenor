@@ -184,12 +184,27 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
                 <div class="col-lg-8">
                     <div class="card-box">
-                        <h5 class="text-white fw-bold mb-3">Transaction History</h5>
-                        <a href="<?php echo BASE_URL; ?>public/invoice?client_id=<?php echo $client_id; ?>" target="_blank" class="btn btn-secondary shadow-sm ms-2">
-                            <i class="bi bi-printer me-1"></i> Print Statement
-                        </a>
+                        <!-- Title + action buttons — same line -->
+                        <div class="txn-header">
+                            <h5 class="txn-header-title">
+                                <i class="bi bi-clock-history me-2"></i>Transaction History
+                            </h5>
+                            <div class="txn-header-actions">
+                                <a href="<?php echo BASE_URL; ?>public/invoice?client_id=<?php echo $client_id; ?>"
+                                   target="_blank"
+                                   class="btn-txn-action">
+                                    <i class="bi bi-printer"></i> Print Statement
+                                </a>
+                                <a href="<?php echo BASE_URL; ?>public/invoice?client_id=<?php echo $client_id; ?>&download=1"
+                                   target="_blank"
+                                   class="btn-txn-action">
+                                    <i class="bi bi-download"></i> Download
+                                </a>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
-                            <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent;">
+                            <table class="table table-dark table-hover mb-0 align-middle">
                                 <thead>
                                     <tr class="text-white-50 border-bottom border-secondary">
                                         <th>Date</th>
@@ -204,7 +219,7 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                                     <tr>
                                         <td>
                                             <div class="text-white small"><?php echo date('d M Y', strtotime($p['payment_date'])); ?></div>
-                                            <div class="text-white-50" style="font-size: 0.75rem;">#<?php echo $p['payment_id']; ?></div>
+                                            <div class="text-white-50" style="font-size: var(--fs-xxs);">#<?php echo $p['payment_id']; ?></div>
                                         </td>
                                         <td>
                                             <?php echo htmlspecialchars($p['payment_method']); ?>
@@ -222,15 +237,17 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                                         <td class="text-end fw-bold text-success">
                                             <?php echo number_format($p['amount'], 2); ?> SAR
                                         </td>
-                                        <td class="text-end pe-2">
-                                            <a href="<?php echo BASE_URL; ?>public/invoice?payment_id=<?php echo $p['id'] ?? $p['payment_id']; ?>" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-3">
-                                                <i class="bi bi-receipt me-1"></i> Invoice
+                                        <td class="text-end">
+                                            <a href="<?php echo BASE_URL; ?>public/invoice?payment_id=<?php echo $p['payment_id']; ?>"
+                                               target="_blank"
+                                               class="btn-txn-action">
+                                                <i class="bi bi-receipt"></i> Invoice
                                             </a>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
                                     <?php if(empty($payments)): ?>
-                                        <tr><td colspan="4" class="text-center text-white-50 py-3">No transactions found.</td></tr>
+                                        <tr><td colspan="5" class="text-center text-white-50 py-3">No transactions found.</td></tr>
                                     <?php endif; ?>
                                 </tbody>
                             </table>

@@ -1789,3 +1789,59 @@ a:hover .avatar-circle-refined,
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
+
+/* =========================================
+   CLIENT FINANCE — TRANSACTION HISTORY
+   ========================================= */
+
+/* Header row: title left, action buttons right — same line */
+.txn-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.txn-header-title {
+    color: var(--white);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    margin: 0;
+}
+
+.txn-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Shared base for print / download / statement buttons */
+.btn-txn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 50px;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semi);
+    border: 1px solid var(--secondary-30);
+    background: var(--secondary-10);
+    color: var(--rooq-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-txn-action:hover {
+    background: var(--secondary-20);
+    border-color: var(--rooq-secondary);
+    color: var(--white);
+}
+
+.btn-txn-action i {
+    font-size: var(--fs-base);
+}

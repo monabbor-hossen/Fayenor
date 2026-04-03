@@ -124,9 +124,13 @@ $hijriYear = 30 * $n + $j - 30;
 
 // 3. GENERATE DYNAMIC SCOPE OF SERVICES (FROM WORKFLOW)
 $scopeList = [];
+if (!empty($client['license_scope_status']) && !in_array($client['license_scope_status'], ['Not Required', ''])) { 
+    $scopeList[] = $client['license_scope_status']; 
+}
 if (!empty($client['hire_foreign_company']) && $client['hire_foreign_company'] !== 'Not Required') { $scopeList[] = "Arrangement of a Foreign Company (as required by MISA)"; }
 if (!empty($client['misa_application']) && $client['misa_application'] !== 'Not Required') { $scopeList[] = "Application and approval of MISA Service License"; }
-if (!empty($client['sbc_application']) && $client['sbc_application'] !== 'Not Required') { $scopeList[] = "SBC Application & Registration"; }
+if (!empty($client['t_n_reservation']) && $client['t_n_reservation'] !== 'Not Required') { $scopeList[] = "Trade Name Reservation"; }
+if (!empty($client['cr_application']) && $client['cr_application'] !== 'Not Required') { $scopeList[] = "CR Application & Registration"; }
 if (!empty($client['article_association']) && $client['article_association'] !== 'Not Required') { $scopeList[] = "Preparation of Articles of Association"; }
 if (!empty($client['qiwa']) && $client['qiwa'] !== 'Not Required') { $scopeList[] = "Qiwa Registration"; }
 if (!empty($client['muqeem']) && $client['muqeem'] !== 'Not Required') { $scopeList[] = "Muqeem Registration"; }
@@ -222,7 +226,7 @@ require_once 'header.php';
                             <svg class="data-icon" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" /></svg>
                             <div class="data-text-block">
                                 <span class="data-label">Trade Name</span>
-                                <span class="data-value"><?php echo htmlspecialchars($client['trade_name'] ?? ''); ?></span>
+                                <span class="data-value"><?php echo htmlspecialchars($client['trade_name_application'] ?? ''); ?></span>
                             </div>
                         </div>
 

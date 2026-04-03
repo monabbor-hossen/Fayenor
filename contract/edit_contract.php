@@ -82,9 +82,13 @@ $stmtWf = $db->prepare("SELECT * FROM workflow_tracking WHERE client_id = ? LIMI
 $stmtWf->execute([$client_id]);
 $clientWf = $stmtWf->fetch(PDO::FETCH_ASSOC);
 $wfList = [];
+if (!empty($clientWf['license_scope_status']) && !in_array($clientWf['license_scope_status'], ['Not Required', ''])) { 
+    $wfList[] = $clientWf['license_scope_status']; 
+}
 if (!empty($clientWf['hire_foreign_company']) && $clientWf['hire_foreign_company'] !== 'Not Required') { $wfList[] = "Arrangement of a Foreign Company (as required by MISA)"; }
 if (!empty($clientWf['misa_application']) && $clientWf['misa_application'] !== 'Not Required') { $wfList[] = "Application and approval of MISA Service License"; }
-if (!empty($clientWf['sbc_application']) && $clientWf['sbc_application'] !== 'Not Required') { $wfList[] = "SBC Application & Registration"; }
+if (!empty($clientWf['t_n_reservation']) && $clientWf['t_n_reservation'] !== 'Not Required') { $wfList[] = "Trade Name Reservation"; }
+if (!empty($clientWf['cr_application']) && $clientWf['cr_application'] !== 'Not Required') { $wfList[] = "CR Application & Registration"; }
 if (!empty($clientWf['article_association']) && $clientWf['article_association'] !== 'Not Required') { $wfList[] = "Preparation of Articles of Association"; }
 if (!empty($clientWf['qiwa']) && $clientWf['qiwa'] !== 'Not Required') { $wfList[] = "Qiwa Registration"; }
 if (!empty($clientWf['muqeem']) && $clientWf['muqeem'] !== 'Not Required') { $wfList[] = "Muqeem Registration"; }

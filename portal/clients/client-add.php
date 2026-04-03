@@ -84,7 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statuses = [':cid' => $new_client_id, ':update_at' => date('Y-m-d H:i:s')];
         
         $db_keys = [
-            'scope' => 'scope', 'hire' => 'hire', 'misa' => 'misa', 'sbc' => 'sbc', 
+            'scope' => 'scope', 'hire' => 'hire', 'misa' => 'misa', 'cr' => 'cr', 
+            'tnr' => 'tnr',
             'article' => 'art', 'gosi' => 'gosi', 'qiwa' => 'qiwa', 'muqeem' => 'muqeem', 'coc' => 'coc'
         ];
         
@@ -102,11 +103,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sql_wf = "INSERT INTO workflow_tracking 
                    (client_id, license_scope_status, license_scope_note, hire_foreign_company, hire_foreign_company_note,
-                   misa_application, misa_application_note, sbc_application, sbc_application_note, article_association, article_association_note,
+                   misa_application, misa_application_note, cr_application, cr_application_note,
+                   t_n_reservation, t_n_reservation_note,
+                   article_association, article_association_note,
                    gosi, gosi_note, qiwa, qiwa_note, muqeem, muqeem_note, chamber_commerce, chamber_commerce_note, update_date_at) 
                    VALUES 
-                   (:cid, :scope_st, :scope_nt, :hire_st, :hire_nt, :misa_st, :misa_nt, :sbc_st, :sbc_nt, :art_st, :art_nt, 
-                    :gosi_st, :gosi_nt, :qiwa_st, :qiwa_nt, :muqeem_st, :muqeem_nt, :coc_st, :coc_nt, :update_at)";
+                   (:cid, :scope_st, :scope_nt, :hire_st, :hire_nt, :misa_st, :misa_nt, :cr_st, :cr_nt, :tnr_st, :tnr_nt,
+                    :art_st, :art_nt, :gosi_st, :gosi_nt, :qiwa_st, :qiwa_nt, :muqeem_st, :muqeem_nt, :coc_st, :coc_nt, :update_at)";
 
         $stmt_wf = $db->prepare($sql_wf);
         $stmt_wf->execute($statuses);
@@ -136,7 +139,8 @@ $workflow_steps = [
     'scope'   => 'License Processing Scope',
     'hire'    => 'Hire Foreign Company',
     'misa'    => 'MISA Application',
-    'sbc'     => 'SBC Application',
+    'cr'      => 'CR Application',
+    'tnr'     => 'Trade Name Reservation',
     'article' => 'Article of Association',
     'qiwa'    => 'QIWA',
     'muqeem'  => 'MUQEEM',

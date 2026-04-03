@@ -76,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $db_cols = [
                 'scope' => 'license_scope_status', 'hire' => 'hire_foreign_company',
-                'misa' => 'misa_application', 'sbc' => 'sbc_application',
+                'misa' => 'misa_application', 'cr' => 'cr_application',
+                'tnr' => 't_n_reservation',
                 'article' => 'article_association', 'gosi' => 'gosi',
                 'qiwa' => 'qiwa', 'muqeem' => 'muqeem', 'coc' => 'chamber_commerce'
             ];
@@ -104,7 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             license_scope_status = :license_scope_status, license_scope_note = :license_scope_note,
                             hire_foreign_company = :hire_foreign_company, hire_foreign_company_note = :hire_foreign_company_note,
                             misa_application = :misa_application, misa_application_note = :misa_application_note,
-                            sbc_application = :sbc_application, sbc_application_note = :sbc_application_note,
+                            cr_application = :cr_application, cr_application_note = :cr_application_note,
+                            t_n_reservation = :t_n_reservation, t_n_reservation_note = :t_n_reservation_note,
                             article_association = :article_association, article_association_note = :article_association_note,
                             gosi = :gosi, gosi_note = :gosi_note, qiwa = :qiwa, qiwa_note = :qiwa_note,
                             muqeem = :muqeem, muqeem_note = :muqeem_note, chamber_commerce = :chamber_commerce, chamber_commerce_note = :chamber_commerce_note,
@@ -112,12 +114,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $sql_wf = "INSERT INTO workflow_tracking 
                             (license_scope_status, license_scope_note, hire_foreign_company, hire_foreign_company_note, 
-                             misa_application, misa_application_note, sbc_application, sbc_application_note,
+                             misa_application, misa_application_note, cr_application, cr_application_note,
+                             t_n_reservation, t_n_reservation_note,
                              article_association, article_association_note, gosi, gosi_note, qiwa, qiwa_note,
                              muqeem, muqeem_note, chamber_commerce, chamber_commerce_note, update_date_at, client_id)
                            VALUES 
                             (:license_scope_status, :license_scope_note, :hire_foreign_company, :hire_foreign_company_note,
-                             :misa_application, :misa_application_note, :sbc_application, :sbc_application_note,
+                             :misa_application, :misa_application_note, :cr_application, :cr_application_note,
+                             :t_n_reservation, :t_n_reservation_note,
                              :article_association, :article_association_note, :gosi, :gosi_note, :qiwa, :qiwa_note,
                              :muqeem, :muqeem_note, :chamber_commerce, :chamber_commerce_note, :update_at, :client_id)";
             }
@@ -157,7 +161,8 @@ $workflow_steps = [
     'scope'   => ['label' => 'License Processing Scope', 'db_st' => 'license_scope_status', 'db_nt' => 'license_scope_note'],
     'hire'    => ['label' => 'Hire Foreign Company',     'db_st' => 'hire_foreign_company', 'db_nt' => 'hire_foreign_company_note'],
     'misa'    => ['label' => 'MISA Application',         'db_st' => 'misa_application',     'db_nt' => 'misa_application_note'],
-    'sbc'     => ['label' => 'SBC Application',          'db_st' => 'sbc_application',      'db_nt' => 'sbc_application_note'],
+    'cr'      => ['label' => 'CR Application',           'db_st' => 'cr_application',        'db_nt' => 'cr_application_note'],
+    'tnr'     => ['label' => 'Trade Name Reservation',  'db_st' => 't_n_reservation',       'db_nt' => 't_n_reservation_note'],
     'article' => ['label' => 'Article of Association',   'db_st' => 'article_association',  'db_nt' => 'article_association_note'],
     'qiwa'    => ['label' => 'QIWA',                     'db_st' => 'qiwa',                 'db_nt' => 'qiwa_note'],
     'muqeem'  => ['label' => 'MUQEEM',                   'db_st' => 'muqeem',               'db_nt' => 'muqeem_note'],

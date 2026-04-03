@@ -229,14 +229,15 @@ function openViewModal(button) {
     if (grid) {
         grid.innerHTML = '';
         var steps = [
-            { key: 'hire', label: 'Foreign Hire', icon: 'bi-briefcase', status: client.hire_foreign_company, note: client.hire_foreign_company_note },
-            { key: 'misa', label: 'MISA License', icon: 'bi-award', status: client.misa_application, note: client.misa_application_note },
-            { key: 'cr', label: 'CR App', icon: 'bi-building', status: client.cr_application, note: client.cr_application_note },
-            { key: 'art', label: 'Art. Assoc.', icon: 'bi-file-text', status: client.article_association, note: client.article_association_note },
-            { key: 'qiwa', label: 'Qiwa', icon: 'bi-people', status: client.qiwa, note: client.qiwa_note },
-            { key: 'muq', label: 'Muqeem', icon: 'bi-person-badge', status: client.muqeem, note: client.muqeem_note },
-            { key: 'gosi', label: 'GOSI', icon: 'bi-shield-check', status: client.gosi, note: client.gosi_note },
-            { key: 'coc', label: 'Chamber', icon: 'bi-bank', status: client.chamber_commerce, note: client.chamber_commerce_note }
+            { key: 'hire', label: 'Foreign Hire',        icon: 'bi-briefcase',    status: client.hire_foreign_company, note: client.hire_foreign_company_note },
+            { key: 'misa', label: 'MISA License',        icon: 'bi-award',        status: client.misa_application,     note: client.misa_application_note },
+            { key: 'cr',   label: 'CR Application',      icon: 'bi-building',     status: client.cr_application,       note: client.cr_application_note },
+            { key: 'tnr',  label: 'Trade Name Rsv.',     icon: 'bi-tag',          status: client.t_n_reservation,      note: client.t_n_reservation_note },
+            { key: 'art',  label: 'Art. Assoc.',         icon: 'bi-file-text',    status: client.article_association,  note: client.article_association_note },
+            { key: 'qiwa', label: 'Qiwa',               icon: 'bi-people',       status: client.qiwa,                 note: client.qiwa_note },
+            { key: 'muq',  label: 'Muqeem',              icon: 'bi-person-badge', status: client.muqeem,               note: client.muqeem_note },
+            { key: 'gosi', label: 'GOSI',               icon: 'bi-shield-check', status: client.gosi,                 note: client.gosi_note },
+            { key: 'coc',  label: 'Chamber',             icon: 'bi-bank',         status: client.chamber_commerce,     note: client.chamber_commerce_note }
         ];
 
         steps.forEach(step => {

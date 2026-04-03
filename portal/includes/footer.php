@@ -71,8 +71,12 @@
                             <div id="badge_misa" class="view-badge badge-default">-</div>
                         </div>
                         <div class="col-md-4 col-6">
-                            <div class="view-label">SBC App</div>
-                            <div id="badge_sbc" class="view-badge badge-default">-</div>
+                            <div class="view-label">CR App</div>
+                            <div id="badge_cr" class="view-badge badge-default">-</div>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <div class="view-label">Trade Name Rsv.</div>
+                            <div id="badge_tnr" class="view-badge badge-default">-</div>
                         </div>
                         <div class="col-md-4 col-6">
                             <div class="view-label">Art. Association</div>

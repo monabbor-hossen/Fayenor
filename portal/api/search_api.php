@@ -33,7 +33,7 @@ try {
 
     // 7. QUERY (Added phone_number)
     $sql = "SELECT c.*, 
-            w.hire_foreign_company, w.misa_application, w.sbc_application, 
+            w.hire_foreign_company, w.misa_application, w.cr_application, w.t_n_reservation,
             w.article_association, w.qiwa, w.muqeem, w.gosi, w.chamber_commerce,
             w.license_scope_status,
             COALESCE((SELECT SUM(amount) FROM payments WHERE client_id = c.client_id AND payment_status = 'Completed'), 0) as total_paid
@@ -67,7 +67,8 @@ try {
         
         // Progress Calculation
         $steps = [
-            $row['hire_foreign_company'], $row['misa_application'], $row['sbc_application'], 
+            $row['hire_foreign_company'], $row['misa_application'], $row['cr_application'],
+            $row['t_n_reservation'],
             $row['article_association'], $row['qiwa'], $row['muqeem'], $row['gosi'], $row['chamber_commerce']
         ];
         

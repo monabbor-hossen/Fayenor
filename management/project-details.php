@@ -58,13 +58,14 @@ $due_amount = $contract_value - $total_paid;
 // Define Workflow Steps
 $workflow_steps = [
     'hire_foreign_company' => 'Hire Foreign Company',
-    'misa_application' => 'MISA Application',
-    'sbc_application' => 'SBC Application',
-    'article_association' => 'Article of Association',
-    'qiwa' => 'Qiwa Registration',
-    'muqeem' => 'Muqeem Portal',
-    'gosi' => 'GOSI Registration',
-    'chamber_commerce' => 'Chamber of Commerce'
+    'misa_application'     => 'MISA Application',
+    'cr_application'       => 'CR Application',
+    't_n_reservation'      => 'Trade Name Reservation',
+    'article_association'  => 'Article of Association',
+    'qiwa'                 => 'Qiwa Registration',
+    'muqeem'               => 'Muqeem Portal',
+    'gosi'                 => 'GOSI Registration',
+    'chamber_commerce'     => 'Chamber of Commerce'
 ];
 
 $approved_count = 0;

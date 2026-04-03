@@ -89,13 +89,14 @@ $collection_rate = ($total_revenue > 0) ? round(($total_paid / $total_revenue) *
 
 $workflow_columns = [
     'hire_foreign_company' => 'Foreign Hire',
-    'misa_application' => 'MISA',
-    'sbc_application' => 'SBC',
-    'article_association' => 'AoA',
-    'qiwa' => 'Qiwa',
-    'muqeem' => 'Muqeem',
-    'gosi' => 'GOSI',
-    'chamber_commerce' => 'Chamber'
+    'misa_application'     => 'MISA',
+    'cr_application'       => 'CR App',
+    't_n_reservation'      => 'Trade Name',
+    'article_association'  => 'AoA',
+    'qiwa'                 => 'Qiwa',
+    'muqeem'               => 'Muqeem',
+    'gosi'                 => 'GOSI',
+    'chamber_commerce'     => 'Chamber'
 ];
 
 foreach ($all_workflows as $wf) {

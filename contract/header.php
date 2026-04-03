@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
-    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon-32x32.png" type="image/x-icon" />
     
+    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon.svg" type="image/svg+xml" />
     <title><?php echo isset($pageTitle) ? $pageTitle : 'Service License Agreement'; ?></title>
 
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">

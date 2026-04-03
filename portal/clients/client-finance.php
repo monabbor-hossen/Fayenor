@@ -185,6 +185,9 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-lg-8">
                     <div class="card-box">
                         <h5 class="text-white fw-bold mb-3">Transaction History</h5>
+                        <a href="<?php echo BASE_URL; ?>public/invoice?client_id=<?php echo $client_id; ?>" target="_blank" class="btn btn-secondary shadow-sm ms-2">
+                            <i class="bi bi-printer me-1"></i> Print Statement
+                        </a>
                         <div class="table-responsive">
                             <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent;">
                                 <thead>
@@ -192,7 +195,8 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                                         <th>Date</th>
                                         <th>Method</th>
                                         <th>Status</th>
-                                        <th class="text-end">Amount</th>
+                                        <th>Amount</th>
+                                        <th class="text-end">Invoice</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -218,6 +222,11 @@ $payments = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                                         <td class="text-end fw-bold text-success">
                                             <?php echo number_format($p['amount'], 2); ?> SAR
                                         </td>
+                                        <td>
+        <a href="<?php echo BASE_URL; ?>public/invoice?payment_id=<?php echo $pay['id'] ?? $pay['payment_id']; ?>" target="_blank" class="btn btn-sm btn-outline-dark">
+            <i class="bi bi-receipt"></i>
+        </a>
+    </td>
                                     </tr>
                                     <?php endforeach; ?>
                                     <?php if(empty($payments)): ?>

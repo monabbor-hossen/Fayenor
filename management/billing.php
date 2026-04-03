@@ -130,9 +130,10 @@ try {
             <h2 class="text-white fw-bold mb-1"><i class="bi bi-receipt text-secondary me-3"></i>Billing & Financials</h2>
             <p class="text-white-50 small mb-0">Overview of all your project financials, payments, and expenses.</p>
         </div>
-        <button class="btn btn-outline-light btn-sm rounded-pill px-4 d-none d-md-block" onclick="window.print()">
+        <a href="<?php echo BASE_URL; ?>public/invoice?<?php echo $_SERVER['QUERY_STRING']; ?>" target="_blank" class="btn btn-outline-light btn-sm rounded-pill px-4 d-none d-md-block">
+            
             <i class="bi bi-printer me-2"></i> Print Statement
-        </button>
+        </a>
     </div>
 
     <div class="glass-panel p-3 mb-4">
@@ -245,6 +246,7 @@ try {
                         <th class="py-3 text-secondary text-uppercase small">Amount (SAR)</th>
                         <th class="py-3 text-secondary text-uppercase small">Method</th>
                         <th class="py-3 text-center text-secondary text-uppercase small">Status</th>
+                        <th class="py-3 text-center text-secondary text-uppercase small">Invoice</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -280,6 +282,11 @@ try {
                                         echo '<span class="badge bg-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle me-1"></i>' . htmlspecialchars($pay['payment_status']) . '</span>';
                                     }
                                 ?>
+                            </td>
+                            <td class="text-center">
+                                <a href="<?php echo BASE_URL; ?>public/invoice?payment_id=<?php echo $pay['id'] ?? $pay['payment_id']; ?>" target="_blank" class="btn btn-sm rounded-pill px-3 py-1" style="background: rgba(176, 196, 222, 0.1); color: var(--rooq-secondary); border: 1px solid var(--rooq-secondary);">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i> View
+                                </a>
                             </td>
                         </tr>
                         <?php endforeach; ?>

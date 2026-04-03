@@ -1997,6 +1997,29 @@ a:hover .avatar-circle-refined,
     gap: 10px;
 }
 
+.inv-btn-download {
+    background: var(--rooq-secondary);
+    color: var(--rooq-primary);
+    border: none;
+    padding: 8px 22px;
+    border-radius: 50px;
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, opacity 0.2s;
+}
+
+.inv-btn-download:hover {
+    background: var(--white);
+    transform: translateY(-1px);
+}
+
+.inv-btn-download:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .inv-btn-print {
     background: var(--white);
     color: var(--rooq-primary);
@@ -2013,6 +2036,7 @@ a:hover .avatar-circle-refined,
     background: var(--inv-print-hover);
     transform: translateY(-1px);
 }
+
 
 .inv-btn-close {
     background: var(--transparent);

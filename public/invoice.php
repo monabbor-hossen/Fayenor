@@ -162,8 +162,11 @@ function statusBadge($status)
                  style="filter: brightness(0) invert(1);">
         </div>
         <div class="inv-toolbar-actions">
-            <button class="inv-btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
-            <button class="inv-btn-close" onclick="window.close()">✕ Close</button>
+            <button class="inv-btn-download" id="btnDownloadPdf">
+                &#x2B73; Download PDF
+            </button>
+            <button class="inv-btn-print" onclick="window.print()">&#x1F5A8; Print</button>
+            <button class="inv-btn-close" onclick="window.close()">&#x2715; Close</button>
         </div>
     </div>
 
@@ -319,14 +322,144 @@ function statusBadge($status)
         </div><!-- /.invoice -->
     </div><!-- /.inv-page-wrap -->
 
-<?php if (!empty($_GET['download'])): ?>
+<!-- jsPDF + html2canvas (loaded from CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-    // Auto-open print/save-PDF dialog when download=1 is set
-    window.addEventListener('load', function () {
-        setTimeout(function () { window.print(); }, 400);
-    });
+(function () {
+    var btn = document.getElementById('btnDownloadPdf');
+    if (!btn) return;
+
+    /**
+     * html2canvas cannot render CSS `filter` rules.
+     * Pre-converts every img with an invert filter to a white data-URL
+     * by drawing it onto an offscreen canvas and forcing every opaque pixel white.
+     * Returns a Promise → Map<HTMLImageElement, dataURL>.
+     */
+    function buildWhiteImageMap(root) {
+        var promises = Array.from(root.querySelectorAll('img')).map(function (img) {
+            if (!(img.getAttribute('style') || '').includes('invert')) return Promise.resolve(null);
+            return new Promise(function (resolve) {
+                function process(src) {
+                    var tmp = new Image();
+                    tmp.crossOrigin = 'anonymous';
+                    tmp.onload = function () {
+                        var c = document.createElement('canvas');
+                        c.width  = tmp.naturalWidth  || 100;
+                        c.height = tmp.naturalHeight || 50;
+                        var ctx = c.getContext('2d');
+                        ctx.drawImage(tmp, 0, 0);
+                        // Simulate brightness(0) invert(1): every opaque pixel → white
+                        var id = ctx.getImageData(0, 0, c.width, c.height);
+                        for (var i = 0; i < id.data.length; i += 4) {
+                            if (id.data[i + 3] > 0) {
+                                id.data[i] = id.data[i+1] = id.data[i+2] = 255;
+                            }
+                        }
+                        ctx.putImageData(id, 0, 0);
+                        resolve({ img: img, dataUrl: c.toDataURL('image/png') });
+                    };
+                    tmp.onerror = function () { resolve(null); };
+                    tmp.src = src;
+                }
+                if (img.complete && img.naturalWidth > 0) {
+                    process(img.src);
+                } else {
+                    img.addEventListener('load', function () { process(img.src); }, { once: true });
+                }
+            });
+        });
+        return Promise.all(promises).then(function (results) {
+            var map = new Map();
+            results.forEach(function (r) { if (r) map.set(r.img, r.dataUrl); });
+            return map;
+        });
+    }
+
+    function doDownload() {
+        var invoiceEl = document.querySelector('.invoice');
+        if (!invoiceEl) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Generating\u2026';
+
+        // A4 at 96 dpi = 794 × 1123 px (used to pin footer to bottom in canvas)
+        var A4_H_PX = 1123;
+
+        buildWhiteImageMap(invoiceEl).then(function (whiteMap) {
+            return html2canvas(invoiceEl, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                onclone: function (clonedDoc) {
+                    var inv  = clonedDoc.querySelector('.invoice');
+                    var body = clonedDoc.querySelector('.invoice-body');
+
+                    // ── Fix 1: replicate @media print flex layout so footer stays at bottom ──
+                    if (inv) {
+                        inv.style.display       = 'flex';
+                        inv.style.flexDirection = 'column';
+                        // Use the greater of the actual rendered height and one A4 page height
+                        var naturalH = inv.scrollHeight || inv.offsetHeight || 0;
+                        inv.style.minHeight = Math.max(naturalH, A4_H_PX) + 'px';
+                        inv.style.boxShadow   = 'none';
+                        inv.style.borderRadius = '0';
+                    }
+                    if (body) {
+                        body.style.flex = '1';
+                    }
+
+                    // ── Fix 2: swap CSS-filtered images with pre-rendered white versions ──
+                    clonedDoc.querySelectorAll('img').forEach(function (clonedImg) {
+                        whiteMap.forEach(function (dataUrl, originalImg) {
+                            if (clonedImg.src === originalImg.src ||
+                                clonedImg.getAttribute('src') === originalImg.getAttribute('src')) {
+                                clonedImg.src = dataUrl;
+                                clonedImg.style.filter = 'none';
+                            }
+                        });
+                    });
+                }
+            });
+        }).then(function (canvas) {
+            var imgData = canvas.toDataURL('image/jpeg', 0.95);
+            var pdfW = 210; // A4 mm
+            var pdfH = 297;
+            var imgW = pdfW;
+            var imgH = (canvas.height / canvas.width) * pdfW;
+
+            var jsPDF = window.jspdf.jsPDF;
+            var doc   = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            var yOffset = 0;
+            while (yOffset < imgH) {
+                if (yOffset > 0) doc.addPage();
+                doc.addImage(imgData, 'JPEG', 0, -yOffset, imgW, imgH);
+                yOffset += pdfH;
+            }
+
+            doc.save('<?php echo addslashes($invoice_no); ?>.pdf');
+            btn.disabled = false;
+            btn.innerHTML = '&#x2B73; Download PDF';
+        }).catch(function (err) {
+            console.error('PDF generation failed:', err);
+            btn.disabled = false;
+            btn.innerHTML = '&#x2B73; Download PDF';
+        });
+    }
+
+    btn.addEventListener('click', doDownload);
+
+    // If ?download=1 is in the URL, auto-trigger download once libs are ready
+    if (new URLSearchParams(window.location.search).get('download') === '1') {
+        window.addEventListener('load', function () {
+            setTimeout(doDownload, 600);
+        });
+    }
+})();
 </script>
-<?php endif; ?>
+
+
 
 </body>
 

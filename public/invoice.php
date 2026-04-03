@@ -136,9 +136,15 @@ function statusBadge($status)
         return '<span class="status-badge status-pending">⏳ Pending</span>';
     return '<span class="status-badge status-other">' . htmlspecialchars($status) . '</span>';
 }
+
+// ── Google Translate cookie detection ──────────────────────────────────
+$gt_cookie = $_COOKIE['googtrans'] ?? '';
+$is_rtl = (strpos($gt_cookie, '/en/ar') !== false);
+$dir = $is_rtl ? 'rtl' : 'ltr';
+// ═══════════════════════════════════════════════════════════════════════
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="<?php echo $dir; ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -150,6 +156,37 @@ function statusBadge($status)
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/theme.css">
+
+    <!-- Hide default Google Translate banner and widget -->
+    <style>
+        .goog-te-banner-frame.skiptranslate,
+        .goog-te-banner-frame,
+        .VIpgJd-ZVi9od-ORHb-OEVmcd,
+        iframe.skiptranslate {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+
+        .goog-te-gadget,
+        #google_translate_element,
+        #goog-gt-tt,
+        .goog-tooltip {
+            display: none !important;
+            visibility: hidden !important;
+        }
+
+        body {
+            top: 0px !important;
+            position: static !important;
+        }
+
+        body.translated-ltr,
+        body.translated-rtl {
+            margin-top: 0 !important;
+            top: 0px !important;
+        }
+    </style>
 </head>
 
 
@@ -460,6 +497,18 @@ function statusBadge($status)
 </script>
 
 
+
+<div id="google_translate_element"></div>
+<!-- ── Google Translate scripts ───────────────────────────────────────── -->
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+            { pageLanguage: 'en', includedLanguages: 'ar', autoDisplay: false },
+            'google_translate_element'
+        );
+    }
+</script>
 
 </body>
 

@@ -42,7 +42,7 @@ $is_rtl = (strpos($gt_cookie, '/en/ar') !== false);
 
 // We MUST force the backend to render in English so Google Translate 
 // has English text to translate. We only use $is_rtl for the layout CSS.
-$lang = 'en'; 
+$lang = 'en';
 $dir = $is_rtl ? 'rtl' : 'ltr';
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -320,7 +320,7 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
 
                     // 3. Force a HARD cache-bypass reload. 
                     // Browsers aggressively cache window.location.reload(), stopping Google's script from firing correctly.
-                    setTimeout(function() {
+                    setTimeout(function () {
                         var url = new URL(window.location.href);
                         url.searchParams.set('_lang_refresh', Date.now()); // Cache buster
                         window.location.href = url.toString();
@@ -328,7 +328,7 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                 }
 
                 // Cleanup the ugly URL parameter if it exists after reload
-                window.addEventListener('load', function() {
+                window.addEventListener('load', function () {
                     var url = new URL(window.location.href);
                     if (url.searchParams.has('_lang_refresh')) {
                         url.searchParams.delete('_lang_refresh');

@@ -1997,31 +1997,21 @@ a:hover .avatar-circle-refined,
     gap: 10px;
 }
 
-/* ── Language toggle button (navbar) ──────── */
-.lang-toggle-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 16px;
-    border-radius: 50px;
-    border: none;
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-bold);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: opacity 0.2s ease, transform 0.15s ease;
-    letter-spacing: 0.3px;
+/* ── Bootstrap Button Overrides ────────── */
+.btn-secondary {
+    background-color: var(--rooq-secondary) !important;
+    color: var(--rooq-primary) !important;
+    border: 1px solid var(--rooq-secondary) !important;
+    transition: all 0.2s ease-in-out;
 }
 
-.lang-toggle-btn:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
+.btn-secondary:hover, 
+.btn-secondary:focus {
+    background-color: var(--white) !important;
+    color: var(--rooq-primary) !important;
+    border-color: var(--white) !important;
+    box-shadow: 0 0 10px var(--secondary-30) !important;
 }
-
-.lang-toggle-btn i {
-    font-size: var(--fs-base);
-}
-
 .inv-btn-download {
 
     background: var(--rooq-secondary);

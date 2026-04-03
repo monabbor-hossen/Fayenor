@@ -1794,6 +1794,463 @@ a:hover .avatar-circle-refined,
    CLIENT FINANCE — TRANSACTION HISTORY
    ========================================= */
 
+.txn-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.txn-header-title {
+    color: var(--white);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    margin: 0;
+}
+
+.txn-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-txn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 50px;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semi);
+    border: 1px solid var(--secondary-30);
+    background: var(--secondary-10);
+    color: var(--rooq-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-txn-action:hover {
+    background: var(--secondary-20);
+    border-color: var(--rooq-secondary);
+    color: var(--white);
+}
+
+.btn-txn-action i {
+    font-size: var(--fs-base);
+}
+
+/* =========================================
+   INVOICE PAGE
+   ========================================= */
+
+/* ── Invoice body: light background, proper colour-adjust for printing */
+.invoice-page-body {
+    font-family: 'Inter', var(--font-primary);
+    background: #eef0f4;
+    color: #1a1a2e;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* ── Toolbar (screen only) ─────────────────── */
+.inv-toolbar {
+    background: var(--rooq-primary);
+    color: var(--white);
+    padding: 13px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px var(--black-30);
+}
+
+.inv-toolbar-brand {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.4px;
+}
+
+.inv-toolbar-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.inv-btn-print {
+    background: var(--white);
+    color: var(--rooq-primary);
+    border: none;
+    padding: 8px 22px;
+    border-radius: 50px;
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.inv-btn-print:hover {
+    background: #d0ead8;
+    transform: translateY(-1px);
+}
+
+.inv-btn-close {
+    background: transparent;
+    color: var(--glass-70);
+    border: 1px solid var(--glass-30);
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.inv-btn-close:hover {
+    background: var(--glass-10);
+    color: var(--white);
+}
+
+/* ── Page wrapper ─────────────────────────── */
+.inv-page-wrap {
+    max-width: 860px;
+    margin: 36px auto 60px;
+    padding: 0 16px;
+}
+
+/* ── Invoice card ─────────────────────────── */
+.invoice {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px var(--black-10);
+}
+
+/* ── Invoice header band ──────────────────── */
+.invoice-header {
+    background: var(--rooq-primary);
+    padding: 34px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.inv-logo-sub {
+    color: var(--glass-50);
+    font-size: var(--fs-xxs);
+    margin-top: 5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.invoice-meta {
+    text-align: right;
+}
+
+.invoice-type {
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    color: var(--white);
+    letter-spacing: 0.8px;
+}
+
+.invoice-number {
+    font-size: var(--fs-sm);
+    color: var(--glass-70);
+    margin-top: 6px;
+    font-weight: var(--fw-medium);
+}
+
+.invoice-date-lbl {
+    font-size: var(--fs-xs);
+    color: var(--glass-50);
+    margin-top: 3px;
+}
+
+/* ── Invoice body ─────────────────────────── */
+.invoice-body {
+    padding: 42px 48px;
+}
+
+/* ── Parties grid ─────────────────────────── */
+.parties {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 36px;
+}
+
+.party-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #999;
+    font-weight: var(--fw-bold);
+    margin-bottom: 9px;
+}
+
+.party-name {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    color: var(--rooq-primary);
+    margin-bottom: 5px;
+}
+
+.party-contact {
+    font-size: var(--fs-xs);
+    color: #444;
+    font-weight: var(--fw-semi);
+    margin-bottom: 3px;
+}
+
+.party-detail {
+    font-size: var(--fs-xs);
+    color: #777;
+    line-height: 1.7;
+}
+
+.party-from {
+    text-align: right;
+}
+
+.inv-divider {
+    height: 1px;
+    background: linear-gradient(to right, #d8eadc, #e0e8e2, #d8eadc);
+    margin: 0 0 34px;
+}
+
+/* ── Single-payment highlight box ─────────── */
+.single-highlight {
+    background: linear-gradient(135deg, #f0faf3, #e8f4ec);
+    border: 1px solid #b7dfc3;
+    border-radius: 10px;
+    padding: 26px 30px;
+    margin-bottom: 34px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 22px;
+}
+
+.hf-label {
+    font-size: 0.67rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #888;
+    font-weight: var(--fw-bold);
+    margin-bottom: 6px;
+}
+
+.hf-value {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semi);
+    color: var(--rooq-primary);
+}
+
+.hf-value.amount-big {
+    font-size: 1.55rem;
+    font-weight: var(--fw-extra);
+}
+
+/* ── Items table ──────────────────────────── */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 28px;
+}
+
+.items-table th {
+    background: var(--rooq-primary);
+    color: var(--white);
+    padding: 12px 15px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: var(--fw-semi);
+    text-align: left;
+}
+
+.items-table th:last-child {
+    text-align: right;
+}
+
+.items-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.items-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.items-table td {
+    padding: 13px 15px;
+    font-size: var(--fs-sm);
+    color: #333;
+    vertical-align: middle;
+}
+
+.items-table td.text-right {
+    text-align: right;
+    font-weight: var(--fw-bold);
+    color: var(--rooq-primary);
+}
+
+.ref-sub {
+    font-size: 0.7rem;
+    color: #bbb;
+    margin-top: 2px;
+}
+
+/* ── Total bar ────────────────────────────── */
+.total-bar {
+    background: var(--rooq-primary);
+    border-radius: 8px;
+    padding: 15px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 34px;
+}
+
+.total-bar .total-label {
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--glass-50);
+    font-weight: var(--fw-semi);
+}
+
+.total-bar .total-amount {
+    font-size: 1.5rem;
+    font-weight: var(--fw-extra);
+    color: var(--white);
+}
+
+/* ── Notes box ────────────────────────────── */
+.notes-box {
+    background: #f9fafb;
+    border-left: 4px solid var(--rooq-primary);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin-bottom: 30px;
+}
+
+.notes-label {
+    font-size: 0.67rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #999;
+    font-weight: var(--fw-bold);
+    margin-bottom: 6px;
+}
+
+.notes-text {
+    font-size: var(--fs-14);
+    color: #444;
+    line-height: 1.6;
+}
+
+/* ── Invoice footer ───────────────────────── */
+.invoice-footer {
+    border-top: 1px solid #eee;
+    padding: 22px 48px;
+    text-align: center;
+    background: #fafafa;
+}
+
+.invoice-footer p {
+    font-size: var(--fs-xs);
+    color: #aaa;
+    margin: 2px 0;
+}
+
+.invoice-footer strong {
+    color: #555;
+}
+
+/* ── PRINT — A4 ───────────────────────────── */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 0; /* removes browser URL / date / page-number */
+    }
+
+    html,
+    body {
+        background: #fff !important;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+    }
+
+    .inv-toolbar {
+        display: none !important;
+    }
+
+    .inv-page-wrap {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    /* Fill full A4 height; footer pinned to bottom via flex */
+    .invoice {
+        box-shadow: none;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .invoice-header {
+        padding: 24px 34px;
+        background: var(--rooq-primary) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .invoice-body {
+        padding: 15px 34px;
+        flex: 1; /* grow to push footer down */
+    }
+
+    .invoice-footer {
+        padding: 15px 34px;
+        margin-top: auto; /* always at bottom */
+    }
+
+    .items-table th {
+        background: var(--rooq-primary) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .total-bar {
+        background: var(--rooq-primary) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .single-highlight {
+        background: #f0faf3 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .items-table tbody tr {
+        page-break-inside: avoid;
+    }
+}
+
+
+/* =========================================
+   CLIENT FINANCE — TRANSACTION HISTORY
+   ========================================= */
+
 /* Header row: title left, action buttons right — same line */
 .txn-header {
     display: flex;

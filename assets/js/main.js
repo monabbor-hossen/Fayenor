@@ -710,7 +710,7 @@ function sendMessage() {
     if (!msg || !window.currentChatClientId || window.currentChatClientId === 0) return;
 
     input.value = '';
-    input.style.height = '48px';
+    input.style.height = 'auto';
 
     const box = document.getElementById('chatBox');
     if (box.innerHTML.includes("No messages yet")) box.innerHTML = '';

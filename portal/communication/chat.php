@@ -122,8 +122,8 @@ foreach($clients as $c) { if($c['client_id'] == $active_client) $active_name = $
                             class="form-control"
                             placeholder="Type your message..."
                             rows="1"
-                            oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
-                        <button onclick="sendMessage()" class="btn-chat-send ms-2">
+                            oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"></textarea>
+                        <button onclick="sendMessage()" class="btn-chat-send">
                             <i class="bi bi-send-fill"></i>
                         </button>
                     </div>

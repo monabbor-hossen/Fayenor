@@ -131,6 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db->commit();
             // NEW: Log the exact action
             Security::logActivity("Updated client license ID: #" . $client_id . " (" . $company . ")");
+            $_SESSION['success_msg'] = "Client License updated successfully!";
+            $_SESSION['close_tab'] = true;
             header("Location: client-edit?id=" . $client_id . "&msg=updated");
             exit();
         }

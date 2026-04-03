@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
     
     $_SESSION['contract_success'] = "Contract Terms Saved Successfully!";
+    $_SESSION['close_tab'] = true;
     header("Location: edit_contract.php?id=" . $client_id);
     exit();
 }

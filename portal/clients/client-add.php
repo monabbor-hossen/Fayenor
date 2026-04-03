@@ -116,9 +116,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db->commit();
         
         Security::logActivity("Created new client license for: " . $company);
-        
         // REDIRECT ON SUCCESS
         $_SESSION['success_msg'] = "Client License created and linked successfully!";
+        $_SESSION['close_tab'] = true;
         header("Location: ./"); // Redirecting back to the clients list is best UX here!
         exit();
 

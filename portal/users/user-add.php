@@ -53,13 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':basic_salary' => $basic_salary,
                 ':joining_date' => $joining_date
             ]);
-             // Save message and safely redirect using JavaScript
-            $_SESSION['success_msg'] = "Expense added successfully!";
+             // Log and safely redirect (close tab)
+            Security::logActivity("Created new user account: " . $username);
+            $_SESSION['success_msg'] = "User account created successfully!";
+            $_SESSION['close_tab'] = true;
             header("Location: user-add");
             exit();
-
-            $message = "<div class='alert alert-success bg-success bg-opacity-25 text-white border-success'>User account created successfully!</div>";
-            Security::logActivity("Created new user account: " . $username);
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
                  $message = "<div class='alert alert-danger bg-danger bg-opacity-25 text-white border-danger'>Error: Username already exists.</div>";

@@ -110,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
             Security::logActivity("Updated user profile: " . $username);
             
             $_SESSION['success_msg'] = "User profile updated successfully!";
+            $_SESSION['close_tab'] = true;
             header("Location: user-edit?id=" . $user_id);
             exit();
         }

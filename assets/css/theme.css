@@ -1101,6 +1101,36 @@ a:hover .avatar-circle-refined,
     margin-bottom: 20px;
 }
 
+/* ---- Bubble classes (used by both JS tempBubble & PHP fetch_chats) ---- */
+.chat-bubble {
+    display: inline-block;
+    text-align: left;
+    word-break: break-word;
+    line-height: 1.6;
+}
+
+.chat-bubble-sent {
+    background: linear-gradient(135deg, var(--rooq-secondary) 0%, var(--dark-secondary) 100%);
+    color: var(--bg-radial-start);
+    border: none;
+    box-shadow: 0 4px 15px var(--secondary-30);
+    border-radius: 18px 18px 4px 18px;
+}
+
+.chat-bubble-received {
+    background: var(--glass-05);
+    color: var(--white);
+    border: 1px solid var(--secondary-15);
+    border-left: 3px solid var(--rooq-secondary);
+    box-shadow: 0 4px 12px var(--black-20);
+    border-radius: 18px 18px 18px 4px;
+}
+
+.chat-bubble-sending {
+    opacity: 0.75;
+}
+
+
 /* =========================================
    LOGIN SCREEN
    ========================================= */

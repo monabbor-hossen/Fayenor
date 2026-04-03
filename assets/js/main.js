@@ -231,7 +231,7 @@ function openViewModal(button) {
         var steps = [
             { key: 'hire', label: 'Foreign Hire', icon: 'bi-briefcase', status: client.hire_foreign_company, note: client.hire_foreign_company_note },
             { key: 'misa', label: 'MISA License', icon: 'bi-award', status: client.misa_application, note: client.misa_application_note },
-            { key: 'sbc', label: 'SBC App', icon: 'bi-building', status: client.sbc_application, note: client.sbc_application_note },
+            { key: 'cr', label: 'CR App', icon: 'bi-building', status: client.cr_application, note: client.cr_application_note },
             { key: 'art', label: 'Art. Assoc.', icon: 'bi-file-text', status: client.article_association, note: client.article_association_note },
             { key: 'qiwa', label: 'Qiwa', icon: 'bi-people', status: client.qiwa, note: client.qiwa_note },
             { key: 'muq', label: 'Muqeem', icon: 'bi-person-badge', status: client.muqeem, note: client.muqeem_note },
@@ -652,11 +652,9 @@ function switchChat(e, id, name, element) {
     lastChatHTML = "FORCE_REFRESH";
 
     document.querySelectorAll('.client-chat-link').forEach(el => {
-        el.classList.remove('bg-rooq-primary', 'text-white');
-        el.classList.add('text-white-50', 'hover-white');
+        el.classList.remove('active-chat');
     });
-    element.classList.remove('text-white-50', 'hover-white');
-    element.classList.add('bg-rooq-primary', 'text-white');
+    element.classList.add('active-chat');
 
     const headerSub = document.getElementById('chatHeaderSub');
     if (headerSub) headerSub.innerText = name;
@@ -717,10 +715,10 @@ function sendMessage() {
     const box = document.getElementById('chatBox');
     if (box.innerHTML.includes("No messages yet")) box.innerHTML = '';
     const tempBubble = `
-        <div class='d-flex justify-content-end mb-3 w-100 temp-msg'>
-            <div class='d-flex flex-column text-end' style='max-width: 85%;'>
-                <div class='small text-white-50 fw-bold mb-1 pe-1 fst-italic'>Sending...</div>
-                <div class='p-3 shadow-sm' style='background: #800020; color: #fff; border-radius: 15px 15px 2px 15px; display: inline-block; text-align: left; opacity: 0.8; word-break: break-word;'>
+        <div class='d-flex justify-content-end mb-3 w-100 chat-message-row temp-msg'>
+            <div class='d-flex flex-column text-end' style='max-width: 80%;'>
+                <div class='chat-timestamp text-end mb-1 pe-1' style='font-style:italic;'>Sending...</div>
+                <div class='chat-bubble chat-bubble-sent chat-bubble-sending px-3 py-2'>
                     ${msg.replace(/\n/g, '<br>')}
                 </div>
             </div>

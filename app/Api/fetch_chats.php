@@ -68,21 +68,8 @@ try {
         $wrapper_align = $is_me ? 'justify-content-end' : 'justify-content-start';
         $text_align = $is_me ? 'text-end' : 'text-start';
 
-        // --- FAYENOR THEME BUBBLES ---
-        if ($is_me) {
-            $bubble_style = 'background: linear-gradient(135deg, #023020 0%, #034a2c 100%);
-                             color: #fff;
-                             border: 1px solid rgba(176,196,222,0.25);
-                             box-shadow: 0 4px 15px rgba(2,48,32,0.4);
-                             border-radius: 18px 18px 4px 18px;';
-        } else {
-            $bubble_style = 'background: rgba(176,196,222,0.07);
-                             color: #fff;
-                             border: 1px solid rgba(176,196,222,0.15);
-                             border-left: 3px solid #B0C4DE;
-                             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-                             border-radius: 18px 18px 18px 4px;';
-        }
+        // --- FAYENOR THEME BUBBLES (classes from theme.css) ---
+        $bubble_class = $is_me ? 'chat-bubble-sent' : 'chat-bubble-received';
 
         $time = date('M d, h:i A', strtotime($msg['created_at']));
         
@@ -98,7 +85,7 @@ try {
             <div class='d-flex {$wrapper_align} mb-3 w-100 chat-message-row'>
                 <div class='d-flex flex-column {$text_align}' style='max-width: 80%;'>
                     {$sender_name}
-                    <div class='chat-bubble px-3 py-2' style='{$bubble_style} display: inline-block; text-align: left; word-break: break-word; line-height: 1.6;'>
+                    <div class='chat-bubble {$bubble_class} px-3 py-2'>
                         " . nl2br(htmlspecialchars($display_message)) . "
                     </div>
                     <div class='chat-timestamp mt-1 px-1 {$time_align}'>{$time}</div>

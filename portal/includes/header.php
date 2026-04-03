@@ -165,12 +165,12 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
 
                 <!-- Custom Language Toggle Button -->
                 <?php if ($is_rtl): ?>
-                    <button onclick="toggleLanguage('en')" class="lang-toggle-btn" style="background:#D4AF37;color:#fff;"
+                    <button onclick="toggleLanguage('en')" class="btn btn-sm btn-secondary rounded-pill px-3"
                         title="Switch to English">
                         <i class="bi bi-globe me-1"></i> English
                     </button>
                 <?php else: ?>
-                    <button onclick="toggleLanguage('ar')" class="lang-toggle-btn" style="background:#800020;color:#fff;"
+                    <button onclick="toggleLanguage('ar')" class="btn btn-sm btn-secondary rounded-pill px-3"
                         title="التبديل إلى العربية">
                         <i class="bi bi-globe me-1"></i> عربي
                     </button>
@@ -300,26 +300,39 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                         'google_translate_element'
                     );
                 }
-
                 /**
-                 * Sets the googtrans cookie on both the root path and the current domain,
-                 * then reloads so the PHP cookie-detection picks up the new language and
-                 * loads the correct RTL CSS.
+                 * Sets the googtrans cookie safely avoiding duplicates that 
+                 * break Google Translate's auto-load phase, then reloads.
                  */
                 function toggleLanguage(targetLang) {
-                    var domain = window.location.hostname;
-                    
-                    // Always wipe out the cookies first across all paths and domains to prevent caching clashes!
-                    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + domain + ';';
+                    var host = window.location.hostname;
+                    var isLocal = (host === 'localhost' || host === '127.0.0.1');
+                    var domainStr = isLocal ? '' : '; domain=.' + host;
 
+                    // 1. Wipe out any existing cookies
+                    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/' + domainStr;
+                    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'; // fallback
+
+                    // 2. Set new target language if it's Arabic
                     if (targetLang === 'ar') {
-                        var cookieVal = '/en/ar';
-                        document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + domain;
-                        document.cookie = 'googtrans=' + cookieVal + '; path=/';
+                        document.cookie = 'googtrans=/en/ar; path=/' + domainStr;
                     }
 
-                    // Reload — PHP will now see the new cookie and serve the right RTL/LTR layout
-                    window.location.reload();
+                    // 3. Force a HARD cache-bypass reload. 
+                    // Browsers aggressively cache window.location.reload(), stopping Google's script from firing correctly.
+                    setTimeout(function() {
+                        var url = new URL(window.location.href);
+                        url.searchParams.set('_lang_refresh', Date.now()); // Cache buster
+                        window.location.href = url.toString();
+                    }, 50);
                 }
+
+                // Cleanup the ugly URL parameter if it exists after reload
+                window.addEventListener('load', function() {
+                    var url = new URL(window.location.href);
+                    if (url.searchParams.has('_lang_refresh')) {
+                        url.searchParams.delete('_lang_refresh');
+                        window.history.replaceState({}, document.title, url.toString());
+                    }
+                });
             </script>

@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
 ?>
 
 <div class="container-fluid py-4">
-    <a href="./" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
+    <a href="./" onclick="rooqSmartBack('./'); return false;" class="text-white-50 text-decoration-none mb-3 d-inline-block hover-white">
         <i class="bi bi-arrow-left me-2"></i> Back to Users
     </a>
 

@@ -62,6 +62,15 @@ function triggerLinkModal(url, customMessage) {
     myModal.show();
 }
 
+// 3. SMART BACK / POPUP CLOSE
+function rooqSmartBack(fallbackUrl) {
+    if (window.opener) {
+        window.close();
+    } else {
+        window.location.href = fallbackUrl;
+    }
+}
+
 /* ==========================================================================
    CLIENT ADD/EDIT PAGE & WORKFLOW LOGIC
    ========================================================================== */

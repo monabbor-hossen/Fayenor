@@ -154,7 +154,7 @@ foreach ($users as $u) {
                             </td>
 
                             <td class="text-end pe-4">
-                                <a href="user-payroll?id=<?php echo $user['id']; ?>" target="_blank" class="btn btn-sm btn-outline-success opacity-75 hover-opacity-100 rounded-pill px-3 shadow-sm">
+                                <a href="user-payroll?id=<?php echo $user['id']; ?>" class="btn btn-sm btn-outline-success opacity-75 hover-opacity-100 rounded-pill px-3 shadow-sm">
                                     <i class="bi bi-wallet2 me-1"></i> Manage
                                 </a>
                             </td>

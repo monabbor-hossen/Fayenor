@@ -41,118 +41,193 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | FAYENOR</title> 
-    <!-- <link rel="shortcut icon" href="<php echo BASE_URL; ?>assets/img/favicon.png" type="image/png" />
-    <link rel="icon" href="<hp echo BASE_URL; ?>assets/img/favicon.png" type="image/png" /> -->
+    <title>Login | FAYENOR</title>
 
     <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>assets/img/favicon.svg">
 
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/theme.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        body { margin: 0; padding: 0; font-family: <?php echo ($lang == 'ar' ? "'Cairo', sans-serif" : "'Segoe UI', sans-serif"); ?>; }
-        /* Default (Light Theme) Styles */
-
-
-        /* Dark Theme Styles */
-        @media (prefers-color-scheme: dark) {
-            
-        }
-        /* Subtle hover effect for the back button */
-        .btn-back-subtle {
-            color: #555;
-            transition: all 0.3s ease;
-        }
-        .btn-back-subtle:hover {
-            color: var(--rooq-primary);
-            transform: translateX(<?php echo ($lang == 'ar' ? '5px' : '-5px'); ?>);
-        }
-    </style>
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/theme.css?v=2.0">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/mobile.css?v=2.0">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="login-body <?php echo ($lang == 'ar' ? 'lang-ar' : ''); ?>">
 
+<!-- Global page loader -->
 <div id="global-loader" class="global-loader">
     <div class="rooq-spinner"></div>
 </div>
 
+<!-- Ambient background orbs -->
+<div class="login-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
 <div class="login-wrapper">
-    
+
+    <!-- ================================
+         BRAND PANEL (Left / Desktop)
+         ================================ -->
     <div class="login-brand-side">
-        <div class="text-center position-relative" style="z-index: 2;">
-            <img src="<?php echo BASE_URL; ?>assets/img/logo.png" alt="FAYENOR" class="brand-logo-img mb-4" style="max-width: 180px; filter: brightness(0) invert(1);">
-            <h2 class="fw-bold mb-2 text-white">FAYENOR</h2>
-            <p class="text-white opacity-75 mb-4">Contracting Co. Ltd.</p>
-            <div style="width: 50px; height: 3px; background: var(--rooq-secondary); margin: 0 auto;"></div>
-            <p class="mt-4 small text-white opacity-75 d-none d-md-block">
-                <?php echo ($lang == 'ar' ? 'بوابة العملاء الآمنة لخدمات الاستثمار' : 'Secure Client Portal for Investment Services'); ?>
+        <div class="brand-content">
+            <img src="<?php echo BASE_URL; ?>assets/img/logo.png" alt="FAYENOR" class="brand-logo-img">
+            <h1 class="brand-title">FAYENOR</h1>
+            <p class="brand-subtitle">Contracting Co. Ltd.</p>
+            <div class="brand-divider"></div>
+            <p class="brand-tagline">
+                <?php echo ($lang == 'ar'
+                    ? 'بوابة العملاء الآمنة لخدمات الاستثمار والعقود'
+                    : 'Your secure portal for investment services, contracts & client management.'); ?>
             </p>
+
+            <div class="brand-features">
+                <div class="brand-feature-item">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span><?php echo ($lang == 'ar' ? 'اتصال مشفر وآمن' : 'End-to-end encrypted access'); ?></span>
+                </div>
+                <div class="brand-feature-item">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <span><?php echo ($lang == 'ar' ? 'تتبع الصفقات في الوقت الفعلي' : 'Real-time deal tracking'); ?></span>
+                </div>
+                <div class="brand-feature-item">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span><?php echo ($lang == 'ar' ? 'إدارة العقود والمستندات' : 'Contract & document management'); ?></span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="login-form-side position-relative">
-        
-        <div class="position-absolute top-0 start-0 p-4">
-            <a href="<?php echo BASE_URL; ?>" class="text-decoration-none btn-back-subtle d-flex align-items-center gap-2 fw-bold">
-                <i class="bi bi-arrow-<?php echo ($lang == 'ar' ? 'right' : 'left'); ?> fs-4"></i>
-                <span class="d-none d-sm-inline"><?php echo ($lang == 'ar' ? 'العودة للموقع' : 'Back to Home'); ?></span>
+    <!-- ================================
+         FORM PANEL (Right)
+         ================================ -->
+    <div class="login-form-side">
+
+        <!-- Utility bar: Back + Lang -->
+        <div class="login-utility-bar">
+            <a href="<?php echo BASE_URL; ?>" class="btn-back-subtle">
+                <i class="bi bi-arrow-<?php echo ($lang == 'ar' ? 'right' : 'left'); ?>"></i>
+                <span><?php echo ($lang == 'ar' ? 'العودة للموقع' : 'Back to Home'); ?></span>
             </a>
-        </div>
-        
-        <div class="position-absolute top-0 end-0 p-4">
-            <a href="?lang=<?php echo ($lang == 'en' ? 'ar' : 'en'); ?>" class="btn btn-sm btn-rooq-outline rounded-pill  px-4 me-2 fw-bold">
-                <i class="bi bi-globe me-1"></i> <?php echo ($lang == 'en' ? 'العربية' : 'English'); ?>
+            <a href="?lang=<?php echo ($lang == 'en' ? 'ar' : 'en'); ?>" class="btn-lang-switch">
+                <i class="bi bi-globe2"></i>
+                <?php echo ($lang == 'en' ? 'العربية' : 'English'); ?>
             </a>
         </div>
 
-        <div class="login-form-container" style="width: 100%; max-width: 400px; margin-top: 40px;">
-            <div class="mb-5 text-center text-sm-start">
-                <h2 class="fw-bold text-dark"><?php echo ($lang == 'ar' ? 'تسجيل الدخول' : 'Welcome Back'); ?></h2>
-                <p class="text-muted"><?php echo ($lang == 'ar' ? 'يرجى إدخال بيانات الاعتماد الخاصة بك' : 'Please enter your credentials to access your dashboard.'); ?></p>
+        <!-- Mobile-only brand strip -->
+        <div class="mobile-brand-strip">
+            <img src="<?php echo BASE_URL; ?>assets/img/logo.png" alt="FAYENOR">
+            <div class="m-title">FAYENOR</div>
+            <div class="m-sub">Contracting Co. Ltd.</div>
+        </div>
+
+        <!-- Login Card -->
+        <div class="login-card">
+            <div class="login-card-header">
+                <div class="card-icon">
+                    <i class="bi bi-person-lock"></i>
+                </div>
+                <h2><?php echo ($lang == 'ar' ? 'تسجيل الدخول' : 'Welcome Back'); ?></h2>
+                <p><?php echo ($lang == 'ar' ? 'يرجى إدخال بيانات الاعتماد الخاصة بك' : 'Sign in to your account to continue.'); ?></p>
             </div>
 
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="login-alert">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <?php
+                        echo $_SESSION['error'];
+                        unset($_SESSION['error']);
+                    ?>
+                </div>
+            <?php endif; ?>
+
             <form action="auth_process" method="POST">
-                
+
                 <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRF(); ?>">
 
-                <?php if (isset($_SESSION['error'])): ?>
-                    <div class="alert alert-danger small p-3 text-center border-0 bg-danger bg-opacity-10 text-danger rounded-3 fw-bold mb-4">
-                        <i class="bi bi-exclamation-circle me-1"></i>
-                        <?php 
-                            echo $_SESSION['error']; 
-                            unset($_SESSION['error']); // Clear error after showing
-                        ?>
+                <!-- Username -->
+                <div class="login-input-group">
+                    <label for="username">
+                        <i class="bi bi-person-fill"></i>
+                        <?php echo ($lang == 'ar' ? 'اسم المستخدم' : 'Username'); ?>
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="login-input-field"
+                        placeholder="<?php echo ($lang == 'ar' ? 'أدخل اسم المستخدم' : 'Enter your username'); ?>"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="login-input-group">
+                    <label for="password">
+                        <i class="bi bi-key-fill"></i>
+                        <?php echo ($lang == 'ar' ? 'كلمة المرور' : 'Password'); ?>
+                    </label>
+                    <div class="password-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="login-input-field"
+                            placeholder="••••••••"
+                            autocomplete="current-password"
+                            style="padding-<?php echo ($dir === 'rtl' ? 'left' : 'right'); ?>: 46px;"
+                            required
+                        >
+                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                            <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                        </button>
                     </div>
-                <?php endif; ?>
-
-                <div class="form-floating mb-3 shadow-sm rounded-3">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required style="border: 1px solid rgba(0,0,0,0.1);">
-                    <label for="username" class="text-muted"><i class="bi bi-person me-2"></i><?php echo ($lang == 'ar' ? 'اسم المستخدم' : 'Username'); ?></label>
                 </div>
 
-                <div class="form-floating mb-3 shadow-sm rounded-3">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required style="border: 1px solid rgba(0,0,0,0.1);">
-                    <label for="password" class="text-muted"><i class="bi bi-key me-2"></i><?php echo ($lang == 'ar' ? 'كلمة المرور' : 'Password'); ?></label>
-                </div>
-
-                <div class="form-check mb-4 d-flex align-items-center">
-                    <input class="form-check-input mt-0 me-2 shadow-sm" type="checkbox" value="1" id="rememberMe" name="remember_me" style="cursor: pointer;">
-                    <label class="form-check-label text-muted small" for="rememberMe" style="cursor: pointer; padding-top: 2px;">
-                        <?php echo ($lang == 'ar' ? 'تذكرني' : 'Remember me'); ?>
+                <!-- Remember me -->
+                <div class="login-check-row mb-4">
+                    <input type="checkbox" value="1" id="rememberMe" name="remember_me">
+                    <label for="rememberMe">
+                        <?php echo ($lang == 'ar' ? 'تذكرني' : 'Keep me signed in'); ?>
                     </label>
                 </div>
-                <button type="submit" class="btn btn-rooq-primary w-100 py-3 fw-bold shadow">
-                    <?php echo ($lang == 'ar' ? 'دخول' : 'Sign In'); ?> <i class="bi bi-box-arrow-in-right ms-2"></i>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-login">
+                    <?php echo ($lang == 'ar' ? 'دخول' : 'Sign In'); ?>
+                    <i class="bi bi-box-arrow-in-right"></i>
                 </button>
+
             </form>
         </div>
+        <!-- end .login-card -->
+
     </div>
+    <!-- end .login-form-side -->
+
 </div>
+<!-- end .login-wrapper -->
 
 <script src="<?php echo BASE_URL; ?>assets/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
 
+<script>
+    // Password show/hide toggle
+    (function () {
+        const toggle = document.getElementById('togglePassword');
+        const pwdInput = document.getElementById('password');
+        const icon = document.getElementById('toggleIcon');
+        if (!toggle || !pwdInput) return;
+
+        toggle.addEventListener('click', function () {
+            const isHidden = pwdInput.type === 'password';
+            pwdInput.type = isHidden ? 'text' : 'password';
+            icon.className = isHidden ? 'bi bi-eye' : 'bi bi-eye-slash';
+        });
+    })();
+</script>
 </body>
 </html>

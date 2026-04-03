@@ -161,3 +161,72 @@
     }
 
 }
+
+/* =========================================
+   LOGIN PAGE RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .login-brand-side { 
+        flex: 0 0 42%; 
+        padding: 50px 30px; 
+    }
+    .brand-title { 
+        font-size: 1.7rem; 
+    }
+    .brand-features { 
+        display: none; 
+    }
+}
+
+@media (max-width: 768px) {
+    .login-wrapper { 
+        flex-direction: column; 
+    }
+
+    .login-brand-side { 
+        display: none; 
+    }
+
+    .mobile-brand-strip { 
+        display: block; 
+    }
+
+    .login-form-side {
+        padding: 100px 20px 40px;
+        min-height: 100vh;
+    }
+
+    .login-card {
+        padding: 32px 24px;
+        border-radius: 20px;
+    }
+
+    .login-card-header h2 { 
+        font-size: 1.35rem; 
+    }
+    .login-card-header { 
+        margin-bottom: 28px; 
+    }
+
+    .login-utility-bar { 
+        padding: 16px 20px; 
+    }
+
+    .btn-back-subtle span { 
+        display: none; 
+    }
+}
+
+@media (max-width: 400px) {
+    .login-card { 
+        padding: 28px 18px; 
+    }
+    .login-input-field { 
+        padding: 12px 14px; 
+    }
+    .btn-login { 
+        padding: 13px; 
+        font-size: 0.9rem; 
+    }
+}

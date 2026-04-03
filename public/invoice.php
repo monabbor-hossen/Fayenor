@@ -508,6 +508,42 @@ $dir = $is_rtl ? 'rtl' : 'ltr';
             'google_translate_element'
         );
     }
+    
+    <?php if ($is_rtl): ?>
+    // ========================================================================
+    // LIVE NUMBER TRANSLATOR (English Digits -> Eastern Arabic Numerals)
+    // Maps 0123456789 to ٠١٢٣٤٥٦٧٨٩ on all visible text layers instantly!
+    // ========================================================================
+    document.addEventListener("DOMContentLoaded", function () {
+        const convertToArabicNumerals = (node) => {
+            if (node.nodeType === 3) { 
+                if (/[0-9]/.test(node.nodeValue)) {
+                    node.nodeValue = node.nodeValue.replace(/[0-9]/g, w => String.fromCharCode(w.charCodeAt(0) + 1584));
+                }
+            } else if (node.nodeType === 1 && !['SCRIPT', 'STYLE', 'INPUT', 'TEXTAREA', 'SELECT', 'CODE'].includes(node.tagName)) {
+                for (let child of node.childNodes) {
+                    convertToArabicNumerals(child);
+                }
+            }
+        };
+        
+        convertToArabicNumerals(document.body);
+
+        new MutationObserver((mutations) => {
+            mutations.forEach(m => {
+                if (m.type === 'childList') {
+                    m.addedNodes.forEach(addedNode => {
+                        if (addedNode.nodeType === 1 || addedNode.nodeType === 3) {
+                            convertToArabicNumerals(addedNode);
+                        }
+                    });
+                } else if (m.type === 'characterData') {
+                    convertToArabicNumerals(m.target);
+                }
+            });
+        }).observe(document.body, { childList: true, subtree: true, characterData: true });
+    });
+    <?php endif; ?>
 </script>
 
 </body>

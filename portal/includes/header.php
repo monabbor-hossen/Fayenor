@@ -68,7 +68,7 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta id="base_url_meta" content="<?php echo BASE_URL; ?>">
-    <title>Dashboard | Basmat Rooq</title>
+    <title>Dashboard | Fayenor</title>
     
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/img/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="<?php echo BASE_URL; ?>assets/img/favicon.svg" type="image/svg+xml" />

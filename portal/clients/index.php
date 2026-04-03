@@ -101,7 +101,7 @@ function sortLink($key, $label, $currentSort, $nextDir) {
             <h3 class="text-white fw-bold mb-0">Client Portfolios</h3>
             <p class="text-white-50 small mb-0">Manage active MISA licenses and investments</p>
         </div>
-        <a href="client-add" class="btn btn-rooq-primary px-4 rounded-pill"><i class="bi bi-plus-lg me-2"></i> Add New Client</a>
+        <a href="client-add" target="_blank" class="btn btn-rooq-primary px-4 rounded-pill"><i class="bi bi-plus-lg me-2"></i> Add New Client</a>
     </div>
 
     <div class="card-box p-0 overflow-hidden">
@@ -195,10 +195,10 @@ function sortLink($key, $label, $currentSort, $nextDir) {
 
                         <td class="text-end pe-4">
                             <div class="btn-group">
-                                <a href="client-finance?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-warning border-0 opacity-75 hover-opacity-100"><i class="bi bi-cash-stack"></i></a>
-                                <a href="client-edit?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100"><i class="bi bi-pencil-square"></i></a>
+                                <a href="client-finance?id=<?php echo $client['client_id']; ?>" target="_blank" class="btn btn-sm btn-outline-warning border-0 opacity-75 hover-opacity-100"><i class="bi bi-cash-stack"></i></a>
+                                <a href="client-edit?id=<?php echo $client['client_id']; ?>" target="_blank" class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100"><i class="bi bi-pencil-square"></i></a>
                                 <button class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100" title="View Details" data-client='<?php echo $clientJson; ?>' onclick="openViewModal(this)"><i class="bi bi-eye"></i></button>
-                               <form action="<?php echo BASE_URL; ?>portal/contracts/generate_contract" method="POST">
+                               <form action="<?php echo BASE_URL; ?>portal/contracts/generate_contract" method="POST" target="_blank" class="d-inline">
                                 <input type="hidden" name="client_id" value="<?php echo htmlspecialchars($client['client_id']); ?>">
                                 
                                 <button type="submit" class="btn btn-sm btn-outline-info rounded-circle border-0 shadow-none" data-bs-toggle="tooltip" title="Generate Contract">
@@ -206,6 +206,7 @@ function sortLink($key, $label, $currentSort, $nextDir) {
                                 </button>
                             </form>
                             <a href="../../contract/edit_contract?id=<?php echo $client['client_id']; ?>" 
+                            target="_blank"
                             class="btn btn-sm btn-outline-warning rounded-circle border-0 shadow-none" 
                             data-bs-toggle="tooltip" 
                             title="Edit Contract Terms">

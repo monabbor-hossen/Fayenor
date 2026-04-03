@@ -28,7 +28,7 @@ function getRoleName($roleId) {
     
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="text-white fw-bold">System Users</h3>
-        <a href="user-add" class="btn btn-rooq-primary btn-sm px-4 rounded-pill shadow-lg">
+        <a href="user-add" target="_blank" class="btn btn-rooq-primary btn-sm px-4 rounded-pill shadow-lg">
             <i class="bi bi-plus-lg me-2"></i> Add New User
         </a>
     </div>
@@ -95,12 +95,14 @@ function getRoleName($roleId) {
                                 <div class="d-flex justify-content-end gap-2">
                                     
                                     <a href="../finance/user-payroll?id=<?php echo $user['id']; ?>" 
+                                       target="_blank"
                                        class="btn btn-sm btn-outline-success border-0 opacity-75 hover-opacity-100" 
                                        title="Manage Payroll">
                                         <i class="bi bi-wallet2"></i>
                                     </a>
 
                                     <a href="user-edit?id=<?php echo $user['id']; ?>" 
+                                       target="_blank"
                                        class="btn btn-sm btn-outline-light border-0 opacity-50 hover-opacity-100" 
                                        title="Edit User">
                                         <i class="bi bi-pencil-square"></i>

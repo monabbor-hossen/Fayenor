@@ -336,11 +336,11 @@ require_once '../includes/sidebar.php';
                                                     <td>SAR <?php echo number_format($client['contract_value'], 2); ?></td>
                                                     <td class="text-end text-nowrap">
                                                         
-                                                        <a href="../../contract/edit_contract?id=<?php echo $client['client_id']; ?>" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" title="Edit Contract">
+                                                        <a href="../../contract/edit_contract?id=<?php echo $client['client_id']; ?>" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" title="Edit Contract">
                                                             <i class="bi bi-pencil-square"></i> Edit
                                                         </a>
                                                         
-                                                        <a href="../../contract/contract?id=<?php echo $client['client_id']; ?>" class="btn btn-sm rounded-pill fw-bold text-white ms-1" style="background-color: #D4AF37; border-color: #D4AF37;" title="View Final PDF">
+                                                        <a href="../../contract/contract?id=<?php echo $client['client_id']; ?>" target="_blank" class="btn btn-sm rounded-pill fw-bold text-white ms-1" style="background-color: #D4AF37; border-color: #D4AF37;" title="View Final PDF">
                                                             <i class="bi bi-file-earmark-pdf-fill"></i> View
                                                         </a>
 

@@ -12,7 +12,7 @@ class Translator {
                 'service_1'      => 'MISA License Processing',
                 'service_1_desc' => 'End-to-end management of service licenses and investor permits.',
                 'service_2'      => 'Digital Tracking',
-                'service_2_desc' => 'Real-time monitoring of GOSI, QIWA, Muqeem, and SBC milestones.',
+                'service_2_desc' => 'Real-time monitoring of GOSI, QIWA, Muqeem, and CR milestones.',
                 'service_3'      => 'Legal Compliance',
                 'service_3_desc' => 'Facilitating Articles of Association (AoA) and Chamber of Commerce registrations.',
                 'contact_us'     => 'Get In Touch',

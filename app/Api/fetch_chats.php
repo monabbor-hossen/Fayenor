@@ -67,26 +67,41 @@ try {
         // Use Flexbox to align the wrapper instead of margins
         $wrapper_align = $is_me ? 'justify-content-end' : 'justify-content-start';
         $text_align = $is_me ? 'text-end' : 'text-start';
-        
-        $bg_color = $is_me ? 'background: #800020; color: #fff;' : 'background: rgba(255,255,255,0.05); color: #fff; border-left: 3px solid #D4AF37;';
-        $border_radius = $is_me ? 'border-radius: 15px 15px 2px 15px;' : 'border-radius: 15px 15px 15px 2px;';
+
+        // --- FAYENOR THEME BUBBLES ---
+        if ($is_me) {
+            $bubble_style = 'background: linear-gradient(135deg, #023020 0%, #034a2c 100%);
+                             color: #fff;
+                             border: 1px solid rgba(176,196,222,0.25);
+                             box-shadow: 0 4px 15px rgba(2,48,32,0.4);
+                             border-radius: 18px 18px 4px 18px;';
+        } else {
+            $bubble_style = 'background: rgba(176,196,222,0.07);
+                             color: #fff;
+                             border: 1px solid rgba(176,196,222,0.15);
+                             border-left: 3px solid #B0C4DE;
+                             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                             border-radius: 18px 18px 18px 4px;';
+        }
+
         $time = date('M d, h:i A', strtotime($msg['created_at']));
         
         $sender_name = '';
         if (!$is_me) {
-            $name = ($msg['sender_type'] === 'client') ? $msg['client_name'] : ($msg['internal_name'] ?? 'Basmat Rooq Team');
-            // Align the sender's name slightly with the bubble
-            $sender_name = "<div class='small text-secondary fw-bold mb-1 ps-1'>{$name}</div>";
+            $name = ($msg['sender_type'] === 'client') ? $msg['client_name'] : ($msg['internal_name'] ?? 'Fayenor Team');
+            $sender_name = "<div class='chat-sender-name mb-1 ps-1'>{$name}</div>";
         }
 
+        $time_align = $is_me ? 'text-end' : 'text-start';
+
         $html .= "
-            <div class='d-flex {$wrapper_align} mb-3 w-100'>
-                <div class='d-flex flex-column {$text_align}' style='max-width: 85%;'>
+            <div class='d-flex {$wrapper_align} mb-3 w-100 chat-message-row'>
+                <div class='d-flex flex-column {$text_align}' style='max-width: 80%;'>
                     {$sender_name}
-                    <div class='p-3 shadow-sm' style='{$bg_color} {$border_radius} display: inline-block; text-align: left; word-break: break-word;'>
+                    <div class='chat-bubble px-3 py-2' style='{$bubble_style} display: inline-block; text-align: left; word-break: break-word; line-height: 1.6;'>
                         " . nl2br(htmlspecialchars($display_message)) . "
                     </div>
-                    <div class='small text-white-50 mt-1 px-1' style='font-size: 0.7rem;'>{$time}</div>
+                    <div class='chat-timestamp mt-1 px-1 {$time_align}'>{$time}</div>
                 </div>
             </div>";
     }
